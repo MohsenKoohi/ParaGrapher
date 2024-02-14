@@ -1,4 +1,6 @@
-# [Poplar: Graph Reader API and Library](https://blogs.qub.ac.uk/DIPSA/Poplar/)
+![Poplar](https://blogs.qub.ac.uk/dipsa/wp-content/uploads/sites/319/2024/02/poplar.jpg)
+
+# [Poplar: Graph Loading API and Library](https://blogs.qub.ac.uk/DIPSA/Poplar/)
 
 
 ## License
