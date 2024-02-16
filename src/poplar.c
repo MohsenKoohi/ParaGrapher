@@ -60,7 +60,7 @@ typedef struct
 
 } poploar_reader;
 
-poploar_reader* readers[POPLAR_GRAPH_TYPES_COUNT]={NULL};  
+static poploar_reader* readers[POPLAR_GRAPH_TYPES_COUNT]={NULL};  
 
 #include "webgraph.c"
 
