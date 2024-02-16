@@ -27,8 +27,8 @@ enum __wg_buffer_status {
 
 typedef struct
 {
-	long status;
-	long written_edges;
+	volatile long status;
+	volatile long written_edges;
 	long start_vertex;
 	long start_edge;
 	long end_vertex;
