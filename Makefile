@@ -53,11 +53,11 @@ $(POPLAR_LIB_FOLDER)/%.class: src/%.java
 
 test: FORCE all
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) make -C test $(debug_arg)
+	make -C test $(debug_arg) POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER)
 
 test%: FORCE all
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) make -C test $@ $(debug_arg)
+	make -C test $@ $(debug_arg) POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER)
 	
 clean:
 	rm -f $(POPLAR_LIB_FOLDER)/*.so $(POPLAR_LIB_FOLDER)/*.class /dev/shm/poplar_*

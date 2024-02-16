@@ -48,7 +48,7 @@ test%_WG400: $(OBJ)/test%_WG400.o
 	fi
 	
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/cnr-2000
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/cnr-2000
 	@echo -e ""
 
 test%_WG404: $(OBJ)/test%_WG404.o
@@ -64,7 +64,7 @@ test%_WG404: $(OBJ)/test%_WG404.o
 	fi
 	
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/MS1-weights
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/MS1-weights
 	@echo -e ""
 
 test%_WG800: $(OBJ)/test%_WG800.o
@@ -77,7 +77,7 @@ test%_WG800: $(OBJ)/test%_WG800.o
 	fi
 	
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/WDC-2012
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/WDC-2012
 	@echo -e ""
 
 clean:
