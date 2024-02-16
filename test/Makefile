@@ -71,7 +71,7 @@ test%_WG800: $(OBJ)/test%_WG800.o
 	@if [ ! -f datasets/WDC-2012.graph ]; then \
 		mkdir -p datasets; \
 		echo -e "--------------------\n\033[1;34mDownloading MS1\033[0;37m"; \
-# 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.graph" -O datasets/WDC-2012.graph; \
+		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.graph" -O datasets/WDC-2012.graph; \
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.properties" -O datasets/WDC-2012.properties ; \
 		echo -e "--------------------\n";\
 	fi
