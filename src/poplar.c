@@ -69,6 +69,9 @@ int poplar_init()
 	// __PD && printf("[POPLAR] poplar_init(), Initializing %u reader libraries\n", POPLAR_GRAPH_TYPES_COUNT - 1);
 	assert(POPLAR_GRAPH_TYPES_COUNT > 1);
 	
+	if(readers[POPLAR_CSX_WG_400_AP] != NULL)
+		return;	
+	
 	readers[POPLAR_CSX_WG_400_AP] = POPLAR_CSX_WG_400_AP_init();
 	readers[POPLAR_CSX_WG_800_AP] = POPLAR_CSX_WG_800_AP_init();
 	readers[POPLAR_CSX_WG_404_AP] = POPLAR_CSX_WG_404_AP_init();
