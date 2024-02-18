@@ -28,7 +28,7 @@ unsigned long vertices_count = 0UL;
 unsigned long completed_callbacks_count = 0UL;
 unsigned long processed_edges = 0UL;
 
-void callback(poplar_read_request* req, poplar_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id)
+void callback(poplar_read_request* req, poplar_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id, void* args)
 {
 	// unsigned long bi= (unsigned long)buffer_id;
 	// printf("Callback for bi: %lu,  eb: %lu.%lu - %lu.%lu\n", bi, eb->start_vertex, eb->start_edge, eb->end_vertex, eb->end_edge);
@@ -213,7 +213,7 @@ int main(int argc, char** args)
 		eb.end_edge= -1UL;
 
 
-		poplar_read_request* req= poplar_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, 0);
+		poplar_read_request* req= poplar_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL,NULL, 0);
 		assert(req != NULL);
 
 		struct timespec ts = {0, 200 * 1000 * 1000};

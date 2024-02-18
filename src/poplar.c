@@ -50,13 +50,13 @@ typedef struct
 	void* (*csx_get_vertex_weights)(poplar_graph* graph, void* weights, unsigned long start_vertex, unsigned long end_vertex, void** args, int argc);
 	void (*csx_release_offsets_weights_arrays)(poplar_graph* graph, void* array);
 
-	poplar_read_request* (*csx_get_subgraph)(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void** args, int argc);
+	poplar_read_request* (*csx_get_subgraph)(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void* callback_args, void** args, int argc);
 	void (*csx_release_buffers)(poplar_read_request* graph, poplar_edge_block* eb, void* offsets, void* edges);
 	void (*csx_release_read_request)(poplar_read_request* request);
 	void (*csx_release_read_buffers)(poplar_read_request* request, poplar_edge_block* eb, void* buffer_id);
 
 	// COO API
-	poplar_read_request* (*coo_get_edges)(poplar_graph* graph, unsigned long start_row, unsigned long end_row, void* edges, poplar_coo_callback callback, void** args, int argc);
+	poplar_read_request* (*coo_get_edges)(poplar_graph* graph, unsigned long start_row, unsigned long end_row, void* edges, poplar_coo_callback callback, void* callback_args, void** args, int argc);
 
 } poploar_reader;
 
@@ -70,7 +70,7 @@ int poplar_init()
 	assert(POPLAR_GRAPH_TYPES_COUNT > 1);
 	
 	if(readers[POPLAR_CSX_WG_400_AP] != NULL)
-		return;	
+		return 0;	
 	
 	readers[POPLAR_CSX_WG_400_AP] = POPLAR_CSX_WG_400_AP_init();
 	readers[POPLAR_CSX_WG_800_AP] = POPLAR_CSX_WG_800_AP_init();
@@ -176,7 +176,7 @@ void poplar_csx_release_offsets_weights_arrays(poplar_graph* graph, void* array)
 	return;
 }
 
-poplar_read_request* poplar_csx_get_subgraph(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void** args, int argc)
+poplar_read_request* poplar_csx_get_subgraph(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void* callback_args, void** args, int argc)
 {
 	assert(graph != NULL);
 	assert(eb != NULL);
@@ -193,7 +193,7 @@ poplar_read_request* poplar_csx_get_subgraph(poplar_graph* graph, poplar_edge_bl
 	if(eb->start_vertex == eb->end_vertex && eb->start_edge >= eb->end_edge)
 		return NULL;
 
-	poplar_read_request* ret = readers[graph->graph_type]->csx_get_subgraph(graph, eb, offsets, edges, callback, args, argc);
+	poplar_read_request* ret = readers[graph->graph_type]->csx_get_subgraph(graph, eb, offsets, edges, callback, callback_args, args, argc);
 	assert(ret->graph == graph);
 
 	return ret;

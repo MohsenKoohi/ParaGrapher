@@ -90,7 +90,7 @@
 	} poplar_edge_block;
 
 	// The callback function that is called by the library to pass a block of edges to the reader
-	typedef void (*poplar_csx_callback)(poplar_read_request* request, poplar_edge_block* eb, void* offsets, void* edges, void* buffer_id);
+	typedef void (*poplar_csx_callback)(poplar_read_request* request, poplar_edge_block* eb, void* offsets, void* edges, void* buffer_id, void* args);
 
 	// Getting the offsets of vertices from [start_vertex, end_vertex]
 	void* poplar_csx_get_offsets(poplar_graph* graph, void* offsets, unsigned long start_vertex, unsigned long end_vertex, void** args, int argc);
@@ -108,7 +108,7 @@
 			(2) To fill the edges array specified by the user (Library can be queried by POPLAR_REQUEST_LIB_USES_USER_ARRAYS)
 		The library may call the callback multiple times but for non-overlapping blocks of edges.
 	*/
-	poplar_read_request* poplar_csx_get_subgraph(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void** args, int argc);
+	poplar_read_request* poplar_csx_get_subgraph(poplar_graph* graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void* callback_args, void** args, int argc);
 
 	// In case the library has used its own buffers, the user should inform the library when copying the data is completed
 	void poplar_csx_release_read_buffers(poplar_read_request* request, poplar_edge_block* eb, void* buffer_id);
@@ -128,7 +128,7 @@
 			(2) To fill the edges array specified by the user (Library can be queried by POPLAR_REQUEST_LIB_USES_USER_ARRAYS)
 		The library may call the callback multiple times but for non-overlapping blocks of edges.
 	*/
-	poplar_read_request poplar_coo_get_edges(poplar_graph* graph, unsigned long start_row, unsigned long end_row, void* edges, poplar_coo_callback callback, void** args, int argc);
+	poplar_read_request poplar_coo_get_edges(poplar_graph* graph, unsigned long start_row, unsigned long end_row, void* edges, poplar_coo_callback callback, void* callback_args, void** args, int argc);
 
 #ifdef __cplusplus
 	}

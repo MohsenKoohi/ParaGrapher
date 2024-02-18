@@ -43,6 +43,7 @@ typedef struct
 {
 	poplar_read_request prr;
 	poplar_csx_callback callback;
+	void* callback_args;
 	poplar_edge_block eb;
 
 	long status;  // values: progressing: 0,  completed: 1, finished unsuccessfully: < 0
@@ -464,7 +465,7 @@ void* __wg_callback_thread(void* in)
 	);
 	poplar_edge_block* eb = (poplar_edge_block*)((unsigned long*)(req->buffers_metadata + buffer_index) + 2);
 	
-	req->callback((poplar_read_request*)req, eb, req->offsets, edges, (void*)buffer_index);
+	req->callback((poplar_read_request*)req, eb, req->offsets, edges, (void*)buffer_index, req->callback_args);
 	
 	return NULL;
 }
@@ -712,7 +713,7 @@ void* __wg_thread(void* in)
 	return NULL;	
 }
 
-poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void** args, int argc)
+poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void* callback_args, void** args, int argc)
 {
 	if(callback == NULL)
 	{
@@ -729,6 +730,7 @@ poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_b
 	assert(req != NULL);
 	req->prr.graph = in_graph;
 	req->callback = callback;
+	req->callback_args = callback_args;
 	req->eb.start_vertex = eb->start_vertex;
 	req->eb.start_edge = eb->start_edge;
 	req->eb.end_vertex = eb->end_vertex;
