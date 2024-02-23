@@ -20,6 +20,8 @@ A `JDK` with version greater than 15 is required.
 First, set the path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. If you use the 
 precompiled `gcc` of your machine, uncomment Line 6.
 
+By uncommenting `-DNDEBUG` in Line 20 of the `Makefile`, the Poplar tracking logs are not printed in output.
+
 With `make all` the C and Java source codes are compiled and required WebGraph libraries are downloaded. 
 All compiled and downloaded are stored in `lib64` folder and future calls to the library requires setting
 the `POPLAR_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
