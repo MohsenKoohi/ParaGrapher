@@ -17,7 +17,8 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 A `JDK` with version greater than 15 is required.
 
 ## Compiling and Executing Code
-First, set the path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. If you use the precompiled `gcc` of your machine, use uncomment Line 6.
+First, set the path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. If you use the 
+precompiled `gcc` of your machine, uncomment Line 6.
 
 With `make all` the C and Java source codes are compiled and required WebGraph libraries are downloaded. 
 All compiled and downloaded are stored in `lib64` folder and future calls to the library requires setting
