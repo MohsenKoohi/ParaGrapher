@@ -3,9 +3,9 @@ ifndef POPLAR_LIB_FOLDER
 endif 
 
 GCC_DIR := ~/gcc9.2
+#GCC_DIR := /usr
 GCC := $(GCC_DIR)/bin/gcc 
 GXX := $(GCC_DIR)/bin/g++ 
-
 LIB := $(GCC_DIR)/lib64:$(LD_LIBRARY_PATH)
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB)))
