@@ -80,7 +80,7 @@ public class WG400AP implements WebGraphWriter
 
 				if(__PD)
 				{
-					System.out.print("[POPLAR][JP] Graph loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
+					System.out.print("[POPLAR][JP] Graph metadata loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
 					System.out.print("[POPLAR][JP] |V|: " + String.format("%,d",graph.numNodes()) + ", |E|: " + String.format("%,d",graph.numArcs()));
 					System.out.print(", buffers_count: " + String.format("%,d",buffers_count) + ", buffer_size: " + String.format("%,d",buffer_size) + ", bytes_per_edge: " + bytes_per_edge);
 					System.out.println();
