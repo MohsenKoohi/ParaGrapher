@@ -8,9 +8,9 @@ This repository contains the source code of Poplar, an API and library for loadi
 For futher information about the library please refer to https://blogs.qub.ac.uk/DIPSA/Poplar/ and publications.
 
 ## Supperted Graph Types
-1. **WG_400** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
-2. **WG_800** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
-3. **WG_404** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
+1. **POPLAR_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
+2. **POPLAR_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
+3. **POPLAR_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
 
 ## Requirements
 
