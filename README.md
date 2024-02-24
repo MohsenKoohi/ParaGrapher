@@ -30,7 +30,7 @@ The `test` folder contains sample codes for different types of graphs. Use `make
 The `Makefile` inside this folder downloads the sample datasets if they do not exist in `test/dataset` folder.
 
 In the first access to the graphs in WebGraph format a delay may be experienced for creating two files by the library:
-1. A WebGraph `.offset` file is required which is created through calls to WebGraph framework.
+1. A WebGraph `.offset` file is required which is created through a call to the WebGraph framework.
 2. An `_offsets.bin` file for the graph is created that contains the offsets array of the CSX format but in binary format.
 In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with suffix `MS??_offsets.bin` can
 be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating. 
