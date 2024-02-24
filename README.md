@@ -29,6 +29,12 @@ the `POPLAR_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
 The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test.
 The `Makefile` inside this folder downloads the sample datasets if they do not exist in `test/dataset` folder.
 
+In the first access to the graphs in WebGraph format a delay may be experienced for creating two files by the library:
+1. A WebGraph `.offset` file is required which is created through calls to WebGraph framework.
+2. An `_offsets.bin` file for the graph is created that contains the offsets array of the CSX format but in binary format.
+In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with suffix `MS??_offsets.bin` can
+be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating. 
+
 ## License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
 You must not use this Software except in compliance with the terms of the License. Unless required by applicable 
