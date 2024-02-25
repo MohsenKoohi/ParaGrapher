@@ -36,7 +36,7 @@ littel-endian format with 8-Bytes values for each of |V|+1 elements.
 In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with suffix `MS??_offsets.bin` can
 be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 
-Poplar may create some temporary files in `/dev/shm` with names `poplar_*`. The files are deleted at the end of a 
+Poplar may create some temporary files in `/dev/shm` with names starting by `poplar_`. The files are deleted at the end of a 
 successful exuection. Otherwise, they should be deleted by the user.
 
 ## License
