@@ -39,6 +39,10 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 Poplar may create some temporary files in `/dev/shm` with names starting by `poplar_`. The files are deleted at the end of a 
 successful exuection. Otherwise, they should be deleted by the user.
 
+## Remained Works
+1. A thread pool for callbacks
+2. Matrix Market format
+
 ## License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
 You must not use this Software except in compliance with the terms of the License. Unless required by applicable 
