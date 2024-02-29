@@ -664,6 +664,8 @@ void* __wg_thread(void* in)
 						req->buffers_metadata[b].start_edge = last_edge;
 						req->buffers_metadata[b].end_vertex = dest_vertex;
 						req->buffers_metadata[b].end_edge = dest_edge;
+						__sync_synchronize();
+						
 						req->buffers_metadata[b].status = __BS_C_REQUESTED;
 						
 						last_vertex = dest_vertex;

@@ -42,7 +42,6 @@ successful exuection. Otherwise, they should be deleted by the user.
 ## Remained Works
 1. A thread pool for callbacks
 2. Matrix Market format
-3. Considering impacts of out of order execution of the metadata status changes
 
 ## License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
