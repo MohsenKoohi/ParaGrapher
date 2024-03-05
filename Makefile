@@ -3,7 +3,10 @@ ifndef POPLAR_LIB_FOLDER
 endif 
 
 GCC_DIR := ~/gcc9.2
-#GCC_DIR := /usr
+ifeq ("$(wildcard $(GCC_DIR)/bin/gcc)","")
+	GCC_DIR := /usr
+endif
+
 GCC := $(GCC_DIR)/bin/gcc 
 GXX := $(GCC_DIR)/bin/g++ 
 LIB := $(GCC_DIR)/lib64:$(LD_LIBRARY_PATH)
@@ -15,21 +18,26 @@ JAVA_CLASS_FILES  := $(addprefix $(POPLAR_LIB_FOLDER)/,$(subst src/,,$(subst .ja
 
 ifdef debug
 	COMPILE_TYPE := -g
-	debug_arg := debug=1
 else
-	COMPILE_TYPE := -O3 #-DNDEBUG
+	COMPILE_TYPE := -O3 -DNDEBUG
 endif
 
 all: $(POPLAR_LIB_FOLDER)/libpoplar.so JLIBS $(JAVA_CLASS_FILES)
 
 $(POPLAR_LIB_FOLDER)/libpoplar.so: src/* include/* Makefile
+	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
+		$(GCC) -dumpversion; \
+		echo -e "\033[0;33mError:\033[0;37m Version 9 or newer is required for gcc.\n\n";\
+		exit -1;\
+	fi
+
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
 	@echo -e "\033[1;34mCompiling Poplar\033[0;37m"
 	mkdir -p $(POPLAR_LIB_FOLDER)
 	$(GCC) $(INCLUDE_LIBS) $(FLAGS) $(COMPILE_TYPE) -fpic -shared src/poplar.c -o $(POPLAR_LIB_FOLDER)/libpoplar.so
 	@echo ""
 
-JLIBS: FORCE
+JLIBS: FORCE 
 	@if [ `javac  -version 2>&1 | cut -f2 -d' ' | cut -f1 -d.` -le 14 ]; then\
 		javac  -version 2>&1;\
 		echo -e "\033[0;33mError:\033[0;37m Version 15 or newer is required for javac.\n\n";\
@@ -47,17 +55,17 @@ JLIBS: FORCE
 		echo "Java libararies downloaded.";\
 	fi
 
-$(POPLAR_LIB_FOLDER)/%.class: src/%.java
+$(POPLAR_LIB_FOLDER)/%.class: src/%.java Makefile
 	@echo -e "\033[1;34mCompiling $<\033[0;37m"
 	javac -cp $(POPLAR_LIB_FOLDER)/jlibs/*:src: -d $(POPLAR_LIB_FOLDER) $<
 
 test: FORCE all
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
-	make -C test $(debug_arg) POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER)
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) make -C test
 
 test%: FORCE all
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
-	make -C test $@ $(debug_arg) POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER)
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) make -C test $@ 
 	
 clean:
 	rm -f $(POPLAR_LIB_FOLDER)/*.so $(POPLAR_LIB_FOLDER)/*.class /dev/shm/poplar_*

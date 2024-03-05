@@ -3,7 +3,10 @@ ifndef POPLAR_LIB_FOLDER
 endif 
 
 GCC_DIR := ~/gcc9.2
-#GCC_DIR := /usr
+ifeq ("$(wildcard $(GCC_DIR)/bin/gcc)","")
+	GCC_DIR := /usr
+endif
+
 OBJ := obj
 GCC := $(GCC_DIR)/bin/gcc 
 GXX := $(GCC_DIR)/bin/g++ 
@@ -25,7 +28,12 @@ else
 	COMPILE_TYPE := -O3 # -DNDEBUG
 endif
 
-all: 
+all:
+	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
+		$(GCC) -dumpversion; \
+		echo -e "\033[0;33mError:\033[0;37m Version 9 or newer is required for gcc.\n\n";\
+		exit -1;\
+	fi 
 	@echo -e "\n\033[1;34mRunning Tests\033[0;37m"
 	@echo -e "#total_cores: "$(_total_cores)
 	@echo -e "#available_cores: "$(_available_cores)

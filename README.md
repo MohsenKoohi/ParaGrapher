@@ -14,16 +14,17 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 
 ## Requirements
 
-A `JDK` with version greater than 15 is required.
+1. A `gcc` with a version greater than 9
+2. A `JDK` with a version greater than 15
+
 
 ## Compiling and Executing Code
-- First, set the path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. If you use the 
-precompiled `gcc` of your machine, uncomment Line 6.
+- If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. 
 
-- By uncommenting `-DNDEBUG` in Line 20 of the `Makefile`, the Poplar tracking logs are not printed in output.
+- By commenting `-DNDEBUG` in Line 20 of the `Makefile`, Poplar will not output its logs.
 
 - With `make all` the C and Java source codes are compiled and required WebGraph libraries are downloaded. 
-- All compiled and downloaded are stored in `lib64` folder and future calls to the library requires setting
+- All compiled and downloaded are stored in local `lib64` folder and future calls to the library requires setting
 the `POPLAR_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
 
 - The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test.
