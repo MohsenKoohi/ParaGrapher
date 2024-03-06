@@ -174,6 +174,8 @@ int __wg_release_graph(poplar_graph* in_graph, void** args, int argc)
 {
 	__wg_graph* graph = (__wg_graph*)in_graph;
 
+	__sync_synchronize();
+
 	// Releasing offsets array
 		if(graph->offsets != NULL)
 		{
@@ -418,6 +420,8 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 
 void __wg_csx_release_offsets_weights_arrays(poplar_graph* in_graph, void* array)
 {
+	__sync_synchronize();
+
 	return;
 }
 
@@ -768,6 +772,8 @@ poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_b
 void __wg_csx_release_read_buffers(poplar_read_request* request, poplar_edge_block* eb, void* buffer_id)
 {
 	assert(eb != NULL);
+
+	__sync_synchronize();
 	
 	__wg_read_request* req = (__wg_read_request*)request;
 	unsigned long bi = (unsigned long)buffer_id;
