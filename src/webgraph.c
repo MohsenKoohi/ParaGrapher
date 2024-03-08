@@ -227,7 +227,13 @@ int __wg_get_set_options(poplar_graph* in_graph, poplar_request_type request_typ
 
 		case POPLAR_REQUEST_SET_BUFFER_SIZE:
 			{
-				unsigned long bsl = 1UL<< (31 - 2);
+				// The limits can be removed by updating the Java-side buffer
+				unsigned long bsl = 0;
+				if(graph->graph_type == POPLAR_CSX_WG_400_AP)
+					bsl = 1UL<< (31 - 2);
+				else
+					bsl = 1UL<< (31 - 3);
+
 				if(*args0_ulp < bsl)
 				{
 					graph->buffer_size = *args0_ulp;

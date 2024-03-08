@@ -7,18 +7,18 @@
 This repository contains the source code of Poplar, an API and library for loading graphs.
 For futher information about the library please refer to https://blogs.qub.ac.uk/DIPSA/Poplar/ and publications.
 
-## Supperted Graph Types
+### Supperted Graph Types
 1. **POPLAR_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
 2. **POPLAR_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
 3. **POPLAR_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
 
-## Requirements
+### Requirements
 
 1. A `gcc` with a version greater than 9
 2. A `JDK` with a version greater than 15
 
 
-## Compiling and Executing Code
+### Compiling and Executing Code
 - If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. 
 
 - By commenting `-DNDEBUG` in Line 20 of the `Makefile`, Poplar will not output its logs.
@@ -40,11 +40,10 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 - Poplar may create some temporary files in `/dev/shm` with names starting by `poplar_`. The files are deleted at the end of a 
 successful exuection. Otherwise, they should be deleted by the user.
 
-## Remained Works
-1. A thread pool for callbacks
-2. Matrix Market format
+### Remained Works
+1. MatrixMarket format
 
-## License
+### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
 You must not use this Software except in compliance with the terms of the License. Unless required by applicable 
 law or agreed upon in writing, this Software is distributed on an "as is" basis, without any warranty; without even 

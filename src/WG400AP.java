@@ -222,17 +222,36 @@ public class WG400AP implements WebGraphWriter
 			// Writing offsets to the file
 				ByteBuffer longByteBuffer = ByteBuffer.allocate(8).order(ByteOrder.nativeOrder());
 				RandomAccessFile outFile = new RandomAccessFile(offsetsFilePath, "rw");
-				MappedByteBuffer buffer = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, 8 * (1 + graph.numNodes()));
+
+				long b_ts = 8L * (1 + graph.numNodes()); // buffer total size
+				long b_count = 0; // counter for written bytes
+				long b_cof = 0; // current offset
+				long b_length = Math.min(1L<<30, b_ts - b_cof);
+				MappedByteBuffer buffer = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, b_cof, b_length);
+				assert buffer.limit() == b_length;
 
 				long sum = 0;
 				buffer.put(longByteBuffer.rewind().putLong(sum).array());
+				b_count += 8;
 
 				for(int v = 0; v < graph.numNodes(); v++)
 				{
 					sum += degrees[v];
 					buffer.put(longByteBuffer.rewind().putLong(sum).array());
+				
+					b_count += 8;
+					if(b_count == b_length)
+					{
+						buffer.force();
+						b_cof += b_length;
+						b_length = Math.min(1L<<30, b_ts - b_cof);
+						buffer = outFile.getChannel().map(FileChannel.MapMode.READ_WRITE, b_cof, b_length);
+						assert buffer.limit() == b_length;
+						b_count = 0;		
+					}
 				}
 
+				assert b_count == b_length;
 				assert sum == graph.numArcs();
 				buffer.force();
 				outFile.close();
