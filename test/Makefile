@@ -4,16 +4,16 @@ endif
 
 GCC := gcc
 GXX := g++
-LIB := $(LD_LIBRARY_PATH)
+LIB := $(POPLAR_LIB_FOLDER):$(LD_LIBRARY_PATH)
 
 UP_GCC_DIR := ~/gcc9.2
 ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
 	GCC := $(UP_GCC_DIR)/bin/gcc
 	GXX := $(UP_GCC_DIR)/bin/g++
-	LIB := $(UP_GCC_DIR)/lib64:$(LD_LIBRARY_PATH)
+	LIB := $(UP_GCC_DIR)/lib64:$(LIB)
 endif
 
-LIB := $(POPLAR_LIB_FOLDER):$(GCC_DIR)/lib64:$(LD_LIBRARY_PATH)
+OBJ := obj
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB))) 
 FLAGS :=  -Wfatal-errors -lm -fopenmp -lpoplar

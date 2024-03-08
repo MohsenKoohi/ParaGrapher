@@ -10,7 +10,7 @@ UP_GCC_DIR := ~/gcc9.2
 ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
 	GCC := $(UP_GCC_DIR)/bin/gcc
 	GXX := $(UP_GCC_DIR)/bin/g++
-	LIB := $(UP_GCC_DIR)/lib64:$(LD_LIBRARY_PATH)
+	LIB := $(UP_GCC_DIR)/lib64:$(LIB)
 endif
 
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))

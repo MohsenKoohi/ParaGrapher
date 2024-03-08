@@ -19,7 +19,7 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 
 
 ### Compiling and Executing Code
-- If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 5 of the `Makefile` and `test/Makefile`. 
+- If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 9 of the `Makefile` and `test/Makefile`. 
 
 - By commenting `-DNDEBUG` in Line 20 of the `Makefile`, Poplar will not output its logs.
 
