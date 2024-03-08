@@ -17,6 +17,8 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 1. A `gcc` with a version greater than 9
 2. A `JDK` with a version greater than 15
 
+### Download Sample Datasets
+- Run `make dataset` to download and store sample datasets to `test/datasets`
 
 ### Compiling and Executing Code
 - If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 9 of the `Makefile` and `test/Makefile`. 
@@ -27,8 +29,8 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 - All compiled and downloaded are stored in local `lib64` folder and future calls to the library requires setting
 the `POPLAR_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
 
-- The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test.
-The `Makefile` inside this folder downloads the sample datasets if they do not exist in `test/dataset` folder.
+- The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test. 
+You may pass argument `dataset` to specify the location of the test, e.g., `make test dataset=path/to/dataset`.
 
 - In the first access to the graphs in WebGraph format a delay may be experienced for creating two files by the library:
   1. A WebGraph `.offset` file is required which is created through a call to the WebGraph framework.

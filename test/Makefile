@@ -50,6 +50,21 @@ $(OBJ)/%.o: %.c Makefile ../include/*.h
 	@echo -e ""
 
 test%_WG400: $(OBJ)/test%_WG400.o
+	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/cnr-2000
+	@echo -e ""
+
+test%_WG404: $(OBJ)/test%_WG404.o
+	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/MS1-weights
+	@echo -e ""
+
+test%_WG800: $(OBJ)/test%_WG800.o
+	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
+	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/WDC-2012
+	@echo -e ""
+
+download:
 	@if [ ! -f datasets/cnr-2000.graph ]; then \
 		mkdir -p datasets; \
 		echo -e "--------------------\n\033[1;34mDownloading cnr-2000\033[0;37m"; \
@@ -57,12 +72,6 @@ test%_WG400: $(OBJ)/test%_WG400.o
 		wget -P datasets "http://data.law.di.unimi.it/webdata/cnr-2000/cnr-2000.properties"; \
 		echo -e "--------------------\n";\
 	fi
-	
-	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/cnr-2000
-	@echo -e ""
-
-test%_WG404: $(OBJ)/test%_WG404.o
 	@if [ ! -f datasets/MS1-weights.labels ]; then \
 		mkdir -p datasets; \
 		echo -e "--------------------\n\033[1;34mDownloading MS1\033[0;37m"; \
@@ -73,12 +82,6 @@ test%_WG404: $(OBJ)/test%_WG404.o
 		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-weights.properties"; \
 		echo -e "--------------------\n";\
 	fi
-	
-	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/MS1-weights
-	@echo -e ""
-
-test%_WG800: $(OBJ)/test%_WG800.o
 	@if [ ! -f datasets/WDC-2012.graph ]; then \
 		mkdir -p datasets; \
 		echo -e "--------------------\n\033[1;34mDownloading MS1\033[0;37m"; \
@@ -87,9 +90,6 @@ test%_WG800: $(OBJ)/test%_WG800.o
 		echo -e "--------------------\n";\
 	fi
 	
-	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o datasets/WDC-2012
-	@echo -e ""
 
 clean:
 	rm -r $(OBJ)
