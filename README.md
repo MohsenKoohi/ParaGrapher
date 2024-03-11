@@ -18,7 +18,8 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 2. A `JDK` with a version greater than 15
 
 ### Download Sample Datasets
-- Run `make dataset` to download and store sample datasets to `test/datasets`
+- Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
+to download and store sample datasets to `test/datasets`
 
 ### Compiling and Executing Code
 - If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 9 of the `Makefile` and `test/Makefile`. 

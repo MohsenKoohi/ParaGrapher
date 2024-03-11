@@ -70,9 +70,8 @@ test%: FORCE all
 	@echo -e "\n\033[1;32mPOPLAR_LIB_FOLDER: "$(POPLAR_LIB_FOLDER)"\033[0;37m"
 	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) make -C test $@ $(dataset)
 
-download: 
-	make -C test download
-
+download%: 
+	make -C test $@
 	
 clean:
 	rm -f $(POPLAR_LIB_FOLDER)/*.so $(POPLAR_LIB_FOLDER)/*.class /dev/shm/poplar_*
