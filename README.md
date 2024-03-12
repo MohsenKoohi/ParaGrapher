@@ -16,6 +16,7 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 
 1. A `gcc` with a version greater than 9
 2. A `JDK` with a version greater than 15
+3. `bc`, `wget`, and `unzip`
 
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
