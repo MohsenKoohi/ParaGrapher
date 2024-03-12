@@ -60,7 +60,7 @@ public class WG404AP implements WebGraphWriter
 				
 				if(__PD)
 				{
-					System.out.print("[POPLAR][JP] graph:" + graphPath + ", shmFileName: " + shmFileName + ", tc: " + threadsCount+"\n");
+					System.out.print("[PARAGRAPHER][JP] graph:" + graphPath + ", shmFileName: " + shmFileName + ", tc: " + threadsCount+"\n");
 				}
 
 				// Loading the graph 
@@ -70,19 +70,19 @@ public class WG404AP implements WebGraphWriter
 
 				if(!graph.randomAccess())
 				{
-					System.out.println("[POPLAR][JP] graph is not a random access graph.");
+					System.out.println("[PARAGRAPHER][JP] graph is not a random access graph.");
 					return;
 				}
 				if(! (graph instanceof ArcLabelledImmutableGraph))
 				{
-					System.out.println("[POPLAR][JP] graph is not an ArcLabelledImmutableGraph.");
+					System.out.println("[PARAGRAPHER][JP] graph is not an ArcLabelledImmutableGraph.");
 					return;
 				}
 					
 				if(__PD)
 				{
-					System.out.print("[POPLAR][JP] Graph metadata loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
-					System.out.print("[POPLAR][JP] |V|: " + String.format("%,d",graph.numNodes()) + ", |E|: " + String.format("%,d",graph.numArcs()));
+					System.out.print("[PARAGRAPHER][JP] Graph metadata loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
+					System.out.print("[PARAGRAPHER][JP] |V|: " + String.format("%,d",graph.numNodes()) + ", |E|: " + String.format("%,d",graph.numArcs()));
 					System.out.print(", buffers_count: " + String.format("%,d",buffers_count) + ", buffer_size: " + String.format("%,d",buffer_size) + ", bytes_per_edge: " + bytes_per_edge);
 					System.out.println();
 				}

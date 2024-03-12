@@ -1,9 +1,9 @@
-#ifndef __POPLAR_WEBGRAPH_C
-#define __POPLAR_WEBGRAPH_C
+#ifndef __PARAGRAPHER_WEBGRAPH_C
+#define __PARAGRAPHER_WEBGRAPH_C
 
 typedef struct
 {
-	poplar_graph_type graph_type;
+	paragrapher_graph_type graph_type;
 
 	char name[PATH_MAX];
 	char underlying_name[PATH_MAX];
@@ -41,10 +41,10 @@ typedef struct
 
 typedef struct
 {
-	poplar_read_request prr;
-	poplar_csx_callback callback;
+	paragrapher_read_request prr;
+	paragrapher_csx_callback callback;
 	void* callback_args;
-	poplar_edge_block eb;
+	paragrapher_edge_block eb;
 
 	long status;  // values: progressing: 0,  completed: 1, finished unsuccessfully: < 0
 	unsigned long buffer_size;
@@ -72,10 +72,10 @@ typedef struct
 } __wg_read_request;
 
 
-poplar_graph* __wg_open_graph(char* name, poplar_graph_type type, void** args, int argc)
+paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void** args, int argc)
 {
 	assert(name != NULL);
-	assert(type == POPLAR_CSX_WG_400_AP || type == POPLAR_CSX_WG_800_AP || type == POPLAR_CSX_WG_404_AP);
+	assert(type == PARAGRAPHER_CSX_WG_400_AP || type == PARAGRAPHER_CSX_WG_800_AP || type == PARAGRAPHER_CSX_WG_404_AP);
 	assert(strlen(name) < PATH_MAX);
 	char underlying_name[PATH_MAX]={0};
 
@@ -85,33 +85,33 @@ poplar_graph* __wg_open_graph(char* name, poplar_graph_type type, void** args, i
 		sprintf(temp,"%.*s.properties", PATH_MAX, name);
 		if(access(temp, F_OK) != 0)
 		{
-			__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+			__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 			return NULL;
 		}
 
-		if(type == POPLAR_CSX_WG_400_AP || type == POPLAR_CSX_WG_800_AP)
+		if(type == PARAGRAPHER_CSX_WG_400_AP || type == PARAGRAPHER_CSX_WG_800_AP)
 		{
 			sprintf(temp,"%.*s.graph", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 			sprintf(underlying_name, "%s", name);
 		}
-		else if(type == POPLAR_CSX_WG_404_AP)
+		else if(type == PARAGRAPHER_CSX_WG_404_AP)
 		{
 			sprintf(temp,"%.*s.labels", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
 			sprintf(temp,"%.*s.labeloffsets", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
@@ -119,19 +119,19 @@ poplar_graph* __wg_open_graph(char* name, poplar_graph_type type, void** args, i
 			sprintf(cmd, "echo -n `dirname %s.properties`/`cat %s.properties | grep underlyinggraph | cut -f2 -d= |xargs`", name, name);
 			int ret = (int)__run_command(cmd, underlying_name, PATH_MAX + 1023);
 			assert(ret == 0);
-			__PD && printf("[POPLAR] poplar_open_graph(), underlying graph name: %s\n",underlying_name);
+			__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), underlying graph name: %s\n",underlying_name);
 
 			sprintf(temp,"%.*s.graph", PATH_MAX, underlying_name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
 			sprintf(temp,"%.*s.properties", PATH_MAX, underlying_name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[POPLAR] poplar_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 		}
@@ -167,10 +167,10 @@ poplar_graph* __wg_open_graph(char* name, poplar_graph_type type, void** args, i
 		graph->edges_count = atol(res);
 	}
 
-	return (poplar_graph*) graph;
+	return (paragrapher_graph*) graph;
 }
 
-int __wg_release_graph(poplar_graph* in_graph, void** args, int argc)
+int __wg_release_graph(paragrapher_graph* in_graph, void** args, int argc)
 {
 	__wg_graph* graph = (__wg_graph*)in_graph;
 
@@ -192,7 +192,7 @@ int __wg_release_graph(poplar_graph* in_graph, void** args, int argc)
 	return 0;
 }
 
-int __wg_get_set_options(poplar_graph* in_graph, poplar_request_type request_type, void** args, int argc)
+int __wg_get_set_options(paragrapher_graph* in_graph, paragrapher_request_type request_type, void** args, int argc)
 {
 	__wg_graph* graph = (__wg_graph*)in_graph;
 
@@ -205,31 +205,31 @@ int __wg_get_set_options(poplar_graph* in_graph, poplar_request_type request_typ
 		
 	switch(request_type)
 	{
-		case POPLAR_REQUEST_GET_GRAPH_PATH:
+		case PARAGRAPHER_REQUEST_GET_GRAPH_PATH:
 			sprintf(args0_chp, "%.*s", PATH_MAX, graph->name);
 			break;
 
-		case POPLAR_REQUEST_GET_VERTICES_COUNT:
+		case PARAGRAPHER_REQUEST_GET_VERTICES_COUNT:
 			*args0_ulp = graph->vertices_count;
 			break;
 
-		case POPLAR_REQUEST_GET_EDGES_COUNT:
+		case PARAGRAPHER_REQUEST_GET_EDGES_COUNT:
 			*args0_ulp = graph->edges_count;
 			break;
 
-		case POPLAR_REQUEST_LIB_USES_OWN_BUFFERS:
+		case PARAGRAPHER_REQUEST_LIB_USES_OWN_BUFFERS:
 			*args0_ulp = 1;
 			break;
 
-		case POPLAR_REQUEST_LIB_USES_USER_ARRAYS:
+		case PARAGRAPHER_REQUEST_LIB_USES_USER_ARRAYS:
 			*args0_ulp = 0;
 			break;
 
-		case POPLAR_REQUEST_SET_BUFFER_SIZE:
+		case PARAGRAPHER_REQUEST_SET_BUFFER_SIZE:
 			{
 				// The limits can be removed by updating the Java-side buffer
 				unsigned long bsl = 0;
-				if(graph->graph_type == POPLAR_CSX_WG_400_AP)
+				if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
 					bsl = 1UL<< (31 - 2);
 				else
 					bsl = 1UL<< (31 - 3);
@@ -240,65 +240,65 @@ int __wg_get_set_options(poplar_graph* in_graph, poplar_request_type request_typ
 					assert(graph->buffer_size >= 1024);
 				}
 				else
-					__PD && printf("[POPLAR] SET_BUFFER_SIZE, limit to %'lu\n",bsl);
+					__PD && printf("[PARAGRAPHER] SET_BUFFER_SIZE, limit to %'lu\n",bsl);
 			}
 			break;
 
-		case POPLAR_REQUEST_GET_BUFFER_SIZE:
+		case PARAGRAPHER_REQUEST_GET_BUFFER_SIZE:
 			*args0_ulp = graph->buffer_size;
 			break;
 
-		case POPLAR_REQUEST_SET_MAX_BUFFERS_COUNT:
+		case PARAGRAPHER_REQUEST_SET_MAX_BUFFERS_COUNT:
 			graph->max_buffers_count = *args0_ulp;
 			assert(graph->max_buffers_count > 0);
 			break;
 
-		case POPLAR_REQUEST_GET_MAX_BUFFERS_COUNT:
+		case PARAGRAPHER_REQUEST_GET_MAX_BUFFERS_COUNT:
 			*args0_ulp = graph->max_buffers_count;
 			break;
 
-		case POPLAR_REQUEST_READ_STATUS:
+		case PARAGRAPHER_REQUEST_READ_STATUS:
 		{
 			assert(argc >= 2);
 			__wg_read_request* req=(__wg_read_request*)args[0];
 			assert(req != NULL);
 			assert(req->prr.graph != NULL);
 			assert(
-				req->prr.graph->graph_type == POPLAR_CSX_WG_400_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_800_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_404_AP
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_800_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_404_AP
 			);
 			unsigned long* args1_ulp = (unsigned long*)args[1];
 			__atomic_store_n(args1_ulp, req->status, __ATOMIC_RELAXED);
 			break;
 		}
 
-		case POPLAR_REQUEST_READ_TOTAL_CALLBACKS:
+		case PARAGRAPHER_REQUEST_READ_TOTAL_CALLBACKS:
 		{
 			assert(argc >= 2);
 			__wg_read_request* req=(__wg_read_request*)args[0];
 			assert(req != NULL);
 			assert(req->prr.graph != NULL);
 			assert(
-				req->prr.graph->graph_type == POPLAR_CSX_WG_400_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_800_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_404_AP
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_800_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_404_AP
 			);
 			unsigned long* args1_ulp = (unsigned long*)args[1];
 			__atomic_store_n(args1_ulp, req->total_partitions, __ATOMIC_RELAXED);
 			break;
 		}
 
-		case POPLAR_REQUEST_READ_EDGES:
+		case PARAGRAPHER_REQUEST_READ_EDGES:
 		{
 				assert(argc >= 2);
 			__wg_read_request* req=(__wg_read_request*)args[0];
 			assert(req != NULL);
 			assert(req->prr.graph != NULL);
 			assert(
-				req->prr.graph->graph_type == POPLAR_CSX_WG_400_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_800_AP || 
-				req->prr.graph->graph_type == POPLAR_CSX_WG_404_AP
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_800_AP || 
+				req->prr.graph->graph_type == PARAGRAPHER_CSX_WG_404_AP
 			);
 			unsigned long* args1_ulp = (unsigned long*)args[1];
 			__atomic_store_n(args1_ulp, req->total_edges_read, __ATOMIC_RELAXED);
@@ -319,10 +319,10 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 	if(access(offsets_file, F_OK) == 0)
 		return 0;
 
-	if(graph->graph_type == POPLAR_CSX_WG_400_AP || graph->graph_type == POPLAR_CSX_WG_404_AP)
-		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.webgraph.BVGraph -O %s", getenv("POPLAR_LIB_FOLDER"), graph->underlying_name);
-	else if(graph->graph_type == POPLAR_CSX_WG_800_AP)
-		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.big.webgraph.BVGraph -O %s", getenv("POPLAR_LIB_FOLDER"), graph->underlying_name);
+	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
+		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
+	else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
+		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.big.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
 	else
 	{
 		assert(0 && "Do not reach here.");
@@ -333,15 +333,15 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 
 	if(access(offsets_file, F_OK) != 0)
 	{
-		__PD && printf("[POPLAR] get_subgraph(), __wg_check_create_webgraph_offsets_file(), ret=%d, \"%s\"\n",ret, res);
+		__PD && printf("[PARAGRAPHER] get_subgraph(), __wg_check_create_webgraph_offsets_file(), ret=%d, \"%s\"\n",ret, res);
 		return -1;
 	}
 
-	printf("[POPLAR] WebGraph offsets file created successfully: %s .\n", offsets_file);
+	printf("[PARAGRAPHER] WebGraph offsets file created successfully: %s .\n", offsets_file);
 	return 0;
 }
 
-void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long start_vertex, unsigned long end_vertex, void** args, int argc)
+void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned long start_vertex, unsigned long end_vertex, void** args, int argc)
 {
 	__wg_graph* graph = (__wg_graph*)in_graph;
 
@@ -363,7 +363,7 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 
 	if(access(bin_offsets_file, F_OK) != 0)
 	{
-		__PD && printf("[POPLAR] poplar_csx_get_offsets(), Creating offsets.bin file in \"%s\" \n", bin_offsets_file);
+		__PD && printf("[PARAGRAPHER] paragrapher_csx_get_offsets(), Creating offsets.bin file in \"%s\" \n", bin_offsets_file);
 
 		int ret = __wg_check_create_webgraph_offsets_file(graph);
 		if(ret != 0)
@@ -371,11 +371,11 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 
 		char cmd[1024 + PATH_MAX];
 		char res[2048];
-		char* PLF=getenv("POPLAR_LIB_FOLDER");
+		char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 	
-		if(graph->graph_type == POPLAR_CSX_WG_400_AP || graph->graph_type == POPLAR_CSX_WG_404_AP)
+		if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 			sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", PLF, PLF, graph->underlying_name, bin_offsets_file);
-		else if(graph->graph_type == POPLAR_CSX_WG_800_AP)
+		else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
 			sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG800AP create_bin_offsets %s %s", PLF, PLF, graph->underlying_name, bin_offsets_file);
 		else
 		{
@@ -384,7 +384,7 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 		}
 
 		ret = (int)__run_command(cmd, res, 2047);
-		__PD && printf("[POPLAR] __wg_csx_get_offsets(), ret=%d, res=%s\n",ret, res);
+		__PD && printf("[PARAGRAPHER] __wg_csx_get_offsets(), ret=%d, res=%s\n",ret, res);
 		assert(ret == 0);
 
 		chmod(bin_offsets_file, S_IRUSR|S_IRGRP|S_IROTH);
@@ -394,7 +394,7 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 	int bin_offsets_fd = open(bin_offsets_file, O_RDONLY); 
 	if(bin_offsets_fd == -1)
 	{
-		printf("[POPLAR], __wg_csx_get_offsets(), Cannot open bin offsets file, errno: %d, %s",errno, strerror(errno));
+		printf("[PARAGRAPHER], __wg_csx_get_offsets(), Cannot open bin offsets file, errno: %d, %s",errno, strerror(errno));
 		close(bin_offsets_fd);
 		return NULL;
 	}
@@ -406,7 +406,7 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 		assert(ret == 0);
 		if(st.st_size != 8UL * (1 + graph->vertices_count))
 		{
-			printf("[POPLAR], __wg_csx_get_offsets(), offsets.bin file size does not match.");
+			printf("[PARAGRAPHER], __wg_csx_get_offsets(), offsets.bin file size does not match.");
 			close(bin_offsets_fd);
 			return NULL;
 		}
@@ -417,14 +417,14 @@ void* __wg_csx_get_offsets(poplar_graph* in_graph, void* offsets, unsigned long 
 	close(bin_offsets_fd);
 	if(graph->offsets == MAP_FAILED)
 	{
-		printf("[POPLAR], __wg_csx_get_offsets(), Cannot mmap, errno: %d, %s",errno, strerror(errno));
+		printf("[PARAGRAPHER], __wg_csx_get_offsets(), Cannot mmap, errno: %d, %s",errno, strerror(errno));
 		return NULL;
 	}
 
 	return &graph->offsets[start_vertex];
 }
 
-void __wg_csx_release_offsets_weights_arrays(poplar_graph* in_graph, void* array)
+void __wg_csx_release_offsets_weights_arrays(paragrapher_graph* in_graph, void* array)
 {
 	__sync_synchronize();
 
@@ -437,15 +437,15 @@ void* __wg_java_program_wrapper(void* in)
 	__wg_graph* graph = (__wg_graph*)req->prr.graph;
 		
 	char cmd[1024 + PATH_MAX];
-	char* PLF=getenv("POPLAR_LIB_FOLDER");
+	char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 
-	if(graph->graph_type == POPLAR_CSX_WG_400_AP)
+	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
 		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
 		PLF, PLF, graph->name, req->shm_name);
-	else if(graph->graph_type == POPLAR_CSX_WG_404_AP)
+	else if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG404AP read_edges %s %s", 
 		PLF, PLF, graph->name, req->shm_name);
-	else if(graph->graph_type == POPLAR_CSX_WG_800_AP)
+	else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
 		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG800AP read_edges %s %s", 
 		PLF, PLF, graph->name, req->shm_name);
 	else
@@ -473,9 +473,9 @@ void* __wg_callback_thread(void* in)
 		(unsigned char*)&req->buffers_metadata[req->buffers_count] + 
 		buffer_index * req->buffer_size * req->bytes_per_edge
 	);
-	poplar_edge_block* eb = (poplar_edge_block*)((unsigned long*)(req->buffers_metadata + buffer_index) + 2);
+	paragrapher_edge_block* eb = (paragrapher_edge_block*)((unsigned long*)(req->buffers_metadata + buffer_index) + 2);
 	
-	req->callback((poplar_read_request*)req, eb, req->offsets, edges, (void*)buffer_index, req->callback_args);
+	req->callback((paragrapher_read_request*)req, eb, req->offsets, edges, (void*)buffer_index, req->callback_args);
 	
 	return NULL;
 }
@@ -485,19 +485,19 @@ void* __wg_thread(void* in)
 	// Vars
 		__wg_read_request* req = (__wg_read_request*) in;
 		__wg_graph* graph = (__wg_graph*)req->prr.graph;
-		poplar_edge_block* eb = &req->eb;
+		paragrapher_edge_block* eb = &req->eb;
 
 	// Check if WebGraph's .offsets file exists
 		int ret = __wg_check_create_webgraph_offsets_file(graph);
 		if(ret != 0)
 		{
-			__PD && printf("[POPLAR] get_subgraph(), __wg_thread(), could not create WebGraph offsets file.\n");
+			__PD && printf("[PARAGRAPHER] get_subgraph(), __wg_thread(), could not create WebGraph offsets file.\n");
 			__atomic_store_n(&req->status, -1L, __ATOMIC_RELAXED);
 			return NULL;
 		}
 
 	// Identifying #buffers
-		unsigned long* offsets =	__wg_csx_get_offsets((poplar_graph*)graph, NULL, 0, -1UL, NULL, 0);
+		unsigned long* offsets =	__wg_csx_get_offsets((paragrapher_graph*)graph, NULL, 0, -1UL, NULL, 0);
 		assert(offsets != NULL);
 		req->offsets = offsets;
 		if(eb->start_edge >= offsets[eb->start_vertex + 1] - offsets[eb->start_vertex])
@@ -539,7 +539,7 @@ void* __wg_thread(void* in)
 			req->total_partitions++;
 
 		req->buffers_count = min(req->total_partitions, req->max_buffers_count);
-		__PD && printf("[POPLAR] get_subgraph(), edges: %'lu, partitions: %lu, buffers: %lu\n", 
+		__PD && printf("[PARAGRAPHER] get_subgraph(), edges: %'lu, partitions: %lu, buffers: %lu\n", 
 			req->total_edges_requested, req->total_partitions, req->buffers_count);
 		assert(req->buffers_count != 0);
 
@@ -555,12 +555,12 @@ void* __wg_thread(void* in)
 			shm_size = ds_size + req->bytes_per_edge * req->buffer_size *  req->buffers_count;
 		}
 
-		sprintf(req->shm_name, "poplar_wg_%lu", __get_nano_time());
-		__PD && printf("[POPLAR] get_subgraph(), shm_name: %s, shm_size:%'lu \n", req->shm_name, shm_size);
+		sprintf(req->shm_name, "paragrapher_wg_%lu", __get_nano_time());
+		__PD && printf("[PARAGRAPHER] get_subgraph(), shm_name: %s, shm_size:%'lu \n", req->shm_name, shm_size);
 		void* shm_mem = __create_shm(req->shm_name, shm_size);
 		if(shm_mem == NULL)
 		{
-			__PD && printf("[POPLAR] get_subgraph(), __create_shm() error.\n"); 
+			__PD && printf("[PARAGRAPHER] get_subgraph(), __create_shm() error.\n"); 
 			__atomic_store_n(&req->status, -1L, __ATOMIC_RELAXED);
 			return NULL;
 		}
@@ -626,7 +626,7 @@ void* __wg_thread(void* in)
 						assert(req->buffers_metadata[b].written_edges != 0);
 						req->total_edges_read += req->buffers_metadata[b].written_edges;
 						
-						__PD && printf("[POPLAR] __wg_thread(), CT: %ld, JT: %ld, read finished, cp:%lu, b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n",
+						__PD && printf("[PARAGRAPHER] __wg_thread(), CT: %ld, JT: %ld, read finished, cp:%lu, b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n",
 							*C_timestamp,
 							prev_J_timestamp,
 							completed_partitions,
@@ -684,7 +684,7 @@ void* __wg_thread(void* in)
 						if(last_vertex == eb->end_vertex && last_edge == eb->end_edge)
 							requesting_completed = 1;
 
-						__PD && printf("[POPLAR] __wg_thread(), CT: %ld, JT: %ld, requesting  p:%lu on b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n", 
+						__PD && printf("[PARAGRAPHER] __wg_thread(), CT: %ld, JT: %ld, requesting  p:%lu on b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n", 
 							*C_timestamp,
 							prev_J_timestamp,
 							requested_partitions,
@@ -712,7 +712,7 @@ void* __wg_thread(void* in)
 		}
 		assert(req->total_edges_requested == req->total_edges_read);
 
-		__PD && printf("[POPLAR] __wg_thread(), C: reading finished.\n");
+		__PD && printf("[PARAGRAPHER] __wg_thread(), C: reading finished.\n");
 
 	// Informing Java program to be finished
 		*C_completed = 1;
@@ -725,11 +725,11 @@ void* __wg_thread(void* in)
 	return NULL;	
 }
 
-poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_block* eb, void* offsets, void* edges, poplar_csx_callback callback, void* callback_args, void** args, int argc)
+paragrapher_read_request* __wg_csx_get_subgraph(paragrapher_graph* in_graph, paragrapher_edge_block* eb, void* offsets, void* edges, paragrapher_csx_callback callback, void* callback_args, void** args, int argc)
 {
 	if(callback == NULL)
 	{
-		__PD && printf("[POPLAR] get_subgraph(), callback function should be passed.\n");
+		__PD && printf("[PARAGRAPHER] get_subgraph(), callback function should be passed.\n");
 		return NULL;
 	}
 
@@ -757,9 +757,9 @@ poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_b
 	req->max_buffers_count = graph->max_buffers_count;
 	req->start_time = __get_nano_time();
 
-	if(graph->graph_type == POPLAR_CSX_WG_400_AP)
+	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
 		req->bytes_per_edge = 4;
-	else if(graph->graph_type == POPLAR_CSX_WG_404_AP || graph->graph_type == POPLAR_CSX_WG_800_AP)
+	else if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP || graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
 		req->bytes_per_edge = 8;
 	else
 	{
@@ -772,10 +772,10 @@ poplar_read_request* __wg_csx_get_subgraph(poplar_graph* in_graph, poplar_edge_b
 		assert(ret == 0);
 	}
 
-	return (poplar_read_request*) req;
+	return (paragrapher_read_request*) req;
 }
 
-void __wg_csx_release_read_buffers(poplar_read_request* request, poplar_edge_block* eb, void* buffer_id)
+void __wg_csx_release_read_buffers(paragrapher_read_request* request, paragrapher_edge_block* eb, void* buffer_id)
 {
 	assert(eb != NULL);
 
@@ -790,7 +790,7 @@ void __wg_csx_release_read_buffers(poplar_read_request* request, poplar_edge_blo
 	return;
 }
 
-void __wg_csx_release_read_request(poplar_read_request* request)
+void __wg_csx_release_read_request(paragrapher_read_request* request)
 {
 	__wg_read_request* req = (__wg_read_request*)request;
 
@@ -815,12 +815,12 @@ void __wg_csx_release_read_request(poplar_read_request* request)
 	return;
 }
 
-poploar_reader* POPLAR_CSX_WG_400_AP_init()
+poploar_reader* PARAGRAPHER_CSX_WG_400_AP_init()
 {
 	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
 	assert(lib != NULL);
 
-	lib->reader_type = POPLAR_CSX_WG_400_AP;
+	lib->reader_type = PARAGRAPHER_CSX_WG_400_AP;
 	lib->open_graph = __wg_open_graph;
 	lib->release_graph = __wg_release_graph;
 	lib->get_set_options = __wg_get_set_options;
@@ -834,12 +834,12 @@ poploar_reader* POPLAR_CSX_WG_400_AP_init()
 	return lib;
 }
 
-poploar_reader* POPLAR_CSX_WG_800_AP_init()
+poploar_reader* PARAGRAPHER_CSX_WG_800_AP_init()
 {
 	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
 	assert(lib != NULL);
 
-	lib->reader_type = POPLAR_CSX_WG_800_AP;
+	lib->reader_type = PARAGRAPHER_CSX_WG_800_AP;
 	lib->open_graph = __wg_open_graph;
 	lib->release_graph = __wg_release_graph;
 	lib->get_set_options = __wg_get_set_options;
@@ -853,12 +853,12 @@ poploar_reader* POPLAR_CSX_WG_800_AP_init()
 	return lib;
 }
 
-poploar_reader* POPLAR_CSX_WG_404_AP_init()
+poploar_reader* PARAGRAPHER_CSX_WG_404_AP_init()
 {
 	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
 	assert(lib != NULL);
 
-	lib->reader_type = POPLAR_CSX_WG_404_AP;
+	lib->reader_type = PARAGRAPHER_CSX_WG_404_AP;
 	lib->open_graph = __wg_open_graph;
 	lib->release_graph = __wg_release_graph;
 	lib->get_set_options = __wg_get_set_options;

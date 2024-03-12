@@ -1,10 +1,10 @@
-ifndef POPLAR_LIB_FOLDER
-	POPLAR_LIB_FOLDER := $(shell realpath  ..)/lib64
+ifndef PARAGRAPHER_LIB_FOLDER
+	PARAGRAPHER_LIB_FOLDER := $(shell realpath  ..)/lib64
 endif 
 
 GCC := gcc
 GXX := g++
-LIB := $(POPLAR_LIB_FOLDER):$(LD_LIBRARY_PATH)
+LIB := $(PARAGRAPHER_LIB_FOLDER):$(LD_LIBRARY_PATH)
 
 UP_GCC_DIR := ~/gcc9.2
 ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
@@ -16,7 +16,7 @@ endif
 OBJ := obj
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB))) 
-FLAGS :=  -Wfatal-errors -lm -fopenmp -lpoplar
+FLAGS :=  -Wfatal-errors -lm -fopenmp -lparagrapher
 
 _threads_per_core := $(shell lscpu | grep "Thread(s) per core" | head -n1 | cut -f2 -d":"|xargs)
 _total_threads := $(shell nproc --all) #getconf _NPROCESSORS_ONLN
@@ -51,17 +51,17 @@ $(OBJ)/%.o: %.c Makefile ../include/*.h
 
 test%_WG400: $(OBJ)/test%_WG400.o
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/cnr-2000
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/cnr-2000
 	@echo -e ""
 
 test%_WG404: $(OBJ)/test%_WG404.o
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/MS1-weights
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/MS1-weights
 	@echo -e ""
 
 test%_WG800: $(OBJ)/test%_WG800.o
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	POPLAR_LIB_FOLDER=$(POPLAR_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/WDC-2012
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) datasets/WDC-2012
 	@echo -e ""
 
 download_WG400:

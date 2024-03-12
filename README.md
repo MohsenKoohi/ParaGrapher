@@ -1,16 +1,16 @@
-![Poplar](https://blogs.qub.ac.uk/dipsa/wp-content/uploads/sites/319/2024/02/poplar.jpg)
+![ParaGrapher](https://blogs.qub.ac.uk/dipsa/wp-content/uploads/sites/319/2024/02/poplar.jpg)
 
-# [Poplar: Graph Loading API and Library](https://blogs.qub.ac.uk/DIPSA/Poplar/)
+# [ParaGrapher: Graph Loading API and Library](https://blogs.qub.ac.uk/DIPSA/ParaGrapher/)
 
-**https://blogs.qub.ac.uk/DIPSA/Poplar**
+**https://blogs.qub.ac.uk/DIPSA/ParaGrapher**
 
-This repository contains the source code of Poplar, an API and library for loading graphs.
-For futher information about the library please refer to https://blogs.qub.ac.uk/DIPSA/Poplar/ and publications.
+This repository contains the source code of ParaGrapher, an API and library for loading graphs.
+For futher information about the library please refer to https://blogs.qub.ac.uk/DIPSA/ParaGrapher/ and publications.
 
 ### Supperted Graph Types
-1. **POPLAR_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
-2. **POPLAR_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
-3. **POPLAR_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
+1. **PARAGRAPHER_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
+2. **PARAGRAPHER_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
+3. **PARAGRAPHER_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
 
 ### Requirements
 
@@ -24,11 +24,11 @@ to download and store sample datasets to `test/datasets`
 ### Compiling and Executing Code
 - If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 9 of the `Makefile` and `test/Makefile`. 
 
-- By commenting `-DNDEBUG` in Line 20 of the `Makefile`, Poplar will not output its logs.
+- By commenting `-DNDEBUG` in Line 20 of the `Makefile`, ParaGrapher will not output its logs.
 
 - With `make all` the C and Java source codes are compiled and required WebGraph libraries are downloaded. 
 - All compiled and downloaded are stored in local `lib64` folder and future calls to the library requires setting
-the `POPLAR_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
+the `PARAGRAPHER_LIB_FOLDER` environemnt variable to be set to the `lib64` folder.
 
 - The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test. 
 You may pass argument `dataset` to specify the location of the test, e.g., `make test dataset=path/to/dataset`.
@@ -40,7 +40,7 @@ littel-endian format with 8-Bytes values for each of |V|+1 elements.
 In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with suffix `MS??_offsets.bin` can
 be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 
-- Poplar may create some temporary files in `/dev/shm` with names starting by `poplar_`. The files are deleted at the end of a 
+- ParaGrapher may create some temporary files in `/dev/shm` with names starting by `paragrapher_`. The files are deleted at the end of a 
 successful exuection. Otherwise, they should be deleted by the user.
 
 ### Remained Works

@@ -1,9 +1,9 @@
 /*
-This program reads a WebGraph asynchronously (POPLAR_CSX_WG_400_AP) 
+This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_400_AP) 
 and writes it in uncompressed binary format 
 */
 
-#include "poplar.h"
+#include "paragrapher.h"
 
 #include <unistd.h>
 #include <time.h>
@@ -22,7 +22,7 @@ unsigned long vertices_count = 0UL;
 unsigned long completed_callbacks_count = 0UL;
 unsigned long processed_edges = 0UL;
 
-void callback(poplar_read_request* req, poplar_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id, void* args)
+void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id, void* args)
 {
 	// unsigned long bi= (unsigned long)buffer_id;
 	// printf("Callback for bi: %lu,  eb: %lu.%lu - %lu.%lu\n", bi, eb->start_vertex, eb->start_edge, eb->end_vertex, eb->end_edge);
@@ -55,7 +55,7 @@ void callback(poplar_read_request* req, poplar_edge_block* eb, void* in_offsets,
 
 	__atomic_add_fetch(&processed_edges, ec, __ATOMIC_RELAXED);
 
-	poplar_csx_release_read_buffers(req, eb, buffer_id);
+	paragrapher_csx_release_read_buffers(req, eb, buffer_id);
 
 	__atomic_add_fetch(&completed_callbacks_count, 1UL, __ATOMIC_RELAXED);
 
@@ -75,41 +75,41 @@ int main(int argc, char** args)
 	setbuf(stdout, NULL);
 	setbuf(stderr, NULL);
 
-	int ret = poplar_init();
+	int ret = paragrapher_init();
 	assert(ret == 0);
 
-	poplar_graph* graph = poplar_open_graph(args[1], POPLAR_CSX_WG_400_AP, NULL, 0);
+	paragrapher_graph* graph = paragrapher_open_graph(args[1], PARAGRAPHER_CSX_WG_400_AP, NULL, 0);
 	assert(graph != NULL);
 
 	unsigned long edges_count = 0;
 	{
 		void* op_args []= {&vertices_count, &edges_count};
 
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_VERTICES_COUNT, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_VERTICES_COUNT, op_args, 1);
 		assert (ret == 0);
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_EDGES_COUNT, op_args + 1, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_EDGES_COUNT, op_args + 1, 1);
 		assert (ret == 0);
 		printf("  Vertices: %'lu\n", vertices_count);
 		printf("  Edges:    %'lu\n\n", edges_count);
 
 		char name[1024];
 		op_args[0] = name;
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_GRAPH_PATH, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_GRAPH_PATH, op_args, 1);
 		assert (ret == 0);
 		printf("  GET_GRAPH_PATH:        %'s\n", name);
 		
 		// Check if the related library uses its own buffers or the user arrays
 		unsigned long val = 0;
 		op_args[0] = &val;
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_LIB_USES_OWN_BUFFERS, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_LIB_USES_OWN_BUFFERS, op_args, 1);
 		assert (ret == 0);
 		printf("  LIB_USES_OWN_BUFFERS:  %'lu\n", val);
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_LIB_USES_USER_ARRAYS, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_LIB_USES_USER_ARRAYS, op_args, 1);
 		assert (ret == 0);
 		printf("  LIB_USES_USER_ARRAYS:  %'lu\n", val);
 		
 		// Check buffer size and set it
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_BUFFER_SIZE, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_BUFFER_SIZE, op_args, 1);
 		assert (ret == 0);
 		printf("  GET_BUFFER_SIZE:       %'lu\n", val);
 		int set_bc = 0;
@@ -117,30 +117,30 @@ int main(int argc, char** args)
 		{	
 			val = 1UL << (unsigned int)(log(edges_count)/log(2) - 3);
 			set_bc = 8;
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_SET_BUFFER_SIZE, op_args, 1);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_SET_BUFFER_SIZE, op_args, 1);
 			assert (ret == 0);
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_BUFFER_SIZE, op_args, 1);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_BUFFER_SIZE, op_args, 1);
 			assert (ret == 0);
 			printf("  GET_BUFFER_SIZE:       %'lu\n", val);
 		}
 
 		// Check max number of buffers and set it
-		ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_MAX_BUFFERS_COUNT, op_args, 1);
+		ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_MAX_BUFFERS_COUNT, op_args, 1);
 		assert (ret == 0);
 		printf("  GET_MAX_BUFFERS_COUNT: %'lu\n", val);
 		if(set_bc)
 		{
 			val = set_bc;
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_SET_MAX_BUFFERS_COUNT, op_args, 1);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_SET_MAX_BUFFERS_COUNT, op_args, 1);
 			assert (ret == 0);
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_GET_MAX_BUFFERS_COUNT, op_args, 1);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_GET_MAX_BUFFERS_COUNT, op_args, 1);
 			assert (ret == 0);
 			printf("  GET_MAX_BUFFERS_COUNT: %'lu\n", val);		
 		}
 	}
 
 	// Getting the offsets
-		unsigned long* offsets = (unsigned long*)poplar_csx_get_offsets(graph, NULL, 0, -1UL, NULL, 0);
+		unsigned long* offsets = (unsigned long*)paragrapher_csx_get_offsets(graph, NULL, 0, -1UL, NULL, 0);
 		assert(offsets != NULL);
 
 		printf("\n  First Degrees: ");
@@ -175,7 +175,7 @@ int main(int argc, char** args)
 	}
 
 	// Releasing the offsets array
-		poplar_csx_release_offsets_weights_arrays(graph, offsets);
+		paragrapher_csx_release_offsets_weights_arrays(graph, offsets);
 		offsets = NULL;
 	
 
@@ -183,14 +183,14 @@ int main(int argc, char** args)
 	{
 		printf("\n  Reading graph ...\n");
 
-		poplar_edge_block eb;
+		paragrapher_edge_block eb;
 		eb.start_vertex = 0;
 		eb.start_edge=0;
 		eb.end_vertex = -1UL;
 		eb.end_edge= -1UL;
 
 
-		poplar_read_request* req= poplar_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, NULL, 0);
+		paragrapher_read_request* req= paragrapher_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, NULL, 0);
 		assert(req != NULL);
 
 		struct timespec ts = {0, 200 * 1000 * 1000};
@@ -205,13 +205,13 @@ int main(int argc, char** args)
 		{
 			nanosleep(&ts, NULL);
 			
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_READ_STATUS, op0_args, 2);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_READ_STATUS, op0_args, 2);
 			assert (ret == 0);
-			ret = poplar_get_set_options(graph, POPLAR_REQUEST_READ_EDGES, op1_args, 2);
+			ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_READ_EDGES, op1_args, 2);
 			assert (ret == 0);
 			if(callbacks_count == 0)
 			{
-				ret = poplar_get_set_options(graph, POPLAR_REQUEST_READ_TOTAL_CALLBACKS, op2_args, 2);
+				ret = paragrapher_get_set_options(graph, PARAGRAPHER_REQUEST_READ_TOTAL_CALLBACKS, op2_args, 2);
 				assert (ret == 0);
 			}
 
@@ -230,7 +230,7 @@ int main(int argc, char** args)
 		}
 
 		// Releasing the req
-		poplar_csx_release_read_request(req);
+		paragrapher_csx_release_read_request(req);
 		req = NULL;
 	}
 
@@ -238,7 +238,7 @@ int main(int argc, char** args)
 	assert(processed_edges == edges_count);
 
 	// Releasing the graph
-		ret = poplar_release_graph(graph, NULL, 0);
+		ret = paragrapher_release_graph(graph, NULL, 0);
 		assert(ret == 0);
 		graph = NULL;
 
