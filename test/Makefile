@@ -46,7 +46,7 @@ all:
 $(OBJ)/%.o: %.c Makefile ../include/*.h
 	@echo -e "Compiling \033[1;33m"$<"\033[0;37m"
 	mkdir -p $(OBJ)
-	$(GCC) $(INCLUDE_LIBS) $(INCLUDE_HEADER) $(FLAGS) $(COMPILE_TYPE) $< -o $(OBJ)/$*.o
+	$(GCC) $< $(INCLUDE_LIBS) $(INCLUDE_HEADER) $(FLAGS) $(COMPILE_TYPE)  -o $(OBJ)/$*.o
 	@echo -e ""
 
 test%_WG400: $(OBJ)/test%_WG400.o
