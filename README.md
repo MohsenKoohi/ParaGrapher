@@ -47,6 +47,7 @@ successful exuection. Otherwise, they should be deleted by the user.
 
 ### Remained Works
 1. MatrixMarket format
+2. Using Rust WebGraph, https://github.com/vigna/webgraph-rs/, https://hal.science/hal-04494627/document  
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
