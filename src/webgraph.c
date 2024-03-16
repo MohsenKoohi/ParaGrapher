@@ -85,7 +85,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 		sprintf(temp,"%.*s.properties", PATH_MAX, name);
 		if(access(temp, F_OK) != 0)
 		{
-			__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+			__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 			return NULL;
 		}
 
@@ -94,7 +94,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			sprintf(temp,"%.*s.graph", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 			sprintf(underlying_name, "%s", name);
@@ -104,14 +104,14 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			sprintf(temp,"%.*s.labels", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
 			sprintf(temp,"%.*s.labeloffsets", PATH_MAX, name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
@@ -119,19 +119,19 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			sprintf(cmd, "echo -n `dirname %s.properties`/`cat %s.properties | grep underlyinggraph | cut -f2 -d= |xargs`", name, name);
 			int ret = (int)__run_command(cmd, underlying_name, PATH_MAX + 1023);
 			assert(ret == 0);
-			__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), underlying graph name: %s\n",underlying_name);
+			__PD && printf("[ParaGrapher] paragrapher_open_graph(), underlying graph name: %s\n",underlying_name);
 
 			sprintf(temp,"%.*s.graph", PATH_MAX, underlying_name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 
 			sprintf(temp,"%.*s.properties", PATH_MAX, underlying_name);
 			if(access(temp, F_OK) != 0)
 			{
-				__PD && printf("[PARAGRAPHER] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
+				__PD && printf("[ParaGrapher] paragrapher_open_graph(), file \"%s\" doesn't exist\n", temp);
 				return NULL;
 			}
 		}
@@ -240,7 +240,7 @@ int __wg_get_set_options(paragrapher_graph* in_graph, paragrapher_request_type r
 					assert(graph->buffer_size >= 1024);
 				}
 				else
-					__PD && printf("[PARAGRAPHER] SET_BUFFER_SIZE, limit to %'lu\n",bsl);
+					__PD && printf("[ParaGrapher] SET_BUFFER_SIZE, limit to %'lu\n",bsl);
 			}
 			break;
 
@@ -333,11 +333,11 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 
 	if(access(offsets_file, F_OK) != 0)
 	{
-		__PD && printf("[PARAGRAPHER] get_subgraph(), __wg_check_create_webgraph_offsets_file(), ret=%d, \"%s\"\n",ret, res);
+		__PD && printf("[ParaGrapher] get_subgraph(), __wg_check_create_webgraph_offsets_file(), ret=%d,\n\"%s\"\n",ret, res);
 		return -1;
 	}
 
-	printf("[PARAGRAPHER] WebGraph offsets file created successfully: %s .\n", offsets_file);
+	printf("[ParaGrapher] WebGraph offsets file created successfully: %s .\n", offsets_file);
 	return 0;
 }
 
@@ -363,7 +363,7 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 
 	if(access(bin_offsets_file, F_OK) != 0)
 	{
-		__PD && printf("[PARAGRAPHER] paragrapher_csx_get_offsets(), Creating offsets.bin file in \"%s\" \n", bin_offsets_file);
+		__PD && printf("[ParaGrapher] paragrapher_csx_get_offsets(), Creating offsets.bin file in \"%s\" \n", bin_offsets_file);
 
 		int ret = __wg_check_create_webgraph_offsets_file(graph);
 		if(ret != 0)
@@ -384,8 +384,11 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		}
 
 		ret = (int)__run_command(cmd, res, 2047);
-		__PD && printf("[PARAGRAPHER] __wg_csx_get_offsets(), ret=%d, res=%s\n",ret, res);
-		assert(ret == 0);
+		if(ret != 0)
+		{
+			printf("[ParaGrapher] __wg_csx_get_offsets(), ret=%d, res=\n\"%s\"\n",ret, res);
+			return NULL;
+		}
 
 		chmod(bin_offsets_file, S_IRUSR|S_IRGRP|S_IROTH);
 	}
@@ -394,7 +397,7 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 	int bin_offsets_fd = open(bin_offsets_file, O_RDONLY); 
 	if(bin_offsets_fd == -1)
 	{
-		printf("[PARAGRAPHER], __wg_csx_get_offsets(), Cannot open bin offsets file, errno: %d, %s",errno, strerror(errno));
+		printf("[ParaGrapher], __wg_csx_get_offsets(), Cannot open bin offsets file, errno: %d, %s\n",errno, strerror(errno));
 		close(bin_offsets_fd);
 		return NULL;
 	}
@@ -406,7 +409,7 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		assert(ret == 0);
 		if(st.st_size != 8UL * (1 + graph->vertices_count))
 		{
-			printf("[PARAGRAPHER], __wg_csx_get_offsets(), offsets.bin file size does not match.");
+			printf("[ParaGrapher], __wg_csx_get_offsets(), offsets.bin file size does not match.\n");
 			close(bin_offsets_fd);
 			return NULL;
 		}
@@ -417,7 +420,7 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 	close(bin_offsets_fd);
 	if(graph->offsets == MAP_FAILED)
 	{
-		printf("[PARAGRAPHER], __wg_csx_get_offsets(), Cannot mmap, errno: %d, %s",errno, strerror(errno));
+		printf("[ParaGrapher], __wg_csx_get_offsets(), Cannot mmap, errno: %d, %s",errno, strerror(errno));
 		return NULL;
 	}
 
@@ -491,7 +494,7 @@ void* __wg_thread(void* in)
 		int ret = __wg_check_create_webgraph_offsets_file(graph);
 		if(ret != 0)
 		{
-			__PD && printf("[PARAGRAPHER] get_subgraph(), __wg_thread(), could not create WebGraph offsets file.\n");
+			__PD && printf("[ParaGrapher] get_subgraph(), __wg_thread(), could not create WebGraph offsets file.\n");
 			__atomic_store_n(&req->status, -1L, __ATOMIC_RELAXED);
 			return NULL;
 		}
@@ -539,7 +542,7 @@ void* __wg_thread(void* in)
 			req->total_partitions++;
 
 		req->buffers_count = min(req->total_partitions, req->max_buffers_count);
-		__PD && printf("[PARAGRAPHER] get_subgraph(), edges: %'lu, partitions: %lu, buffers: %lu\n", 
+		__PD && printf("[ParaGrapher] get_subgraph(), edges: %'lu, partitions: %lu, buffers: %lu\n", 
 			req->total_edges_requested, req->total_partitions, req->buffers_count);
 		assert(req->buffers_count != 0);
 
@@ -556,11 +559,11 @@ void* __wg_thread(void* in)
 		}
 
 		sprintf(req->shm_name, "paragrapher_wg_%lu", __get_nano_time());
-		__PD && printf("[PARAGRAPHER] get_subgraph(), shm_name: %s, shm_size:%'lu \n", req->shm_name, shm_size);
+		__PD && printf("[ParaGrapher] get_subgraph(), shm_name: %s, shm_size:%'lu \n", req->shm_name, shm_size);
 		void* shm_mem = __create_shm(req->shm_name, shm_size);
 		if(shm_mem == NULL)
 		{
-			__PD && printf("[PARAGRAPHER] get_subgraph(), __create_shm() error.\n"); 
+			__PD && printf("[ParaGrapher] get_subgraph(), __create_shm() error.\n"); 
 			__atomic_store_n(&req->status, -1L, __ATOMIC_RELAXED);
 			return NULL;
 		}
@@ -626,7 +629,7 @@ void* __wg_thread(void* in)
 						assert(req->buffers_metadata[b].written_edges != 0);
 						req->total_edges_read += req->buffers_metadata[b].written_edges;
 						
-						__PD && printf("[PARAGRAPHER] __wg_thread(), CT: %ld, JT: %ld, read finished, cp:%lu, b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n",
+						__PD && printf("[ParaGrapher] __wg_thread(), CT: %ld, JT: %ld, read finished, cp:%lu, b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n",
 							*C_timestamp,
 							prev_J_timestamp,
 							completed_partitions,
@@ -684,7 +687,7 @@ void* __wg_thread(void* in)
 						if(last_vertex == eb->end_vertex && last_edge == eb->end_edge)
 							requesting_completed = 1;
 
-						__PD && printf("[PARAGRAPHER] __wg_thread(), CT: %ld, JT: %ld, requesting  p:%lu on b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n", 
+						__PD && printf("[ParaGrapher] __wg_thread(), CT: %ld, JT: %ld, requesting  p:%lu on b:%u, start: %lu.%lu, end: %lu.%lu, #edges: %'lu\n", 
 							*C_timestamp,
 							prev_J_timestamp,
 							requested_partitions,
@@ -712,7 +715,7 @@ void* __wg_thread(void* in)
 		}
 		assert(req->total_edges_requested == req->total_edges_read);
 
-		__PD && printf("[PARAGRAPHER] __wg_thread(), C: reading finished.\n");
+		__PD && printf("[ParaGrapher] __wg_thread(), C: reading finished.\n");
 
 	// Informing Java program to be finished
 		*C_completed = 1;
@@ -729,7 +732,7 @@ paragrapher_read_request* __wg_csx_get_subgraph(paragrapher_graph* in_graph, par
 {
 	if(callback == NULL)
 	{
-		__PD && printf("[PARAGRAPHER] get_subgraph(), callback function should be passed.\n");
+		__PD && printf("[ParaGrapher] get_subgraph(), callback function should be passed.\n");
 		return NULL;
 	}
 

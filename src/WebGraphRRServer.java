@@ -127,12 +127,12 @@ public class WebGraphRRServer
 					webgraphWriter.writeToBuffer(sv, se, ev, ee, b);
 					
 					if(__PD)
-						System.out.println("[PARAGRAPHER][JP][RRS] CT: " + C_timestamp + ", JT:" + J_timestamp + " start: " + sv + "." + se + ", end: " + ev + "." + ee);
+						System.out.println("[ParaGrapher][JP][RRS] CT: " + C_timestamp + ", JT:" + J_timestamp + " start: " + sv + "." + se + ", end: " + ev + "." + ee);
 				}
 			}
 
 			if(__PD)
-				System.out.println("[PARAGRAPHER][JP][RRS] Completed");
+				System.out.println("[ParaGrapher][JP][RRS] Completed");
 		}
 		catch(Exception e)
 		{

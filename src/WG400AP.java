@@ -63,7 +63,7 @@ public class WG400AP implements WebGraphWriter
 				
 				if(__PD)
 				{
-					System.out.print("[PARAGRAPHER][JP] graph:" + graphPath + ", shmFileName: " + shmFileName + ", tc: " + threadsCount+"\n");
+					System.out.print("[ParaGrapher][JP] graph:" + graphPath + ", shmFileName: " + shmFileName + ", tc: " + threadsCount+"\n");
 				}
 
 				// Loading the graph 
@@ -74,14 +74,14 @@ public class WG400AP implements WebGraphWriter
 
 				if(!graph.randomAccess())
 				{
-					System.out.println("[PARAGRAPHER][JP] graph is not a random access graph.");
+					System.out.println("[ParaGrapher][JP] graph is not a random access graph.");
 					return;
 				}
 
 				if(__PD)
 				{
-					System.out.print("[PARAGRAPHER][JP] Graph metadata loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
-					System.out.print("[PARAGRAPHER][JP] |V|: " + String.format("%,d",graph.numNodes()) + ", |E|: " + String.format("%,d",graph.numArcs()));
+					System.out.print("[ParaGrapher][JP] Graph metadata loaded in : " + String.format("%,d",(long)(loadtime/1e6)) + " ms\n");
+					System.out.print("[ParaGrapher][JP] |V|: " + String.format("%,d",graph.numNodes()) + ", |E|: " + String.format("%,d",graph.numArcs()));
 					System.out.print(", buffers_count: " + String.format("%,d",buffers_count) + ", buffer_size: " + String.format("%,d",buffer_size) + ", bytes_per_edge: " + bytes_per_edge);
 					System.out.println();
 				}
