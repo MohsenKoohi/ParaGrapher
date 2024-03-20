@@ -66,7 +66,7 @@ static poploar_reader* readers[PARAGRAPHER_GRAPH_TYPES_COUNT]={NULL};
 
 int paragrapher_init()
 {
-	// __PD && printf("[ParaGrapher] paragrapher_init(), Initializing %u reader libraries\n", PARAGRAPHER_GRAPH_TYPES_COUNT - 1);
+	// __PD && printf("[PARAGRAPHER] paragrapher_init(), Initializing %u reader libraries\n", PARAGRAPHER_GRAPH_TYPES_COUNT - 1);
 	assert(PARAGRAPHER_GRAPH_TYPES_COUNT > 1);
 	
 	if(readers[PARAGRAPHER_CSX_WG_400_AP] != NULL)
@@ -81,7 +81,7 @@ int paragrapher_init()
 	for(int t = 1; t < PARAGRAPHER_GRAPH_TYPES_COUNT; t++)
 		if(readers[t]->reader_type != t)
 		{
-			printf("[ParaGrapher] paragrapher_init(),Error in initializing type: %u\n", t);
+			printf("[PARAGRAPHER] paragrapher_init(),Error in initializing type: %u\n", t);
 			return -1;
 		}
 

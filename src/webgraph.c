@@ -706,6 +706,8 @@ void* __wg_thread(void* in)
 
 			if(changes)
 			{
+				__sync_synchronize();
+				
 				long temp = 2 + *C_timestamp;
 				if(temp <= 0)
 					*C_timestamp = 1;
