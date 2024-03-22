@@ -820,9 +820,9 @@ void __wg_csx_release_read_request(paragrapher_read_request* request)
 	return;
 }
 
-poploar_reader* PARAGRAPHER_CSX_WG_400_AP_init()
+paragrapher_reader* PARAGRAPHER_CSX_WG_400_AP_init()
 {
-	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
+	paragrapher_reader* lib= calloc(1,sizeof(paragrapher_reader));
 	assert(lib != NULL);
 
 	lib->reader_type = PARAGRAPHER_CSX_WG_400_AP;
@@ -839,9 +839,9 @@ poploar_reader* PARAGRAPHER_CSX_WG_400_AP_init()
 	return lib;
 }
 
-poploar_reader* PARAGRAPHER_CSX_WG_800_AP_init()
+paragrapher_reader* PARAGRAPHER_CSX_WG_800_AP_init()
 {
-	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
+	paragrapher_reader* lib= calloc(1,sizeof(paragrapher_reader));
 	assert(lib != NULL);
 
 	lib->reader_type = PARAGRAPHER_CSX_WG_800_AP;
@@ -858,9 +858,9 @@ poploar_reader* PARAGRAPHER_CSX_WG_800_AP_init()
 	return lib;
 }
 
-poploar_reader* PARAGRAPHER_CSX_WG_404_AP_init()
+paragrapher_reader* PARAGRAPHER_CSX_WG_404_AP_init()
 {
-	poploar_reader* lib= calloc(1,sizeof(poploar_reader));
+	paragrapher_reader* lib= calloc(1,sizeof(paragrapher_reader));
 	assert(lib != NULL);
 
 	lib->reader_type = PARAGRAPHER_CSX_WG_404_AP;

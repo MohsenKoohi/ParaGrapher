@@ -1,5 +1,5 @@
-#ifndef __PARAGRAPHER_C
-#define __PARAGRAPHER_C
+#ifndef __PARAGRAPHER_PARAGRAPHER_C
+#define __PARAGRAPHER_PARAGRAPHER_C
 
 #include <unistd.h>
 #include <time.h>
@@ -58,9 +58,9 @@ typedef struct
 	// COO API
 	paragrapher_read_request* (*coo_get_edges)(paragrapher_graph* graph, unsigned long start_row, unsigned long end_row, void* edges, paragrapher_coo_callback callback, void* callback_args, void** args, int argc);
 
-} poploar_reader;
+} paragrapher_reader;
 
-static poploar_reader* readers[PARAGRAPHER_GRAPH_TYPES_COUNT]={NULL};  
+static paragrapher_reader* readers[PARAGRAPHER_GRAPH_TYPES_COUNT]={NULL};  
 
 #include "webgraph.c"
 

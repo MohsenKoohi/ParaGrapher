@@ -35,7 +35,7 @@ $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so: src/* include/* Makefile
 	fi
 
 	@echo -e "\n\033[1;32mPARAGRAPHER_LIB_FOLDER: "$(PARAGRAPHER_LIB_FOLDER)"\033[0;37m"
-	@echo -e "\033[1;34mCompiling Poplar\033[0;37m"
+	@echo -e "\033[1;34mCompiling ParaGrapher\033[0;37m"
 	mkdir -p $(PARAGRAPHER_LIB_FOLDER)
 	$(GCC) $(INCLUDE_LIBS) $(FLAGS) $(COMPILE_TYPE) -fpic -shared src/paragrapher.c -o $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so
 	@echo ""
