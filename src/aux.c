@@ -1,5 +1,5 @@
-#ifndef __POPLAR_AUX_C
-#define __POPLAR_AUX_C
+#ifndef __PARAGRAPHER_AUX_C
+#define __PARAGRAPHER_AUX_C
 
 #define max(a,b)           \
 ({                         \
@@ -80,14 +80,14 @@ void* __create_shm(char* shm_file_name, unsigned long length)
  	int shm_fd = shm_open(shm_file_name, O_RDWR|O_CREAT, 0644);
  	if(shm_fd == -1)
 	{
-		__PD && printf("[POPLAR] __create_shm(), error in shm_open() %d, %s .\033[0;37m \n", errno, strerror(errno));
+		__PD && printf("[PARAGRAPHER] __create_shm(), error in shm_open() %d, %s .\033[0;37m \n", errno, strerror(errno));
 		return NULL;
 	}	
 
 	int ret = ftruncate(shm_fd, length);
 	if(ret != 0)
 	{
-		__PD && printf("[POPLAR] __create_shm(), error in ftruncate() %d, %s .\033[0;37m \n", errno, strerror(errno));
+		__PD && printf("[PARAGRAPHER] __create_shm(), error in ftruncate() %d, %s .\033[0;37m \n", errno, strerror(errno));
 		ret = shm_unlink(shm_file_name);
 		assert(ret == 0);
 		return NULL;
@@ -96,7 +96,7 @@ void* __create_shm(char* shm_file_name, unsigned long length)
 	void* mem = mmap(NULL, length, PROT_READ | PROT_WRITE, MAP_SHARED , shm_fd, 0);
 	if(mem == MAP_FAILED)
 	{
-		__PD && printf("[POPLAR] __create_shm(), error in mmap() %d, %s .\033[0;37m \n", errno, strerror(errno));
+		__PD && printf("[PARAGRAPHER] __create_shm(), error in mmap() %d, %s .\033[0;37m \n", errno, strerror(errno));
 		ret = shm_unlink(shm_file_name);
 		assert(ret == 0);
 		return NULL;
