@@ -5,6 +5,7 @@ endif
 GCC := gcc
 GXX := g++
 LIB := $(PARAGRAPHER_LIB_FOLDER):$(LD_LIBRARY_PATH)
+SHELL := /bin/bash
 
 UP_GCC_DIR := ~/gcc9.2
 ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
