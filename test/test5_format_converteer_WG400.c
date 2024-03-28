@@ -1,9 +1,9 @@
 /*
 This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_400_AP) 
 and writes it in 3 formats:
-	(1, g3) Binary format Graptor V3
-	(2, el) Textual COO edge list (el) format  https://github.com/sbeamer/gapbs/blob/master/src/writer.h#L32
-	(3, ad) Textual Adjacency Graph  https://github.com/ParAlg/gbbs?tab=readme-ov-file#input-formats
+	(1, ".g3") Binary format Graptor V3 (which is similar to GAP binary (serialized) ".sg" format and PBBS binary format  )
+	(2, ".el") Textual COO edge list (el) format  https://github.com/sbeamer/gapbs/blob/master/src/writer.h#L32
+	(3, ".ad") Textual CSX 
 
 
 Graptor V3:
@@ -20,11 +20,9 @@ Graptor V3:
 	    0, // unused
 	};
 	
-	that is followed by
+	which is followed by
 		|V|+1 elements, each of 8 bytes, for offsets_lists and
 		|E| elements, each of 4 bytes, for edges_list 
-
-	https://hpdc-gitlab.eeecs.qub.ac.uk/hvandierendonck/ligra-partition/blob/graptor2/include/graptor/graph/GraphCSx.h#L728
 
 */
 
@@ -328,7 +326,7 @@ int main(int argc, char** args)
 		realpath(g3_file, src);
 		sprintf(dest, "%s", src);
 		assert(strlen(dest) < PATH_MAX - 10);
-		sprintf(dest+strlen(dest)-7,".sg");
+		sprintf(dest + strlen(dest)-7,".sg");
 		printf("  Linking %s to %s\n", src, dest);
 		printf("---------------------\n");
 
