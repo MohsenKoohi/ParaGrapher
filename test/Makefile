@@ -17,14 +17,14 @@ endif
 OBJ := obj
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB))) 
-FLAGS :=  -Wfatal-errors -lm -fopenmp -lparagrapher
+FLAGS :=  -Wfatal-errors -lrt -lm -fopenmp -lparagrapher
 
 _threads_per_core := $(shell lscpu | grep "Thread(s) per core" | head -n1 | cut -f2 -d":"|xargs)
-_total_threads := $(shell nproc --all) #getconf _NPROCESSORS_ONLN
+_total_threads := $(shell nproc --all)#getconf _NPROCESSORS_ONLN
 _available_threads := $(shell nproc)
 _total_cores := $(shell echo "$(_total_threads)/$(_threads_per_core)"|bc)
 _available_cores := $(shell echo "$(_available_threads)/$(_threads_per_core)"|bc)
-OMP_VARS :=  OMP_PLACES={0}:$(_total_cores):1 OMP_PROC_BIND=close OMP_DYNAMIC=false OMP_WAIT_POLICY=passive OMP_NUM_THREADS=$(_available_cores)
+OMP_VARS :=  OMP_PLACES={0}:$(_total_threads):1 OMP_PROC_BIND=close OMP_DYNAMIC=false OMP_WAIT_POLICY=passive OMP_NUM_THREADS=$(_available_cores)
 
 ifdef debug
 	COMPILE_TYPE := -g
@@ -103,7 +103,9 @@ download_WG800:
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.properties" -O datasets/WDC-2012.properties ; \
 		echo -e "--------------------\n";\
 	fi
-	
+
+read_bandwidth: $(OBJ)/read_bandwidth.o
+	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/read_bandwidth.o $(args)
 
 clean:
 	rm -r $(OBJ)
