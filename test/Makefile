@@ -32,6 +32,7 @@ else
 	COMPILE_TYPE := -O3 # -DNDEBUG
 endif
 
+
 all:
 	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
 		$(GCC) -dumpversion; \
@@ -51,27 +52,18 @@ $(OBJ)/%.o: %.c Makefile ../include/*.h
 	@echo -e ""
 
 test%_WG400: $(OBJ)/test%_WG400.o
-	@if [ $(dataset) == "" ]; then\
-		dataset:="datasets/cnr-2000";\
-	fi 
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset)
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/cnr-2000"
 	@echo -e ""
 
 test%_WG404: $(OBJ)/test%_WG404.o
-	@if [ $(dataset) == "" ]; then\
-		dataset:="datasets/MS1-weights";\
-	fi 
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset)
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/MS1-weights"
 	@echo -e ""
 
-test%_WG800: $(OBJ)/test%_WG800.o
-	@if [ $(dataset) == "" ]; then\
-		dataset:="datasets/WDC-2012";\
-	fi 
+test%_WG800: $(OBJ)/test%_WG800.o 
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
-	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset)
+	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/WDC-2012"
 	@echo -e ""
 
 download_WG400:
