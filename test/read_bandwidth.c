@@ -68,7 +68,11 @@ int main(int argc, char** args)
 				path = args[i+1];
 
 			if(!strcmp(args[i], "-f") && argc > i)
-				flushcache_cmd = args[i+1];
+			{
+				flushcache_cmd = malloc(strlen(args[i])+ 256);
+				assert(flushcache_cmd != NULL);
+				sprintf(flushcache_cmd, "taskset 0x`printf FF%%.0s {1..128}` %s 1>/dev/null 2>&1", args[i+1]);
+			}
 
 			if(!strcmp(args[i], "-t") && argc > i)
 				max_threads = atol(args[i+1]);
