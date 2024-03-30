@@ -1,0 +1,78 @@
+/usr/sbin/smartctl -a /dev/sda
+
+Model Family:     HGST Ultrastar 7K6000
+Device Model:     HGST HUS726060ALE610
+Serial Number:    K1H89YTD
+LU WWN Device Id: 5 000cca 255d1dfdd
+Firmware Version: APGNTD05
+User Capacity:    6,001,175,126,016 bytes [6.00 TB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        In smartctl database 7.3/5319
+ATA Version is:   ACS-2, ATA8-ACS T13/1699-D revision 4
+SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
+
+
+Output:
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max-block-size in KB
+    -bpt #blocks-per-thread
+    -k keep-the-file
+    -f flushcache-command
+    -r rounds
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -k
+  args[2]: -p
+  args[3]: /storage-hdd/temp
+  args[4]: -f
+  args[5]: sudo /drop_caches.sh
+  args[6]: -r
+  args[7]: 5
+  args[8]: -mbs
+  args[9]: 40960
+  max_threads:                  72
+  max_block_size:               41943040 Bytes
+  blocks_per_thread:            4
+  file_size:                    12079595520 Bytes
+  path:                         /storage-hdd/temp
+  rounds:                       5
+  keep_the_file:                1
+  file_path:                    /storage-hdd/temp/read_bandwidth.bin
+  flushcache_cmd:               sudo /drop_caches.sh
+  block_sizes:                  4096, 4194304, 41943040, 
+  threads:                      1, 2, 4, 18, 36, 72, 
+---------------------
+  File created in 96.07 seconds.
+---------------------
+mmap (MB/s)
+Threads   ;          ;          ;          ;  ;O_DIRECT  ;          ;          ;  ;
+         1;     158.0;     155.8;     154.4; 0;     154.7;     154.6;     154.4; 0;
+         2;     127.0;     125.9;     124.6; 0;     127.4;     124.8;     121.9; 0;
+         4;     158.3;     157.4;     156.5; 2;     157.7;     157.3;     156.4; 2;
+        18;     142.8;     140.6;     137.2; 9;     143.2;     141.0;     137.6; 8;
+        36;      93.1;      90.9;      87.7; 6;      91.3;      90.0;      88.2; 7;
+        72;      58.0;      56.4;      54.9; 2;      57.7;      55.9;      55.0; 2;
+
+pread (MB/s)
+Threads   ;      4 KB;          ;          ;  ;      4 MB;          ;          ;  ;     40 MB;          ;          ;  ;
+         1;     159.0;     158.5;     157.8; 0;     157.4;     157.0;     156.6; 0;     158.7;     158.3;     158.1; 0;
+         2;     131.1;     130.7;     130.4; 3;     134.2;     133.8;     133.3; 2;     146.1;     145.5;     144.5; 3;
+         4;     160.6;     156.9;     154.6;13;     151.3;     150.2;     148.9; 6;     153.9;     153.5;     152.3; 4;
+        18;     150.9;     150.0;     148.7;13;     142.1;     140.6;     139.7;12;     139.9;     139.2;     138.1; 8;
+        36;      91.5;      90.6;      89.0; 7;     124.5;     123.5;     122.5; 7;     136.8;     135.7;     134.2; 9;
+        72;      57.6;      56.1;      55.2; 2;     122.7;     121.2;     120.0; 8;     132.2;     131.3;     129.9;11;
+
+read (MB/s)
+Threads   ;      4 KB;          ;          ;  ;      4 MB;          ;          ;  ;     40 MB;          ;          ;  ;
+         1;     158.8;     158.1;     157.6; 0;     155.2;     154.7;     154.4; 0;     158.0;     157.6;     157.3; 0;
+         2;     135.0;     134.3;     133.4; 6;     123.0;     122.4;     122.2; 2;     145.4;     144.7;     144.4; 3;
+         4;     154.2;     151.3;     148.9;16;     139.0;     137.8;     136.3; 6;     153.3;     152.2;     151.5; 5;
+        18;     142.8;     140.7;     136.8;13;     133.6;     132.9;     132.1; 9;     139.4;     138.5;     137.4; 8;
+        36;      90.2;      89.4;      87.7; 6;     132.9;     132.6;     132.4; 4;     138.1;     137.7;     137.3; 4;
+        72;      56.1;      55.2;      54.6; 2;     130.2;     129.8;     129.2; 9;     135.2;     134.8;     134.3; 9;

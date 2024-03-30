@@ -1,0 +1,79 @@
+SAMSUNG MZQL23T8HCLS-00A07 3.84 TB, PCIe4 NVMe, Seq R/W: 6.9/4.1 GiBps, Rand. R/W: 1/0.18 MiIOps
+https://semiconductor.samsung.com/ssd/datacenter-ssd/pm9a3/mzql23t8hcls-00a07/
+--------------------------------------------------------
+/usr/sbin/smartctl -a /dev/nvme
+
+Model Number:                       SAMSUNG MZQL23T8HCLS-00A07
+Serial Number:                      S64HNE0R516627
+Firmware Version:                   GDC5902Q
+PCI Vendor/Subsystem ID:            0x144d
+IEEE OUI Identifier:                0x002538
+Total NVM Capacity:                 3,840,755,982,336 [3.84 TB]
+Unallocated NVM Capacity:           0
+Controller ID:                      6
+NVMe Version:                       1.4
+Number of Namespaces:               32
+
+
+Output: 
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max-block-size in KB
+    -bpt #blocks-per-thread
+    -k keep-the-file
+    -f flushcache-command
+    -r rounds
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -k
+  args[2]: -p
+  args[3]: /storage-ssd/temp
+  args[4]: -f
+  args[5]: sudo /drop_caches.sh
+  args[6]: -r
+  args[7]: 5
+  args[8]: -mbs
+  args[9]: 40960
+  max_threads:                  72
+  max_block_size:               41943040 Bytes
+  blocks_per_thread:            4
+  file_size:                    12079595520 Bytes
+  path:                         /storage-ssd/temp
+  rounds:                       5
+  keep_the_file:                1
+  file_path:                    /storage-ssd/temp/read_bandwidth.bin
+  flushcache_cmd:               sudo /drop_caches.sh
+  block_sizes:                  4096, 4194304, 41943040, 
+  threads:                      1, 2, 4, 18, 36, 72, 
+---------------------
+  File created in 42.55 seconds.
+---------------------
+mmap (MB/s)
+Threads   ;          ;          ;          ;  ;O_DIRECT  ;          ;          ;  ;
+         1;    2022.2;    2007.1;    1998.6; 0;    2018.0;    2008.2;    2000.5; 0;
+         2;    3261.1;    3253.8;    3243.7; 0;    3271.4;    3257.9;    3245.8; 0;
+         4;    3223.5;    3210.6;    3195.6; 0;    3223.1;    3211.3;    3198.8; 0;
+        18;    3395.5;    3392.8;    3390.8; 1;    3396.0;    3393.5;    3389.9; 1;
+        36;    3400.2;    3396.3;    3389.5; 1;    3389.5;    3382.1;    3365.6; 1;
+        72;    3397.6;    3394.5;    3392.4; 2;    3394.4;    3389.2;    3381.2; 0;
+
+pread (MB/s)
+Threads   ;      4 KB;          ;          ;  ;      4 MB;          ;          ;  ;     40 MB;          ;          ;  ;
+         1;    2104.5;    2092.5;    2084.3; 0;    2074.1;    2055.5;    2047.7; 0;    2262.4;    2250.1;    2238.0; 0;
+         2;    3579.7;    3573.9;    3561.6; 0;    1971.9;    1950.9;    1939.1; 0;    2436.9;    2417.1;    2393.3; 0;
+         4;    3208.5;    3197.3;    3188.7; 0;    2480.3;    2469.1;    2452.8; 0;    3023.8;    3003.1;    2989.2; 0;
+        18;    3618.2;    3617.0;    3616.2; 0;    3421.6;    3406.9;    3388.0; 0;    3557.5;    3552.1;    3538.4; 0;
+        36;    3621.5;    3612.9;    3583.1; 0;    3501.4;    3480.5;    3464.3; 1;    3565.9;    3564.0;    3562.3; 0;
+        72;    3622.0;    3621.2;    3619.4; 0;    3575.9;    3565.4;    3554.7; 1;    3557.8;    3555.4;    3552.8; 1;
+
+read (MB/s)
+Threads   ;      4 KB;          ;          ;  ;      4 MB;          ;          ;  ;     40 MB;          ;          ;  ;
+         1;    2097.0;    2089.9;    2081.9; 0;    1859.5;    1849.8;    1844.3; 0;    2032.9;    2020.9;    2016.0; 0;
+         2;    2442.2;    2435.2;    2428.0; 0;    2339.5;    2320.6;    2298.7; 0;    2416.7;    2373.2;    2335.4; 0;
+         4;    3385.6;    3371.0;    3353.9; 0;    3009.2;    2981.2;    2970.0; 0;    3035.0;    3015.2;    2998.0; 0;
+        18;    3588.5;    3583.6;    3575.1; 0;    3567.5;    3550.8;    3528.1; 0;    3560.0;    3549.5;    3535.9; 0;
+        36;    3595.4;    3592.3;    3590.3; 0;    3569.6;    3565.2;    3557.3; 0;    3563.8;    3562.5;    3560.5; 0;
+        72;    3617.0;    3614.4;    3612.9; 0;    3571.1;    3568.9;    3565.2; 0;    3556.7;    3552.9;    3546.7; 1;

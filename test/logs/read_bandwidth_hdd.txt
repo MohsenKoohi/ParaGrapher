@@ -1,0 +1,71 @@
+/usr/sbin/smartctl -a /dev/sda
+
+Model Family:     HGST Ultrastar 7K6000
+Device Model:     HGST HUS726060ALE610
+Serial Number:    K1H89YTD
+LU WWN Device Id: 5 000cca 255d1dfdd
+Firmware Version: APGNTD05
+User Capacity:    6,001,175,126,016 bytes [6.00 TB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        In smartctl database 7.3/5319
+ATA Version is:   ACS-2, ATA8-ACS T13/1699-D revision 4
+SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
+
+Output:
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max-block-size in KB
+    -bpt #blocks-per-thread
+    -k keep-the-file
+    -f flushcache-command
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -k
+  args[2]: -p
+  args[3]: /storage-hdd/temp
+  args[4]: -f
+  args[5]: sudo /drop_caches.sh
+  max_threads:            		72
+  max_block_size:         		4194304 Bytes
+  blocks_per_thread:      		4
+  file_size:              		1207959552 Bytes
+  path:                   		/storage-hdd/temp
+  keep_the_file:          		1
+  file_path:              		/storage-hdd/temp/read_bandwidth.bin
+  flushcache_cmd:         		sudo /drop_caches.sh
+  block_sizes:            		4096, 4194304, 
+  threads:                		1, 2, 4, 18, 36, 72, 
+---------------------
+mmap (MB/s)
+Threads   ;          ;  ;O_DIRECT  ;  ;
+         1;     153.6; 0;     153.3; 0;
+         2;     127.4; 3;     132.6; 1;
+         4;     161.7; 5;     163.5;12;
+        18;     154.2;19;     154.3;14;
+        36;     100.2;15;     104.2;16;
+        72;      50.7; 6;      49.8; 6;
+
+pread (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;     159.1; 0;     159.9; 0;
+         2;     135.2; 0;     139.1; 2;
+         4;     164.7; 6;     149.4; 6;
+        18;     161.4;21;     136.1;15;
+        36;     102.2;14;     127.4;10;
+        72;      67.0; 5;     128.1;17;
+
+read (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;     160.4; 0;     159.9; 0;
+         2;     139.2; 1;     125.2; 0;
+         4;     161.1;10;     146.2; 3;
+        18;     146.7;16;     136.0;11;
+        36;      99.8;15;     130.7; 8;
+        72;      62.0; 5;     128.2;17;
+
+

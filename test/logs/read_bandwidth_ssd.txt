@@ -1,0 +1,73 @@
+SAMSUNG MZQL23T8HCLS-00A07 3.84 TB, PCIe4 NVMe, Seq R/W: 6.9/4.1 GiBps, Rand. R/W: 1/0.18 MiIOps
+https://semiconductor.samsung.com/ssd/datacenter-ssd/pm9a3/mzql23t8hcls-00a07/
+--------------------------------------------------------
+/usr/sbin/smartctl -a /dev/nvme
+
+Model Number:                       SAMSUNG MZQL23T8HCLS-00A07
+Serial Number:                      S64HNE0R516627
+Firmware Version:                   GDC5902Q
+PCI Vendor/Subsystem ID:            0x144d
+IEEE OUI Identifier:                0x002538
+Total NVM Capacity:                 3,840,755,982,336 [3.84 TB]
+Unallocated NVM Capacity:           0
+Controller ID:                      6
+NVMe Version:                       1.4
+Number of Namespaces:               32
+
+
+Output: 
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max-block-size in KB
+    -bpt #blocks-per-thread
+    -k keep-the-file
+    -f flushcache-command
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -k
+  args[2]: -p
+  args[3]: /storage-ssd/temp
+  args[4]: -f
+  args[5]: sudo /drop_caches.sh
+  max_threads:            		72
+  max_block_size:         		4194304 Bytes
+  blocks_per_thread:      		4
+  file_size:              		1207959552 Bytes
+  path:                   		/storage-ssd/temp
+  keep_the_file:          		1
+  file_path:              		/storage-ssd/temp/read_bandwidth.bin
+  flushcache_cmd:         		sudo /drop_caches.sh
+  block_sizes:            		4096, 4194304, 
+  threads:                		1, 2, 4, 18, 36, 72, 
+---------------------
+mmap (MB/s)
+Threads   ;          ;  ;O_DIRECT  ;  ;
+         1;    1987.7; 0;    1981.4; 0;
+         2;    3060.7; 1;    3176.2; 1;
+         4;    2993.6; 1;    2994.6; 1;
+        18;    3170.0; 1;    3186.3; 1;
+        36;    3152.2; 1;    3172.7; 1;
+        72;    3152.8; 1;    3150.1; 1;
+
+pread (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;    2089.4; 0;    1921.8; 0;
+         2;    3504.9; 1;    1960.4; 1;
+         4;    3389.9; 1;    2425.5; 1;
+        18;    3604.4; 1;    3463.3; 2;
+        36;    3606.3; 1;    3445.1; 4;
+        72;    3606.4; 3;    3469.4; 7;
+
+read (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;    2038.5; 0;    1946.8; 0;
+         2;    2376.3; 1;    2377.0; 1;
+         4;    3307.9; 1;    2941.9; 1;
+        18;    3508.7; 3;    3430.9; 1;
+        36;    3551.8; 1;    3462.6; 2;
+        72;    3575.6; 6;    3444.1; 4;
+
+
