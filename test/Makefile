@@ -96,8 +96,8 @@ download_WG800:
 		echo -e "--------------------\n";\
 	fi
 
-read_bandwidth: $(OBJ)/read_bandwidth.o
-	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/read_bandwidth.o $(args)
+read_band%: $(OBJ)/read_band%.o
+	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(args)
 
 clean:
 	rm -r $(OBJ)
