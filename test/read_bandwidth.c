@@ -32,6 +32,7 @@
 #include <../src/aux.c>
 
 unsigned long file_size = 0;
+int open_flags = O_RDONLY;
 
 unsigned long read_mmaped(char* file_path,int threads, unsigned long block_size, float* load_imbalance);
 unsigned long read_pread (char* file_path,int threads, unsigned long block_size, float* load_imbalance);
@@ -57,8 +58,9 @@ int main(int argc, char** args)
 
 		printf("\n---------------------\n");
 		printf("read_bandwidth\n");
-		printf("  Usage:\n    -p path/to/folder\n    -t #threads\n    -mbs max-block-size in KB\n");
-		printf("    -bpt #blocks-per-thread\n    -k keep-the-file\n    -f flushcache-command\n");
+		printf("  Usage:\n    -p path/to/folder\n    -t #threads\n    -mbs max block size in KB\n");
+		printf("    -bpt #blocks per thread\n    -k keep the created binary file for next usgaes\n    -f flushcache command\n");
+		printf("    -od use O_DIRECT for pread() and read()\n");
 		printf("---------------------\n");
 		for(int i=0; i< argc; i++)
 		{
@@ -79,6 +81,9 @@ int main(int argc, char** args)
 
 			if(!strcmp(args[i], "-k"))
 				keep_the_file = 1;
+
+			if(!strcmp(args[i], "-od"))
+				open_flags |= O_DIRECT;
 
 			if(!strcmp(args[i], "-mbs") && argc > i)
 			{
@@ -103,6 +108,7 @@ int main(int argc, char** args)
 		printf("  keep_the_file:          \t\t%u\n", keep_the_file);
 		printf("  file_path:              \t\t%s\n", file_path);
 		printf("  flushcache_cmd:         \t\t%s\n", flushcache_cmd);
+		printf("  use O_DIRECT:           \t\t%u\n", (open_flags & O_DIRECT)? 1 : 0);
 
 		if(max_block_size > block_sizes[1])
 			block_sizes[2] = max_block_size;
@@ -318,7 +324,7 @@ unsigned long read_mmaped(char* file_path,int threads, unsigned long block_size,
 
 unsigned long read_pread(char* file_path,int threads, unsigned long block_size, float* load_imbalance)
 {
-	int fd = open(file_path, O_RDONLY);
+	int fd = open(file_path, open_flags);
 	if(fd == -1)
 		return 0;
 
@@ -326,8 +332,11 @@ unsigned long read_pread(char* file_path,int threads, unsigned long block_size, 
 
 	if(threads == 1)
 	{ 
-		unsigned long* mem = malloc(block_size);
-		assert(mem != NULL);
+		unsigned long* mmem = malloc(block_size + 4096);
+		assert(mmem != NULL);
+		unsigned long* mem = mmem;
+		if((unsigned long)mem % 4096 != 0)
+			mem = (unsigned long*)((unsigned long)mem + 4096 - ((unsigned long)mem % 4096));
 
 		unsigned long trd = 0;
 		while(trd < file_size)
@@ -345,7 +354,8 @@ unsigned long read_pread(char* file_path,int threads, unsigned long block_size, 
 
 		*load_imbalance = 0.0;
 
-		free(mem);
+		free(mmem);
+		mmem = NULL;
 		mem = NULL;
 	}
 	else
@@ -360,8 +370,11 @@ unsigned long read_pread(char* file_path,int threads, unsigned long block_size, 
 			unsigned tid = omp_get_thread_num();
 			tt[tid] = - __get_nano_time();
 
-			unsigned long* mem = malloc(block_size);
-			assert(mem != NULL);
+			unsigned long* mmem = malloc(block_size + 4096);
+			assert(mmem != NULL);
+			unsigned long* mem = mmem;
+			if((unsigned long)mem % 4096 != 0)
+				mem = (unsigned long*)((unsigned long)mem + 4096 - ((unsigned long)mem % 4096));
 
 			#pragma omp for nowait 
 			for(unsigned long b = 0; b < file_size / block_size; b++)
@@ -385,7 +398,8 @@ unsigned long read_pread(char* file_path,int threads, unsigned long block_size, 
 		
 			tt[tid] += __get_nano_time();
 
-			free(mem);
+			free(mmem);
+			mmem = NULL;
 			mem = NULL;
 		}
 
@@ -403,7 +417,7 @@ unsigned long read_pread(char* file_path,int threads, unsigned long block_size, 
 unsigned long read_read(char* file_path,int threads, unsigned long block_size, float* load_imbalance)
 {
 	{
-		int fd = open(file_path, O_RDONLY | O_DIRECT);
+		int fd = open(file_path, open_flags);
 		if(fd == -1)
 			return 0;
 		close(fd);
@@ -413,11 +427,14 @@ unsigned long read_read(char* file_path,int threads, unsigned long block_size, f
 
 	if(threads == 1)
 	{
-		int fd = open(file_path, O_RDONLY);
+		int fd = open(file_path, open_flags);
 		assert(fd > 0);
 
-		unsigned long* mem = malloc(block_size);
-		assert(mem != NULL);
+		unsigned long* mmem = malloc(block_size + 4096);
+		assert(mmem != NULL);
+		unsigned long* mem = mmem;
+		if((unsigned long)mem % 4096 != 0)
+			mem = (unsigned long*)((unsigned long)mem + 4096 - ((unsigned long)mem % 4096));
 
 		unsigned long trd = 0;
 		while(trd < file_size)
@@ -433,7 +450,8 @@ unsigned long read_read(char* file_path,int threads, unsigned long block_size, f
 
 		*load_imbalance = 0.0;
 
-		free(mem);
+		free(mmem);
+		mmem = NULL;
 		mem = NULL;
 		close(fd);
 		fd = -1;
@@ -450,13 +468,16 @@ unsigned long read_read(char* file_path,int threads, unsigned long block_size, f
 			unsigned tid = omp_get_thread_num();
 			tt[tid] = - __get_nano_time();
 
-			unsigned long* mem = malloc(block_size);
-			assert(mem != NULL);
+			unsigned long* mmem = malloc(block_size + 4096);
+			assert(mmem != NULL);
+			unsigned long* mem = mmem;
+			if((unsigned long)mem % 4096 != 0)
+				mem = (unsigned long*)((unsigned long)mem + 4096 - ((unsigned long)mem % 4096));
 
 			#pragma omp for nowait 
 			for(unsigned long b = 0; b < file_size / block_size; b++)
 			{
-				int fd = open(file_path, O_RDONLY );
+				int fd = open(file_path, open_flags );
 				assert(fd > 0);
 
 				unsigned long offset = block_size * b;
@@ -475,13 +496,13 @@ unsigned long read_read(char* file_path,int threads, unsigned long block_size, f
 		
 			tt[tid] += __get_nano_time();
 
-			free(mem);
+			free(mmem);
+			mmem = NULL;
 			mem = NULL;
 		}
 
 		t0 += __get_nano_time();
 		*load_imbalance = get_idle_percentage(t0, tt, threads);
-
 
 		free(tt);
 		tt = NULL;

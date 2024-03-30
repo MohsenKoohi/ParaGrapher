@@ -1,0 +1,51 @@
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max block size in KB
+    -bpt #blocks per thread
+    -k keep the created binary file for next usgaes
+    -f flushcache command
+    -od use O_DIRECT for pread() and read()
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -p
+  args[2]: /users/2635474/sharedscratch
+  args[3]: -f
+  args[4]: make -C ~/Repos/poplar-paper/code flushcache
+  args[5]: -mbs
+  args[6]: 32768
+  args[7]: -k
+  args[8]: -od
+  max_threads:            		256
+  max_block_size:         		33,554,432 Bytes
+  blocks_per_thread:      		4
+  file_size:              		34,359,738,368 Bytes
+  path:                   		/users/2635474/sharedscratch
+  keep_the_file:          		1
+  file_path:              		/users/2635474/sharedscratch/read_bandwidth.bin
+  flushcache_cmd:         		taskset 0x`printf FF%.0s {1..128}` obj/flushcache.o 1>/dev/null 2>&1
+  use O_DIRECT:           		1
+  block_sizes:            		4096, 4194304, 33554432, 
+  threads:                		1, 2, 4, 64, 128, 256, 
+---------------------
+pread (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;     32 MB;  ;
+         1;      41.1; 0;    1167.8; 0;    2017.4; 0;
+         2;      65.5; 0;    2266.3; 0;    3821.4; 0;
+         4;     124.1; 0;    4042.4; 0;    6289.9; 0;
+        64;     535.3; 1;    8653.9; 0;    9205.3; 3;
+       128;     364.8; 0;    7928.6; 2;    9705.0; 8;
+       256;     239.9; 0;    6601.5; 2;    9247.2;15;
+
+read (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;     32 MB;  ;
+         1;      43.6; 0;    1318.7; 0;    1992.4; 0;
+         2;      61.0; 0;    2233.7; 0;    3816.3; 0;
+         4;     116.3; 0;    4069.1; 0;    6275.3; 0;
+        64;     494.1; 1;    8850.4; 3;    9547.6; 4;
+       128;     350.7; 0;    8189.4; 6;    9768.9; 8;
+       256;     234.5; 0;    8463.8;18;    9471.2;15;
+
+
