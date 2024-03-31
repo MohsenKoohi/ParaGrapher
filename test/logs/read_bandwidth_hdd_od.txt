@@ -1,0 +1,64 @@
+Compiling [1;33mread_bandwidth.c[0;37m
+mkdir -p obj
+gcc read_bandwidth.c -L /home/mohsen/ParaGrapher/lib64 -I /home/mohsen/ParaGrapher/lib64/../include  -Wfatal-errors -lrt -lm -fopenmp -lparagrapher -O3   -o obj/read_bandwidth.o
+
+LD_LIBRARY_PATH=/home/mohsen/ParaGrapher/lib64: OMP_PLACES={0}:36:1 OMP_PROC_BIND=close OMP_DYNAMIC=false OMP_WAIT_POLICY=passive OMP_NUM_THREADS=18 obj/read_bandwidth.o -k -p /storage-hdd/temp -f "sudo /drop_caches.sh" -od
+
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max block size in KB
+    -bpt #blocks per thread
+    -k keep the created binary file for next usgaes
+    -f flushcache command
+    -od use O_DIRECT for pread() and read()
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -k
+  args[2]: -p
+  args[3]: /storage-hdd/temp
+  args[4]: -f
+  args[5]: sudo /drop_caches.sh
+  args[6]: -od
+  max_threads:            		72
+  max_block_size:         		4,194,304 Bytes
+  blocks_per_thread:      		4
+  file_size:              		1,207,959,552 Bytes
+  path:                   		/storage-hdd/temp
+  keep_the_file:          		1
+  file_path:              		/storage-hdd/temp/read_bandwidth.bin
+  flushcache_cmd:         		taskset 0x`printf FF%.0s {1..128}` sudo /drop_caches.sh 1>/dev/null 2>&1
+  use O_DIRECT:           		1
+  block_sizes:            		4096, 4194304, 
+  threads:                		1, 2, 4, 18, 36, 72, 
+---------------------
+mmap (MB/s)
+Threads   ;          ;  ;O_DIRECT  ;  ;
+         1;     151.4; 0;     158.1; 0;
+         2;     135.5; 0;     134.1; 1;
+         4;     152.8; 3;     164.3; 6;
+        18;     150.7;20;     156.9;17;
+        36;     102.7;14;      97.8;16;
+        72;      50.2; 5;      58.0; 6;
+
+pread (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;     139.4; 0;     152.8; 0;
+         2;      41.4; 5;     144.1; 2;
+         4;      31.5;17;     156.7; 6;
+        18;      25.5;24;     140.3; 6;
+        36;      17.2; 0;     135.7;14;
+        72;       1.7; 2;     137.2;22;
+
+read (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;
+         1;     138.2; 0;     158.3; 0;
+         2;      30.3; 2;     146.2; 3;
+         4;      26.2;16;     155.7; 8;
+        18;      24.9;28;     143.2; 8;
+        36;      17.2; 0;     135.7;15;
+        72;       1.5; 1;     133.4;20;
+
+
