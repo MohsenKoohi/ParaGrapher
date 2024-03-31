@@ -1,6 +1,10 @@
 /*
 	It is similar to read_bandwidth.c, but repeats each run for some rounds, default: 3.
-	The output also has 3 values per each config: min, avg., and max bandwidth.
+	The output has 4 values per each config: 
+		(1) Min. bandwidth between the rounds,
+		(2) Avg. bandwidth,
+		(3) Max. bandwidth, and
+		(4) Avg. load imbalance in runs.
 */
 
 #define _GNU_SOURCE
@@ -54,7 +58,7 @@ int main(int argc, char** args)
 
 		printf("\n---------------------\n");
 		printf("read_bandwidth\n");
-		printf("  Usage:\n    -p path/to/folder\n    -t #threads\n    -mbs max block size in KB\n");
+		printf("  Usage:\n    -p path/to/folder\n    -t max. threads\n    -mbs max block size in KB\n");
 		printf("    -bpt #blocks per thread\n    -k keep the created binary file for next usgaes\n    -f flushcache command\n");
 		printf("    -r rounds\n");
 		printf("    -od use O_DIRECT for pread() and read()\n");
