@@ -46,6 +46,7 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 successful exuection. Otherwise, they should be deleted by the user.
 
 ### Remained Works
+0. Binary format
 1. MatrixMarket format
 2. Textual CSX 
 
