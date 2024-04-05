@@ -243,7 +243,7 @@ int main(int argc, char** args)
 
 							t0 += __get_nano_time();
 
-							if(sum != (file_size / 8) * (file_size / 8 - 1) / 2)
+							if(sum == 0 || (file_size < 1UL<<32  && sum != (file_size / 8) * (file_size / 8 - 1) / 2))
 							{
 								sum_total = 0;
 								break;

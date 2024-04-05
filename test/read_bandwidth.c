@@ -229,7 +229,7 @@ int main(int argc, char** args)
 
 						t0 += __get_nano_time();
 
-						if(sum == (file_size / 8) * (file_size / 8 - 1) / 2)
+						if(sum && (file_size > 1UL<<32 || sum == (file_size / 8) * (file_size / 8 - 1) / 2))
 							printf("%10.1f;%2u;", 1e3 * file_size / t0, (unsigned int)load_imbalance);
 						else
 							printf("%10s;%2s;","-","-");

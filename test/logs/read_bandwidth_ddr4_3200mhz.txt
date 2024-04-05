@@ -1,0 +1,59 @@
+LD_LIBRARY_PATH=~/gcc9.2/lib64:/users/2635474/Repos/ParaGrapher/lib64:/opt/gridware/depots/54e7fb3c/el7/pkg/compilers/gcc/13.2.0/lib:/opt/gridware/depots/54e7fb3c/el7/pkg/compilers/gcc/13.2.0/lib64:/opt/flight-direct/embedded/lib:/opt/gridware/depots/54e7fb3c/el7/pkg/apps/python3/3.8.5/gcc-4.8.5/lib/python3.8:/opt/gridware/depots/54e7fb3c/el7/pkg/apps/python3/3.8.5/gcc-4.8.5/lib:/opt/flight-direct/embedded/lib: OMP_PLACES={0}:128:1 OMP_PROC_BIND=close OMP_DYNAMIC=false OMP_WAIT_POLICY=passive OMP_NUM_THREADS=128 obj/read_bandwidth.o -p /dev/shm -mbs 40960  -k
+
+---------------------
+read_bandwidth
+  Usage:
+    -p path/to/folder
+    -t #threads
+    -mbs max block size in KB
+    -bpt #blocks per thread
+    -k keep the created binary file for next usgaes
+    -f flushcache command
+    -od use O_DIRECT for pread() and read()
+---------------------
+  args[0]: obj/read_bandwidth.o
+  args[1]: -p
+  args[2]: /dev/shm
+  args[3]: -mbs
+  args[4]: 40960
+  args[5]: -k
+  max_threads:            		256
+  max_block_size:         		41,943,040 Bytes
+  blocks_per_thread:      		4
+  file_size:              		42,949,672,960 Bytes
+  path:                   		/dev/shm
+  keep_the_file:          		1
+  file_path:              		/dev/shm/read_bandwidth.bin
+  flushcache_cmd:         		(null)
+  use O_DIRECT:           		0
+  block_sizes:            		4096, 4194304, 41943040, 
+  threads:                		1, 2, 4, 64, 128, 256, 
+---------------------
+mmap (MB/s)
+Threads   ;          ;  ;O_DIRECT  ;  ;
+         1;    3800.3; 0;         -; -;
+         2;    6291.1;11;         -; -;
+         4;   11299.3;11;         -; -;
+        64;   17386.4; 1;         -; -;
+       128;   17962.4; 1;         -; -;
+       256;   16487.9; 2;         -; -;
+
+pread (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;     40 MB;  ;
+         1;    4249.5; 0;    6680.8; 0;    4564.6; 0;
+         2;    7055.0; 7;   10374.6;12;    7118.3; 5;
+         4;   13197.4; 6;   15393.8; 9;    8891.3; 3;
+        64;   19066.3; 1;   78126.4;15;   39414.8; 2;
+       128;   18047.4; 4;  152897.8; 6;   67474.4; 4;
+       256;   17985.6; 4;  118408.8;10;   63951.3; 7;
+
+read (MB/s)
+Threads   ;      4 KB;  ;      4 MB;  ;     40 MB;  ;
+         1;    4205.3; 0;    6711.8; 0;    4554.3; 0;
+         2;    2418.0; 2;   11121.4;13;    7230.6; 5;
+         4;    4620.8; 2;   15390.8; 9;    8949.5; 3;
+        64;    3135.4; 1;   70239.9;20;   39297.6; 1;
+       128;    2199.5; 0;  118626.0;26;   67869.2; 3;
+       256;    1898.2; 0;  118361.7;28;   63425.0; 8;
+
+
