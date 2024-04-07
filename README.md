@@ -39,7 +39,7 @@ You may pass argument `dataset` to specify the location of the test, e.g., `make
   1. A WebGraph `.offset` file is required which is created through a call to the WebGraph framework.
   2. An `_offsets.bin` file is created that contains the offsets array of the CSX format but in binary and 
 littel-endian format with 8-Bytes values for each of |V|+1 elements.
-In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with suffix `MS??_offsets.bin` can
+In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with name `MS??_offsets.bin` can
 be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 
 - ParaGrapher creates some temporary files in `/dev/shm` with names starting by `paragrapher_`. The files are deleted at the end of a 
