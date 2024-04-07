@@ -1,7 +1,7 @@
 /*
 	If there is no sudo access for flushing OS cache (echo 3 >/proc/sys/vm/drop_caches),
-	This program can be used to do the same thing by allocating and accessing an array
-	of the size of available memory.
+	this program can be used to do the same thing (but in a longer time) by allocating 
+ 	and accessing an array of the size of available memory.
 */
 
 #include <assert.h>
