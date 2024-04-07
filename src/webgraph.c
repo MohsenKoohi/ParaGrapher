@@ -613,12 +613,15 @@ void* __wg_thread(void* in)
 		unsigned long requesting_completed = 0;
 		unsigned long completed_partitions = 0;
 		unsigned long requested_partitions = 0;
-		struct timespec ts = {0, 200 * 1000 * 1000}; //0.200,000,000 nanoseconds
+		struct timespec ts = {0, 1000 * 1000}; //0.1,000,000 seconds
 
 		req->total_edges_read = 0;
 
 		while(completed_partitions < req->total_partitions)
 		{
+			// The sleep time can be a bandwidth bottleneck
+			// For t threads, reading e Milion edges, we can optimally read t * 4 * e MB per return from sleep
+			// So, for a sleep duration of s, we have a max for bandwidth: t*4*e/s
 			nanosleep(&ts, NULL);
 
 			// Check if there is any buffer read completely by the Java program 

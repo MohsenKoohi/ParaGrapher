@@ -73,7 +73,10 @@ public class WebGraphRRServer
 			// Looping over requests
 			while(true)
 			{
-				Thread.sleep(200);
+				// The sleep time can be a bandwidth bottleneck
+				// For t threads, reading e Milion edges, we can optimally read t * 4 * e MB per return from sleep
+				// So, for a sleep duration of s, we have a max for bandwidth: t*4*e/s
+				Thread.sleep(1);
 
 				Cc_buff.load().rewind().get(temp); 
 				long C_completed = longByteBuffer.rewind().put(temp).rewind().getLong();
