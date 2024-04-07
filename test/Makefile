@@ -43,7 +43,7 @@ all:
 	@echo -e "#total_cores: "$(_total_cores)
 	@echo -e "#available_cores: "$(_available_cores)
 	@echo -e ""
-	make $(subst .c,,$(shell ls *.c))
+	#make $(subst .c,,$(shell ls *.c))
 
 $(OBJ)/%.o: %.c Makefile ../include/*.h
 	@echo -e "Compiling \033[1;33m"$<"\033[0;37m"

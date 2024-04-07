@@ -1,9 +1,6 @@
 /*
 This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_400_AP) 
-and produces  
-	(1) the degree distribution of the transposed graph and
-	(2) the Weakly Connected Components distribution.
-
+and produces the degree distribution of the transposed graph and
 The callback funcion process the read block of edges and release them.
 The main thread waits for callbacks to be finished and then produces the outputs.
 */
@@ -23,7 +20,6 @@ The main thread waits for callbacks to be finished and then produces the outputs
 #include <math.h>
 
 unsigned int* in_degrees = NULL;
-unsigned int* cc = NULL;
 unsigned long vertices_count = 0UL;
 unsigned long completed_callbacks_count = 0UL;
 unsigned long processed_edges = 0UL;
@@ -61,36 +57,6 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 			
 			// Incrementing the in-degree of the dest vertex
 			__atomic_add_fetch(in_degrees + dest, 1U, __ATOMIC_RELAXED);
-
-			// Jayanti-Tarjan Weekly Connected Components
-			// http://arxiv.org/abs/1612.01514
-			{
-				unsigned int x = v;
-				unsigned int y = dest;
-
-				while(1)
-				{
-					while(x != cc[x])
-						x = cc[x];
-
-					while(y != cc[y])
-						y = cc[y];
-
-					if(x == y)
-						break;
-
-					if(x < y)
-					{
-						if(__sync_bool_compare_and_swap(&cc[y], y, x))
-							break;
-					}
-					else
-					{
-						if(__sync_bool_compare_and_swap(&cc[x], x, y))
-							break;
-					}
-				}
-			}
 
 			__atomic_add_fetch(&processed_edges, 1UL, __ATOMIC_RELAXED);
 		}
@@ -179,6 +145,11 @@ int main(int argc, char** args)
 		}
 	}
 
+	// Allocating memory
+		in_degrees = calloc(sizeof(unsigned int), vertices_count);
+		assert(in_degrees != NULL);
+
+
 	// Getting the offsets
 	{
 		unsigned long* offsets = (unsigned long*)paragrapher_csx_get_offsets(graph, NULL, 0, -1UL, NULL, 0);
@@ -192,15 +163,6 @@ int main(int argc, char** args)
 		paragrapher_csx_release_offsets_weights_arrays(graph, offsets);
 		offsets = NULL;
 	}
-
-	// Allocating memory for in_degrees array and for CC
-		in_degrees = calloc(sizeof(unsigned int), vertices_count);
-		assert(in_degrees != NULL);
-
-		cc = calloc(sizeof(unsigned int), vertices_count);
-		assert(cc != NULL);
-		for(unsigned int v = 0; v < vertices_count; v++)
-			cc[v] = v;
 
 	// Reading the graph
 	{
@@ -262,7 +224,7 @@ int main(int argc, char** args)
 		assert(ret == 0);
 		graph = NULL;
 
-	// Identifying the max in_degree, calculating in-degree distribution, and CC distribution
+	// Identifying the max in_degree, calculating in-degree distribution
 	{
 		printf("  Processed edges: %'lu\n", processed_edges);
 		assert(processed_edges == edges_count);
@@ -276,9 +238,11 @@ int main(int argc, char** args)
 
 		// In-degree Distribution
 			unsigned int* dist = calloc(sizeof(unsigned int), 1 + max_in_degree);
+			assert(dist != NULL);
 			for(unsigned int v = 0; v < vertices_count; v++)
 				dist[in_degrees[v]]++;
-		
+			
+			printf("  Output file: obj/test1_in_degree_distribution.txt\n");
 			FILE* f = fopen("obj/test1_in_degree_distribution.txt","w+");
 			assert(f != NULL);
 			for(unsigned int d = 0; d <= max_in_degree; d++)
@@ -290,49 +254,8 @@ int main(int argc, char** args)
 			dist = NULL;
 			free(in_degrees);
 			in_degrees = NULL;
-
-		// CC
-			unsigned int ccs = 0;
-			unsigned int* wcc_dist = calloc(sizeof(unsigned int), vertices_count);
-			assert(wcc_dist != NULL);
-
-			for(unsigned int v = 0; v < vertices_count; v++)
-			{	
-				while(cc[cc[v]] != cc[v])
-					cc[v] = cc[cc[v]];
-
-				if(cc[v] == v)
-					ccs++;
-
-				wcc_dist[cc[v]]++;
-			}
-			printf("  Number of WCC: %'u\n", ccs);
-
-			unsigned int max_wcc = 0;
-			f = fopen("obj/test1_wcc_distribution.txt","w+");
-			assert(f != NULL);
-			unsigned int total_v = 0;
-			for(unsigned int v = 0; v < vertices_count; v++)
-			{
-				if(wcc_dist[v] > wcc_dist[max_wcc])
-					max_wcc = v;
-
-				if(wcc_dist[v])
-					fprintf(f, "%u; %u;\n", v, wcc_dist[v]);
-
-				total_v += wcc_dist[v];
-			}
-
-			printf("  Largest WCC: %'u\n", wcc_dist[max_wcc]);
-			assert(total_v == vertices_count);
-
-			fclose(f);
-			f=NULL;
-			free(wcc_dist);
-			wcc_dist = NULL;
-
 	}
-	
+
 	printf("---------------------\n");
 	
 	return 0;
