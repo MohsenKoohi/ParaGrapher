@@ -53,7 +53,8 @@ benchmark to measure the read bandwidth of storage for (i) different thread numb
 ### Remained Works
 0. Binary format
 1. MatrixMarket format
-2. Textual CSX 
+2. Textual CSX
+3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
