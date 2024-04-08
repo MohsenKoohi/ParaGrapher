@@ -105,7 +105,7 @@ int main(int argc, char** args)
 		printf("  blocks_per_thread:      \t\t%'lu\n", blocks_per_thread);
 		printf("  file_size:              \t\t%'lu Bytes\n", file_size);
 		printf("  path:                   \t\t%s\n", path);
-		printf("  keep_the_file:          \t\t%u\n", keep_the_file);
+		printf("  keep_the_file:          \t\t%lu\n", keep_the_file);
 		printf("  file_path:              \t\t%s\n", file_path);
 		printf("  flushcache_cmd:         \t\t%s\n", flushcache_cmd);
 		printf("  use O_DIRECT:           \t\t%u\n", (open_flags & O_DIRECT)? 1 : 0);
@@ -193,28 +193,29 @@ int main(int argc, char** args)
 					if(block_sizes[b] != 0)
 					{
 						if(block_sizes[b] < 1024)
-							printf("%8u B;  ;", block_sizes[b]);
+							printf("%8lu B;  ;", block_sizes[b]);
 						else if(block_sizes[b] < 1024 * 1024)
-							printf("%7u KB;  ;", block_sizes[b] / 1024);
+							printf("%7lu KB;  ;", block_sizes[b] / 1024);
 						else
-							printf("%7u MB;  ;", block_sizes[b] / 1024 / 1024);
+							printf("%7lu MB;  ;", block_sizes[b] / 1024 / 1024);
 					}
 				}
 			printf("\n");
 
-			for(int t = 0; t < sizeof(threads)/sizeof(unsigned long); t++)
+			for(int t = 2; t < sizeof(threads)/sizeof(unsigned long); t++)
 			{
 				if(threads[t] == 0)
 					continue;
 
-				printf("%10u;", threads[t]);
+				printf("%10lu;", threads[t]);
 
 				for(int b = 0; b < sizeof(block_sizes)/sizeof(unsigned long); b++)
 				{
 					if(block_sizes[b] != 0)
 					{
+						int ret = 0;
 						if(flushcache_cmd != NULL)
-							system(flushcache_cmd);
+							ret = system(flushcache_cmd);
 
 						unsigned long t0 = - __get_nano_time();
 						float load_imbalance = 0;
@@ -247,7 +248,9 @@ int main(int argc, char** args)
 
 	// Finalizing
 		if(flushcache_cmd != NULL)
-			system(flushcache_cmd);
+		{
+			int ret = system(flushcache_cmd);
+		}
 		if(!keep_the_file)
 			unlink(file_path);
 		printf("\n");
