@@ -5,8 +5,8 @@ typedef struct
 {
 	paragrapher_graph_type graph_type;
 
-	char name[PATH_MAX];
-	char underlying_name[PATH_MAX];
+	char name[PATH_MAX + 8];
+	char underlying_name[PATH_MAX + 8];
 	unsigned long buffer_size;
 	unsigned long max_buffers_count;
 
@@ -376,7 +376,7 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		if(ret != 0)
 			return NULL;
 
-		char cmd[1024 + PATH_MAX];
+		char cmd[1024 + PATH_MAX * 4] = {0};
 		char res[2048];
 		char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 	
