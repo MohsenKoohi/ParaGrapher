@@ -99,6 +99,10 @@ download_WG800:
 read_band%: $(OBJ)/read_band%.o
 	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(args)
 
+ReadBandwidth: 
+	javac -d $(OBJ) ReadBandwidth.java
+	java -ea -cp $(OBJ): ReadBandwidth $(args)
+
 flushcache: flushcache.c Makefile
 	gcc  $< -lnuma -lm -fopenmp -lrt -O3 -o $(OBJ)/$@.o 
 

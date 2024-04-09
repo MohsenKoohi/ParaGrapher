@@ -1,0 +1,18 @@
+Path: /storage-hdd/temp
+javac -d obj ReadBandwidth.java
+java -ea -cp obj: ReadBandwidth -p /storage-ssd/temp  -s 603979776
+
+
+mmap (MB/s)
+1; 114;
+18; 128;
+36; 83;
+
+
+read (MB/s)
+1; 4096; 160;
+1; 4194304; 160;
+18; 4096; 85;
+18; 4194304; 132;
+36; 4096; 96;
+36; 4194304; 111;
