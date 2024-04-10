@@ -52,7 +52,7 @@
 	typedef enum
 	{
 		// Graph properties
-		PARAGRAPHER_REQUEST_GET_GRAPH_PATH = 1,       // char[1024] for args[0]
+		PARAGRAPHER_REQUEST_GET_GRAPH_PATH = 1,       // char[PATH_MAX] for args[0]
 		PARAGRAPHER_REQUEST_GET_VERTICES_COUNT,       // unsigned long for args[0] 
 		PARAGRAPHER_REQUEST_GET_EDGES_COUNT,          // unsigned long for args[0] 
 
@@ -67,7 +67,7 @@
 		// Reading Status
 		PARAGRAPHER_REQUEST_READ_STATUS,           // paragrapher_read_request* for args[0], and unsigned long for args[1]
 		PARAGRAPHER_REQUEST_READ_TOTAL_CALLBACKS,  // paragrapher_read_request* for args[0], and unsigned long for args[1]
-		PARAGRAPHER_REQUEST_READ_EDGES, 				 		// paragrapher_read_request* for args[0], and unsigned long for args[1]
+		PARAGRAPHER_REQUEST_READ_EDGES,            // paragrapher_read_request* for args[0], and unsigned long for args[1]
 
 		// Number of constants
 		PARAGRAPHER_REQUESTS_SIZE
