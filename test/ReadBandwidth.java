@@ -1,3 +1,10 @@
+/*
+If O_DIRECT access is required for storage accesses, 
+ExtendedOpenOption.DIRECT should be used. 
+https://stackoverflow.com/a/73604722
+*/
+
+
 import java.io.*;
 import java.util.*;
 import java.net.*;
