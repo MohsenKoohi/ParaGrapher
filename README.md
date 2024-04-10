@@ -46,9 +46,12 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 successful exuection. Otherwise, they should be deleted by the user.
 
 ### Bandwidht Measurement
-The file [test/read_bandwidth.c](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/read_bandwidth.c) contains a 
-benchmark to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
+- The file [test/read_bandwidth.c](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/read_bandwidth.c) contains a 
+benchmark implemented in C to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
 (iii) different read methods (read(), pread(), mmap()).
+- The file [test/JavaReadBandwidth.java](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/JavaReadBandwidth.java) contains a 
+benchmark implemented in Java to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
+(iii) different read methods (read(), mmap()).
 
 ### Remained Works
 0. Binary format
