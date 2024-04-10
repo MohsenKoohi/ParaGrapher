@@ -54,7 +54,7 @@ benchmark implemented in C to measure the read bandwidth of storage for (i) diff
 - The file [test/ReadBandwidth.java](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/ReadBandwidth.java) contains a 
 benchmark implemented in Java to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
 (iii) different read methods (read(), mmap()). The script [test/java-read-bandwidth.sh](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/java-read-bandwidth.sh) 
-may  be used for changing values.
+may  be used for changing parameters.
 
 ### Remained Works
 0. Binary format
