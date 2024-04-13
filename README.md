@@ -61,6 +61,7 @@ may  be used for changing parameters.
 1. MatrixMarket format
 2. Textual CSX
 3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java, using semapher?
+4. A background Java program to answer all queries
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
