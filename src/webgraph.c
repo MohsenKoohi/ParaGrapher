@@ -466,7 +466,7 @@ void* __wg_java_program_wrapper(void* in)
 
 	char* ts = calloc(1024 + 4 * get_nprocs(), 1);
 	assert(ts != NULL);
-	for(int i = 0; i < 2 * get_nprocs(); i++)
+	for(int i = 0; i < get_nprocs()/4 + 1; i++)
 		sprintf(ts + strlen(ts), "FF");
 		
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
