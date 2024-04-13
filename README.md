@@ -60,7 +60,7 @@ may  be used for changing parameters.
 0. Binary format
 1. MatrixMarket format
 2. Textual CSX
-3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java
+3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java, using semapher?
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
