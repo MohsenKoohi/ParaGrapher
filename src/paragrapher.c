@@ -190,7 +190,7 @@ paragrapher_read_request* paragrapher_csx_get_subgraph(paragrapher_graph* graph,
 	if(eb->start_vertex > eb->end_vertex)
 		return NULL;
 
-	if(eb->start_vertex == eb->end_vertex && eb->start_edge >= eb->end_edge)
+	if(eb->start_vertex == eb->end_vertex && eb->start_edge > eb->end_edge)
 		return NULL;
 
 	paragrapher_read_request* ret = readers[graph->graph_type]->csx_get_subgraph(graph, eb, offsets, edges, callback, callback_args, args, argc);
