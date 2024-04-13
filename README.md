@@ -61,7 +61,7 @@ may  be used for changing parameters.
 1. MatrixMarket format
 2. Textual CSX
 3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java, using semapher?
-4. A background Java program to answer all queries
+4. A permanently-in-background (daemon) Java program may be required to answer all queries, but its memory usage and GC impacts should be considered
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
