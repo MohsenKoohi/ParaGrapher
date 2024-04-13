@@ -100,10 +100,12 @@ read_band%: $(OBJ)/read_band%.o
 	LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(args)
 
 ReadBandwidth: 
+	mkdir -p $(OBJ)
 	javac -d $(OBJ) ReadBandwidth.java
 	java -ea -cp $(OBJ): ReadBandwidth $(args)
 
 flushcache: flushcache.c Makefile
+	mkdir -p $(OBJ)
 	gcc  $< -lnuma -lm -fopenmp -lrt -O3 -o $(OBJ)/$@.o 
 
 clean:
