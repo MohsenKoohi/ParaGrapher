@@ -157,7 +157,8 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 		int ret = (int)__run_command("lscpu | grep \"Thread(s) per core\" | head -n1 | cut -f2 -d:|xargs", res, 1023);
 		assert(ret == 0);
 		unsigned int tpc = atoi(res);
-		graph->max_buffers_count /= tpc; 
+		if(tpc == 1)
+			graph->max_buffers_count *= 2; 
 	}
 	graph->offsets = NULL;
 
