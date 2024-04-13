@@ -172,10 +172,10 @@ public class WG404AP implements WebGraphWriter
 					{
 						int dest = it.nextInt();
 						assert dest != -1;
-						buffers[buffer_index].put(ibb.rewind().putInt(dest).array());
+						buffers[buffer_index].put(ibb.rewind().putInt(dest));
 
 						int label = it.label().getInt();
-						buffers[buffer_index].put(ibb.rewind().putInt(label).array());
+						buffers[buffer_index].put(ibb.rewind().putInt(label));
 						
 						written_edges++;
 						n++;

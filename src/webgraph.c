@@ -376,14 +376,21 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		if(ret != 0)
 			return NULL;
 
-		char cmd[1024 + PATH_MAX * 4] = {0};
 		char res[2048];
+
+		char* cmd = calloc(4096 + PATH_MAX * 4 + get_nprocs() * 4, 1);
+		assert(cmd != NULL);
 		char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
-	
+
+		char* ts = calloc(1024 + 4 * get_nprocs(), 1);
+		assert(ts != NULL);
+		for(int i = 0; i < 2 * get_nprocs(); i++)
+		sprintf(ts + strlen(ts), "FF");
+		
 		if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
-			sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", PLF, PLF, graph->underlying_name, bin_offsets_file);
+			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
 		else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
-			sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG800AP create_bin_offsets %s %s", PLF, PLF, graph->underlying_name, bin_offsets_file);
+			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG800AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
 		else
 		{
 			assert(0 && "Do not reach here.");
@@ -398,6 +405,12 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		}
 
 		chmod(bin_offsets_file, S_IRUSR|S_IRGRP|S_IROTH);
+
+		free(cmd);
+		cmd = NULL;
+
+		free(ts);
+		ts = NULL;
 	}
 
 	// Opening 
@@ -445,19 +458,25 @@ void* __wg_java_program_wrapper(void* in)
 {
 	__wg_read_request* req = (__wg_read_request*) in;
 	__wg_graph* graph = (__wg_graph*)req->prr.graph;
-		
-	char cmd[1024 + PATH_MAX];
+					
+	char* cmd = calloc(4096 + 4 * get_nprocs() + PATH_MAX, 1);
+	assert(cmd != NULL);
 	char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 
+	char* ts = calloc(1024 + 4 * get_nprocs(), 1);
+	assert(ts != NULL);
+	for(int i = 0; i < 2 * get_nprocs(); i++)
+		sprintf(ts + strlen(ts), "FF");
+		
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
-		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
-		PLF, PLF, graph->name, req->shm_name);
+		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
+		ts, PLF, PLF, graph->name, req->shm_name);
 	else if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
-		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG404AP read_edges %s %s", 
-		PLF, PLF, graph->name, req->shm_name);
+		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG404AP read_edges %s %s", 
+		ts, PLF, PLF, graph->name, req->shm_name);
 	else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
-		sprintf(cmd, "taskset 0x`printf FF%%.0s {1..128}` java -ea -cp %s:%s/jlibs/* WG800AP read_edges %s %s", 
-		PLF, PLF, graph->name, req->shm_name);
+		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG800AP read_edges %s %s", 
+		ts, PLF, PLF, graph->name, req->shm_name);
 	else
 	{
 		assert(0 && "Do not reach here.");
@@ -466,6 +485,11 @@ void* __wg_java_program_wrapper(void* in)
 	
 	int ret = system(cmd);
 	assert(ret == 0);
+
+	free(cmd);
+	cmd = NULL;
+	free(ts);
+	ts = NULL;
 
 	return NULL;
 }

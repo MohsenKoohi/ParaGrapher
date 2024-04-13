@@ -173,7 +173,7 @@ public class WG400AP implements WebGraphWriter
 						int dest = it.nextInt();
 						assert dest != -1;
 
-						buffers[buffer_index].put(ibb.rewind().putInt(dest).array());
+						buffers[buffer_index].put(ibb.rewind().putInt(dest));
 						
 						written_edges++;
 						n++;
@@ -231,13 +231,13 @@ public class WG400AP implements WebGraphWriter
 				assert buffer.limit() == b_length;
 
 				long sum = 0;
-				buffer.put(longByteBuffer.rewind().putLong(sum).array());
+				buffer.put(longByteBuffer.rewind().putLong(sum));
 				b_count += 8;
 
 				for(int v = 0; v < graph.numNodes(); v++)
 				{
 					sum += degrees[v];
-					buffer.put(longByteBuffer.rewind().putLong(sum).array());
+					buffer.put(longByteBuffer.rewind().putLong(sum));
 				
 					b_count += 8;
 					if(b_count == b_length)
