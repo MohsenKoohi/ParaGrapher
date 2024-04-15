@@ -170,7 +170,7 @@ public class WG800AP implements WebGraphWriter
 						long dest = it.nextLong();
 						assert dest != -1;
 
-						buffers[buffer_index].put(lbb.rewind().putLong(dest).rewind());
+						buffers[buffer_index].put(lbb.rewind().putLong(dest).array());
 						
 						written_edges++;
 						n++;
@@ -229,14 +229,14 @@ public class WG800AP implements WebGraphWriter
 
 					if(v == 0)
 					{
-						buffer.put(longByteBuffer.rewind().putLong(offset).rewind());
+						buffer.put(longByteBuffer.rewind().putLong(offset).array());
 						wb += 8;
 					}
 
 					long degree = graph.outdegree(v);
 					offset += degree;
 
-					buffer.put(longByteBuffer.rewind().putLong(offset).rewind());
+					buffer.put(longByteBuffer.rewind().putLong(offset).array());
 					wb += 8;
 				}
 
