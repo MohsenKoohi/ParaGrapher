@@ -1,5 +1,5 @@
 /*
-JT-CC for WG400AP
+JT-CC for WG400AP without symmetrizing the inut graph
 */
 
 
