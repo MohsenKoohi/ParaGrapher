@@ -57,9 +57,6 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 		{
 			unsigned long edge_index = offsets[v] + e - ei_offset;
 			unsigned int dest = edges[edge_index];
-			
-			if(dest >= v )
-				break;
 
 			// Jayanti-Tarjan Weekly Connected Components
 			// http://arxiv.org/abs/1612.01514
