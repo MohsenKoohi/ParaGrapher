@@ -73,9 +73,18 @@ int main(int argc, char** args)
 
 			if(!strcmp(args[i], "-f") && argc > i)
 			{
-				flushcache_cmd = malloc(strlen(args[i])+ 256);
+				flushcache_cmd = malloc(strlen(args[i])+ 1024 + 2 * get_nprocs());
+
+				char* ts = calloc(1024 + 2 * get_nprocs(), 1);
+				assert(ts != NULL);
+				for(int i = 0; i < get_nprocs() / 4; i++)
+					sprintf(ts + strlen(ts), "FF");
+							
 				assert(flushcache_cmd != NULL);
-				sprintf(flushcache_cmd, "taskset 0x`printf FF%%.0s {1..128}` %s 1>/dev/null 2>&1", args[i+1]);
+				sprintf(flushcache_cmd, "taskset 0x%s %s 1>/dev/null 2>&1", ts, args[i+1]);
+
+				free(ts);
+				ts = NULL;
 			}
 
 			if(!strcmp(args[i], "-t") && argc > i)
