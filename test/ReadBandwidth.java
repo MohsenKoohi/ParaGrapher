@@ -2,6 +2,8 @@
 If O_DIRECT access is required for storage accesses, 
 ExtendedOpenOption.DIRECT should be used. 
 https://stackoverflow.com/a/73604722
+The current code does not use ExtendedOpenOption.DIRECT.
+
 */
 
 
