@@ -45,15 +45,20 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 - ParaGrapher creates some temporary files in `/dev/shm` with names starting by `paragrapher_`. The files are deleted at the end of a 
 successful exuection. Otherwise, they should be deleted by the user.
 
+- After calling ParaGrapher, OS cache of storage contents should be dropped using 
+[`echo 3 > /proc/sys/vm/drop_caches`](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
+or by calling the [`flushcache`](test/flushcache.c) program that 
+has the same functionality but with a longer execution time.
+
 ### Bandwidht Measurement
 
-- The file [test/read_bandwidth.c](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/read_bandwidth.c) contains a 
+- The file [test/read_bandwidth.c](test/read_bandwidth.c) contains a 
 benchmark implemented in C to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
 (iii) different read methods (read(), pread(), mmap()).
 
-- The file [test/ReadBandwidth.java](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/ReadBandwidth.java) contains a 
+- The file [test/ReadBandwidth.java](test/ReadBandwidth.java) contains a 
 benchmark implemented in Java to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and
-(iii) different read methods (read(), mmap()). The script [test/java-read-bandwidth.sh](https://github.com/DIPSA-QUB/ParaGrapher/blob/main/test/java-read-bandwidth.sh) 
+(iii) different read methods (read(), mmap()). The script [test/java-read-bandwidth.sh](test/java-read-bandwidth.sh) 
 may  be used for changing parameters.
 
 ### Remained Works
