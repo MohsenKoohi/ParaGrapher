@@ -1,0 +1,429 @@
+\documentclass[a4paper]{article} 
+\usepackage[margin=2.5cm]{geometry}
+% \usepackage[ table ]{xcolor}
+\usepackage{amsmath,amsfonts,algorithmic,graphicx,subcaption,capt-of,textcomp,color,soul,tablefootnote}
+\usepackage{adjustbox}
+\PassOptionsToPackage{hyphens}{url}\usepackage[]{hyperref}
+\hypersetup{colorlinks,
+    linkcolor={blue!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+\input{0_colors.tex}
+\usepackage{tikz,paralist,booktabs,multicol,pgfplots,makecell,wrapfig}
+
+\usetikzlibrary{patterns}
+\usepgfplotslibrary{groupplots}
+\usepackage{tabularx,colortbl,multirow}
+\usepackage{todonotes,cprotect,comment,hhline,etoolbox}
+\usetikzlibrary{arrows, fit, matrix, positioning, shapes, backgrounds}
+\usepackage[separate-uncertainty = true, multi-part-units = repeat]{siunitx}
+\usepackage[ruled,vlined,linesnumbered,resetcount,noend]{algorithm2e}
+\title{\huge{ParaGrapher API Documentation}}
+% \date{\vspace{6ex}}
+\begin{document}
+\maketitle
+
+We explain the functions and definitions in ParaGrapher API. 
+The ParaGrapher header file can be accessed on \url{https://github.com/DIPSA-QUB/ParaGrapher/blob/main/include/paragrapher.h}.
+
+Please note that most functions have two arguments \verb|void**|  \textbf{args} and \verb|int| \textbf{argc} that
+have been used to pass additional arguments (for sending input to the library or 
+receiving data from library) that may be required for particular graph types. 
+
+%  ___       _ _   
+% |_ _|_ __ (_) |_ 
+%  | || '_ \| | __|
+%  | || | | | | |_ 
+% |___|_| |_|_|\__|
+\section{ParaGrapher Initialization}
+This function initializes the ParaGrapher library. This function must be called before using any other library functions.
+Upon calling this function, ParaGrapher iterates over its inner files that have implemented
+the API for loading different graph formats and creates a list of their functions which 
+is used for accessing graphs.
+\\
+\\
+\textbf{\texttt{int paragrapher\_init()}}
+\\
+\\
+\textbf{Returns}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{0}} on success;  \textbf{\texttt{-1}} on failure
+\end{itemize}
+
+
+%   ___                      ____                 _     
+%  / _ \ _ __   ___ _ __    / ___|_ __ __ _ _ __ | |__  
+% | | | | '_ \ / _ \ '_ \  | |  _| '__/ _` | '_ \| '_ \ 
+% | |_| | |_) |  __/ | | | | |_| | | | (_| | |_) | | | |
+%  \___/| .__/ \___|_| |_|  \____|_|  \__,_| .__/|_| |_|
+%       |_|                                |_|          
+
+\section{Opening A Graph}
+This function opens a graph specified by type and filename.
+\\
+\\
+\textbf{\texttt{paragrapher\_graph*  paragrapher\_open\_graph(
+\\{\indent}char* name, paragrapher\_graph\_type type,
+\\{\indent}void** args, int argc)}}
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \item {\texttt{name}}: The file name or identifier for the graph.
+    \item {\texttt{type}}: The type of the graph, as defined by \textbf{\texttt{paragrapher\_graph\_type}} enum and
+    listed in Table~\ref{table:paragrapher_graph_type}.
+    \item {\texttt{args}}: Additional arguments required for opening the graph, specific to the graph type.
+    \item {\texttt{argc}}: The number of additional arguments.
+\end{itemize}
+\textbf{Returns}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item A pointer to a \textbf{\texttt{paragrapher\_graph}} structure if successful.
+    \item \textbf{\texttt{NULL}} if the graph could not be opened due to an invalid type or other errors.
+\end{itemize}
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Type}                        & \textbf{\begin{tabular}[c]{@{}c@{}}Vertex ID\\ Size (Bytes)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Vertex Weight\\ Size (Bytes)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Edge Weight\\ Size (Bytes)\end{tabular}} \\ \hline
+\textbf{\texttt{CSX\_WG\_400\_AP}} & 4 & 0 & 0 \\ \hline
+\textbf{\texttt{CSX\_WG\_800\_AP}} & 8 & 0 & 0 \\ \hline
+\textbf{\texttt{CSX\_WG\_404\_AP}} & 4 & 0 & 4 \\ \hline
+\end{tabular}
+\caption{Options for \texttt{\textbf{paragrapher\_graph\_type}}}
+\label{table:paragrapher_graph_type}
+\end{table}
+
+
+%  __           /    __          _  _                
+% /__ _ _|_    /    (_  _ _|_   / \|_)_|_ o  _ __  _ 
+% \_|(/_ |_   /     __)(/_ |_   \_/|   |_ | (_)| |_> 
+\section{Getting Info and Setting Configuration}
+This function configures the settings or retrieves configurations.
+~\\
+\\
+\texttt{\textbf{int paragrapher\_get\_set\_options(
+\\{\indent}paragrapher\_graph* graph, 
+\\{\indent}paragrapher\_request\_type request\_type,
+\\{\indent}void** args, int argc)}}
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{graph}}: A pointer to the graph to configure.
+    \item \textbf{\texttt{request\_type}}: The type of request specifying the option to get or set given by \textbf{\texttt{paragrapher\_request\_type}} enum and listed in  Table~\ref{table:paragrapher_request_type}.
+    \item \textbf{\texttt{args}}: Arguments for the request.
+    \item \textbf{\texttt{argc}}: The number of arguments in args.
+\end{itemize}
+\textbf{Returns}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item 0 on success.
+    \item A negative integer, on error, with the specific value indicating the type of error.
+\end{itemize}
+\begin{table*}[h]
+\noindent\adjustbox{max width=\textwidth}{%
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Option} & \textbf{Type (\texttt{argv[0]})} & \textbf{Type (\texttt{argv[1]})}\\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_GET\_GRAPH\_PATH}}\\ Returns the file path of the graph\end{tabular} & char{[}PATH\_MAX{]} & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_GET\_VERTICES\_COUNT}}\\ Returns the number of vertices in the graph\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_GET\_EDGES\_COUNT}}\\ Returns the number of edges in the graph\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_LIB\_USES\_OWN\_BUFFERS}}\\ Checks if the library uses its own buffers\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_LIB\_USES\_USER\_ARRAYS}}\\ Checks if the library uses arrays provided by the user\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_SET\_BUFFER\_SIZE}}\\ Sets the size of the buffer used by the library\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_GET\_BUFFER\_SIZE}}\\ Returns the current buffer size used by the library\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_SET\_MAX\_BUFFERS\_COUNT}}\\ Sets the maximum number of buffers the library can use\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_GET\_MAX\_BUFFERS\_COUNT}}\\ Returns the maximum number of buffers the library can use\end{tabular} & unsigned long & - \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_READ\_STATUS}}\\ Queries the status of a read operation\end{tabular} & paragrapher\_read\_request* & unsigned long \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_READ\_TOTAL\_CALLBACKS}}\\ Returns the total number of callbacks triggered during reading\end{tabular} & paragrapher\_read\_request* & unsigned long \\ \hline
+\begin{tabular}[c]{@{}l@{}}\textbf{\texttt{PARAGRAPHER\_REQUEST\_READ\_EDGES}}\\ Initiates reading of edge data\end{tabular} & paragrapher\_read\_request* & unsigned long \\ \hline
+\end{tabular}}
+\caption{\textbf{\texttt{paragrapher\_request\_type}} options and return types}
+\label{table:paragrapher_request_type}
+\end{table*}
+
+% +-+-+-+ +-+-+-+-+-+-+ +-+-+-+
+% |C|S|X| |O|f|f|s|e|t| |W|t|.|
+% +-+-+-+ +-+-+-+-+-+-+ +-+-+-+
+\section{Accessing CSX Offsets and Weights}
+\subsection{Getting offsets and weights}
+The following functions return the offsets or weights of vertices in a CSX graph within a specified range.
+\\
+\\
+\textbf{\texttt{void* paragrapher\_csx\_get\_offsets(
+\\{\indent}paragrapher\_graph* graph,
+\\{\indent}void* offsets,
+\\{\indent}unsigned long start\_vertex,
+\\{\indent}unsigned long end\_vertex,
+\\{\indent}void** args, int argc)}}
+\newline
+\newline
+\textbf{\texttt{void* paragrapher\_csx\_get\_vertex\_weights(
+\\{\indent}paragrapher\_graph* graph,
+\\{\indent}void* weights,
+\\{\indent}unsigned long start\_vertex,
+\\{\indent}unsigned long end\_vertex,
+\\{\indent}void** args, int argc)}}
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{graph}}: A pointer to the graph.
+    \item \textbf{\texttt{offsets}}, \textbf{\texttt{weights}},: A buffer to store the offsets or weights.
+    \item \textbf{\texttt{start\_vertex}}, \textbf{\texttt{end\_vertex}}: The range of vertices to process.
+    \item \textbf{\texttt{args}}, \textbf{\texttt{argc}}: Additional arguments for the operation.
+\end{itemize}
+\textbf{Returns}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item A pointer to the buffer containing the offsets if successful.
+    \item NULL on failure.
+\end{itemize}
+
+\subsection{Releasing offsets and weights buffers}
+The following function is used to release the offsets or weights array returned by the library.
+\\
+\\
+\textbf{\texttt{void paragrapher\_csx\_release\_offsets\_weights\_arrays(
+\\{\indent}paragrapher\_graph* graph, void* array)}}
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{graph}}: A pointer to the graph.
+    \item \textbf{\texttt{array}}: The array to be released.
+\end{itemize}
+
+
+% +-+-+-+-+-+-+ +-+-+-+ +-+-+-+-+-+
+% |A|c|c|e|s|s| |C|S|X| |E|d|g|e|s|
+% +-+-+-+-+-+-+ +-+-+-+ +-+-+-+-+-+
+\section{Accessing CSX Edges}
+\subsection{Callback function}
+The callback function for handling data received from asynchronous 
+subgraph reading operations in CSX graph formats is defined 
+as follows. When a block of the edges is read by the library, this callback is 
+invoked to inform user about the loaded data. Depending on the size of buffer
+and the number of edges, the callback function may be called multiple times.
+The callback functions is defined by the user and invoked by the library
+~\\
+\\
+\textbf{\texttt{typedef void (*paragrapher\_csx\_callback)(
+\\{\indent}paragrapher\_read\_request* request, 
+\\{\indent}paragrapher\_edge\_block* eb,
+\\{\indent}void* offsets, 
+\\{\indent}void* edges, 
+\\{\indent}void* buffer\_id, 
+\\{\indent}void* args)}};
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+   \item \textbf{\texttt{request}}: A pointer to the \texttt{paragrapher\_read\_request} structure.
+        \item \textbf{\texttt{eb}}: A pointer to the structure describing the block of edges have been loaded.
+        \item \textbf{\texttt{offsets}}: A pointer to an array containing the vertex offsets.
+        \item \textbf{\texttt{edges}}: A pointer to an array containing the edges within the specified block.
+        \item \textbf{\texttt{buffer\_id}}: A pointer to an identifier for the buffer used during the operation.
+        \item \textbf{\texttt{callback\_args}}: A pointer to a user-defined parameter that is passed to the \texttt{csx\_get\_subgraph} by the user and the library redirects it to the callback function.
+\end{itemize}
+~\\
+\textbf{\texttt{paragrapher\_edge\_block} structure}:
+    \begin{verbatim}
+    typedef struct {
+        unsigned long start_vertex; // Start vertex index of the edge block
+        unsigned long start_edge;   // Start edge index associated with the start vertex
+        unsigned long end_vertex;   // End vertex index of the edge block
+        unsigned long end_edge;     // End edge index associated with the end vertex
+    } paragrapher_edge_block;
+    \end{verbatim}
+
+\subsection{Loading/Decompressing Edges}
+The following function starts loading a CSX graph or its subgraph (specified by \verb|eb|).
+Depending on the implementation, load can be done 
+synchronously (i.e., the \verb|edges| array is filled by the library) or 
+asynchronously (i.e., the \verb|callback| function is called multiple times to pass read block of edges to user).
+\\
+\\
+\textbf{\texttt{paragrapher\_read\_request* csx\_get\_subgraph(
+\\{\indent}paragrapher\_graph* graph,
+\\{\indent}paragrapher\_edge\_block* eb,
+\\{\indent}void* offsets, void* edges,
+\\{\indent}paragrapher\_csx\_callback callback\_args,
+\\{\indent}void* callback\_args, void** args, int argc);}}
+~\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{graph}}: A pointer to the graph structure where the subgraph is to be extracted.
+    \item \textbf{\texttt{eb}}: A pointer to the \texttt{paragrapher\_edge\_block} structure that specifies the range of vertices and edges for which the subgraph should be extracted. This includes start and end vertices and edges. 
+    \item \textbf{\texttt{offsets}}: A pointer to an array where the offsets of the vertices will be stored.
+    This parameter is used when the graph is loaded synchronously and the the library fills the pre-allocated arrays
+    by the user.
+    \item \textbf{\texttt{edges}}: A pointer to an array where the edges of the subgraph will be stored.
+    This parameter is used when the graph is loaded synchronously and the the library fills the pre-allocated arrays
+    by the user.
+    \item \textbf{\texttt{callback}}: The callback function that the library calls to pass blocks of 
+    edges to the user. It must conform to the \texttt{paragrapher\_csx\_callback} signature. 
+    This parameter is used when the graph is loaded asynchronously and the the library passes its 
+    buffers to the user to access edges. 
+    \item \textbf{\texttt{callback\_args}}: A pointer to any user-defined data that should be passed to the callback function.
+    \item \textbf{\texttt{args}}: Additional format-specific arguments provided as an array of void pointers.
+    \item \textbf{\texttt{argc}}: The count of additional arguments provided in args.
+\end{itemize}
+~\\
+\textbf{Returns}:
+    \begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item A pointer to a \texttt{paragrapher\_read\_request} structure if successful
+    \item NULL on failure
+    \end{itemize}
+
+\subsection{Release Buffers}
+The following function should be used at the end of \verb|callback| function to 
+inform the library that the buffer will not be 
+used any further and its memory can be reused by the library.
+\\
+\\
+\textbf{\texttt{void csx\_release\_read\_buffers(
+\\{\indent}paragrapher\_read\_request* request,
+\\{\indent}paragrapher\_edge\_block* eb,
+\\{\indent}void* buffer\_id);}}
+~\\
+\\
+
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+    \item \textbf{\texttt{request}}: A pointer to the \texttt{paragrapher\_read\_request} 
+    returned by \texttt{paragrapher\_csx\_get\_subgraph}.
+    \item \textbf{\texttt{eb}}: A pointer to the \texttt{paragrapher\_edge\_block} 
+    structure indicating the specific range of edges and vertices involved in the request.
+    \item \textbf{\texttt{buffer\_id}}: A pointer to the identifier for 
+    the buffer used during the read operation. This identifier is typically 
+    provided during the callback execution and is used to manage and release the correct buffer.
+\end{itemize}
+
+\subsection{Release Reader}
+    The following function releases all resources associated with a returned \texttt{paragrapher\_read\_request} and
+should be called upon completion of the load process.
+    ~\\
+    \\
+    \textbf{\texttt{void csx\_release\_read\_request(
+\\{\indent}paragrapher\_read\_request* request);}}
+~\\
+    \\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+        \item \textbf{\texttt{request}}: A pointer to the \texttt{paragrapher\_read\_request} structure that represents an ongoing or completed read request.
+    \end{itemize}
+
+
+\section{Accessing COO Edges}
+This function is similar to \verb|csx_get_subgraph()| but for loading a COO graph
+or its subgraph synchronously or asynchronously.
+~\\
+\\
+\textbf{\texttt{paragrapher\_read\_request* coo\_get\_edges(
+\\{\indent}paragrapher\_graph* graph,
+\\{\indent}unsigned long start\_row,
+\\{\indent}unsigned long end\_row,
+\\{\indent}void* edges,
+\\{\indent}paragrapher\_coo\_callback callback,
+\\{\indent}void* callback\_args, void** args, int argc);}}
+    ~\\
+    \\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+        \item \textbf{\texttt{graph}}: A pointer to the graph structure from which edges are to be read. This graph should be formatted in COO (Coordinate list) format.
+        \item \textbf{\texttt{start\_row}}: The starting row index in the edge list from where to begin reading.
+        \item \textbf{\texttt{end\_row}}: The ending row index in the edge list up to which edges should be read. If set to -1UL, it indicates that reading should continue until the end of the edge list.
+        \item \textbf{\texttt{edges}}: A pointer to an array where the edges between \texttt{start\_row} and \texttt{end\_row} will be stored in the synchronous call.
+        \item \textbf{\texttt{callback}}: A callback function invoked by the library when implementing an asynchronous load. The callback function is used to handle the edges read from the graph. This function should conform to the \texttt{paragrapher\_coo\_callback} signature.
+        \item \textbf{\texttt{callback\_args}}: A pointer to any user-defined data that should be passed to the callback function.
+        \item \textbf{\texttt{args}}: Additional reader-specific arguments provided as an array of void pointers.
+        \item \textbf{\texttt{argc}}: The count of additional arguments provided in args.
+\end{itemize}
+\textbf{Returns}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item Pointer to a \texttt{paragrapher\_read\_request} if the operation is initiated successfully.
+    \item NULL on failure.
+\end{itemize}
+
+\section{Releasing Graph}
+The following function releases the resources allocated by the library for accessing a graph and
+should be called as the last step of accessing/loading a graph.
+\\
+\\
+\textbf{\texttt{int paragrapher\_release\_graph(paragrapher\_graph* graph, void** args, int argc)}}
+\\
+\\
+\textbf{Parameters}:
+\begin{itemize}
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}
+
+    \item \textbf{\texttt{graph}}: A pointer to the graph to be released.
+    \item \textbf{\texttt{args}}: Additional arguments required for releasing the graph, specific to the graph type.
+    \item \textbf{\texttt{argc}}: The number of additional arguments.
+\end{itemize}
+\textbf{Returns}:
+\begin{itemize}
+    \item \textbf{\texttt{0}} on success; \textbf{\texttt{-1}} on failure.
+\end{itemize}
+
+\end{document}
