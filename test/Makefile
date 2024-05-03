@@ -79,11 +79,17 @@ download_WG404:
 	@if [ ! -f datasets/MS1-weights.labels ]; then \
 		mkdir -p datasets; \
 		echo -e "--------------------\n\033[1;34mDownloading MS1\033[0;37m"; \
-		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-underlying.graph"; \
-		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-underlying.properties"; \
-		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-weights.labels"; \
-		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-weights.labeloffsets"; \
-		wget -P datasets "http://78.46.92.120/MS-BioGraphs/MS1/MS1-weights.properties"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-underlying.graph?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-underlying.properties?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-underlying.offsets?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-underlying_offsets.bin?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.labels?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.labeloffsets?download=1"; \
+		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.properties?download=1"; \
+		for f in $(find $1 -type f); do
+			if [ $f = ${f%%\?*} ]; then continue; fi
+			mv "${f}" "${f%%\?*}"
+		done
 		echo -e "--------------------\n";\
 	fi
 
@@ -94,6 +100,7 @@ download_WG800:
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.graph" -O datasets/WDC-2012.graph; \
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.properties" -O datasets/WDC-2012.properties ; \
 		echo -e "--------------------\n";\
+		
 	fi
 
 read_band%: $(OBJ)/read_band%.o
