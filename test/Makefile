@@ -86,9 +86,9 @@ download_WG404:
 		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.labels?download=1"; \
 		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.labeloffsets?download=1"; \
 		wget -P datasets "https://zenodo.org/records/11110925/files/MS1-weights.properties?download=1"; \
-		for f in $(find $1 -type f); do  ;\
-			if [ $f = ${f%%\?*} ]; then continue; fi ;\
-			mv "${f}" "${f%%\?*}" ;\
+		for f in $$(find datasets -type f); do \
+			if [ "$$f" = "$${f%%\?*}" ]; then continue; fi ;\
+			mv "$${f}" "$${f%%\?*}" ;\
 		done ;\
 		echo -e "--------------------\n";\
 	fi
