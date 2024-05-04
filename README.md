@@ -18,6 +18,10 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 2. `JDK` with a version greater than 15
 3. `bc`, `wget`, and `unzip`
 
+### API Documentation
+Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file using [this link](../../raw/main/doc/api.pdf).
+
+
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
 to download and store sample datasets into `test/datasets` folder.
