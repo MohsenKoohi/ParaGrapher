@@ -7,7 +7,10 @@
 This repository contains the source code of ParaGrapher, an API and library for loading graphs.
 For futher information about the library please refer to https://blogs.qub.ac.uk/DIPSA/ParaGrapher/ and publications.
 
-### Supperted Graph Types
+### ParaGrapher API Documentation
+Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file using [this link](../../raw/main/doc/api.pdf).
+
+### Implemented Graph Types in ParaGrapher Library
 1. **PARAGRAPHER_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
 2. **PARAGRAPHER_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
 3. **PARAGRAPHER_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
@@ -18,13 +21,9 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 2. `JDK` with a version greater than 15
 3. `bc`, `wget`, and `unzip`
 
-### API Documentation
-Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file using [this link](../../raw/main/doc/api.pdf).
-
-
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
-to download and store sample datasets into `test/datasets` folder.
+to download and store sample datasets into the `test/datasets` folder.
 
 ### Compiling and Executing Code
 - If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 9 of the `Makefile` and `test/Makefile`. 
