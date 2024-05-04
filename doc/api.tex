@@ -24,7 +24,12 @@
 \begin{document}
 \maketitle
 
-We explain the functions and definitions in ParaGrapher API. 
+ParaGrapher~\footnote{\url{https://blogs.qub.ac.uk/DIPSA/ParaGrapher/}} 
+is a graph loading API and library designed to provide efficient loading and
+decompression of the large-scale graph datasets. 
+The design steps, functionality, and evaluation of the ParaGrapher has been explained in
+a separate document~\cite{paragrapher-arxiv} and in this document, 
+we explain the functions and definitions in ParaGrapher API. 
 The ParaGrapher header file can be accessed on \url{https://github.com/DIPSA-QUB/ParaGrapher/blob/main/include/paragrapher.h}.
 
 Please note that most functions have two arguments \verb|void**|  \textbf{args} and \verb|int| \textbf{argc} that
@@ -425,5 +430,25 @@ should be called as the last step of accessing/loading a graph.
 \begin{itemize}
     \item \textbf{\texttt{0}} on success; \textbf{\texttt{-1}} on failure.
 \end{itemize}
+
+
+\begin{filecontents}{api.bib}
+    
+    @inproceedings{paragrapher-arxiv,
+        title = { Selective Parallel Loading of Large-Scale 
+                  Compressed Graphs with ParaGrapher}, 
+        author = { {Mohsen} {Koohi Esfahani} and Marco D'Antonio  and 
+                   Syed Ibtisam Tauhidi and Thai Son Mai and 
+                   Hans Vandierendonck},
+        year = {2024},
+        eprint = {2404.19735},
+        archivePrefix = {arXiv},
+        primaryClass = {cs.AR},
+        url = {https://doi.org/10.48550/arXiv.2404.19735}
+    }
+\end{filecontents} 
+
+\bibliographystyle{plainurl}
+\bibliography{api.bib}
 
 \end{document}
