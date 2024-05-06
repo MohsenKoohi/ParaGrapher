@@ -114,7 +114,8 @@ ReadBandwidth:
 flushcache: flushcache.c Makefile
 	mkdir -p $(OBJ)
 	gcc  $< -lnuma -lm -fopenmp -lrt -O3 -o $(OBJ)/$@.o 
-
+	$(OBJ)/$@.o 
+	
 clean:
 	rm -r $(OBJ)
 	touch * 
