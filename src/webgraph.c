@@ -1,6 +1,8 @@
 #ifndef __PARAGRAPHER_WEBGRAPH_C
 #define __PARAGRAPHER_WEBGRAPH_C
 
+#include <libgen.h>
+
 typedef struct
 {
 	paragrapher_graph_type graph_type;
@@ -322,7 +324,21 @@ int __wg_get_set_options(paragrapher_graph* in_graph, paragrapher_request_type r
 
 int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 {
-	char cmd[1024 + PATH_MAX], offsets_file[1024 + PATH_MAX],res[1024];
+	char cmd[1024 + PATH_MAX], offsets_file[1024 + PATH_MAX],res[PATH_MAX];
+
+	// Check if the folder is writable
+	{
+		sprintf(res, "%s.graph", graph->underlying_name);
+		char* folder = dirname(res);
+		if(access(folder, W_OK) != 0)
+		{
+			printf("[ParaGrapher] Cannot create the .offsets file. Folder \"%s\" is not writable [%s].\n", folder, strerror(errno));
+			exit(-1);
+		}
+		res[0] = 0;
+	}
+
+
 	sprintf(offsets_file,"%.*s.offsets", PATH_MAX, graph->underlying_name);
 	if(access(offsets_file, F_OK) == 0)
 		return 0;
@@ -377,7 +393,18 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		if(ret != 0)
 			return NULL;
 
-		char res[2048];
+		char res[PATH_MAX];
+		// Check if the folder is writable
+		{
+			sprintf(res, "%s.graph", graph->underlying_name);
+			char* folder = dirname(res);
+			if(access(folder, W_OK) != 0)
+			{
+				printf("[ParaGrapher] Cannot create the offsets.bin file. Folder \"%s\" is not writable [%s].\n", folder, strerror(errno));
+				exit(-1);
+			}
+			res[0] = 0;
+		}
 
 		char* cmd = calloc(4096 + PATH_MAX * 2 + get_nprocs() * 4, 1);
 		assert(cmd != NULL);
@@ -406,6 +433,8 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 		}
 
 		chmod(bin_offsets_file, S_IRUSR|S_IRGRP|S_IROTH);
+
+		printf("[ParaGrapher] offsets.bin file created successfully: %s .\n", bin_offsets_file);
 
 		free(cmd);
 		cmd = NULL;
