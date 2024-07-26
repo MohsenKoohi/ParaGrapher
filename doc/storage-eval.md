@@ -47,5 +47,8 @@ We use a machine with Intel W-2295 3.00GHz CPU, 18 cores, 36 hyper-threads, 24MB
 *   [https://github.com/MohsenKoohi/ParaGrapher/blob/main/test/ReadBandwidth.java](https://github.com/MohsenKoohi/ParaGrapher/blob/main/test/ReadBandwidth.java) : this is a Java-based evaluation of read bandwidth and the script ([https://github.com/MohsenKoohi/ParaGrapher/blob/main/test/java-read-bandwidth.sh](https://github.com/MohsenKoohi/ParaGrapher/blob/main/test/java-read-bandwidth.sh)) can be used to create changes in evaluation parameters.
 
 The results are in the following.
-
 [![](images/cjava.png)](../../../raw/main/doc/images/cjava.png)
+
+For similar comparisons you may refer to:
+- https://github.com/david-slatinek/c-read-vs.-mmap/tree/main
+- https://eklausmeier.goip.de/blog/2016/02-03-performance-comparison-mmap-versus-read-versus-fread/
