@@ -34,5 +34,5 @@ For HDD and SSD experiments, we have used a machine with Intel W-2295 3.00GHz CP
 
 The results of the evaluation using **read\_bandwidth.c** are in the following table. The values are **Bandwidth in MB/s**. Also, 1-2 digits close to each number with a white background are are percentage of load imbalance between parallel threads.
 
-[![](images/hdd-ssd-lustre.png)](images/hdd-ssd-lustre.png)
+[![](images/hdd-ssd-lustre.png)](../raw/main/doc/images/hdd-ssd-lustre.png)
 
