@@ -1,4 +1,4 @@
-![ParaGrapher](docs/images/poplar.jpg)
+![ParaGrapher](doc/images/poplar.jpg)
 
 # [ParaGrapher: Graph Loading API and Library](https://blogs.qub.ac.uk/DIPSA/ParaGrapher/)
 
