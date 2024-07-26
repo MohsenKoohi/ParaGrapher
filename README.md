@@ -1,4 +1,4 @@
-![ParaGrapher](https://blogs.qub.ac.uk/dipsa/wp-content/uploads/sites/319/2024/02/poplar.jpg)
+![ParaGrapher](docs/images/poplar.jpg)
 
 # [ParaGrapher: Graph Loading API and Library](https://blogs.qub.ac.uk/DIPSA/ParaGrapher/)
 
@@ -68,8 +68,7 @@ may  be used for changing parameters.
 0. Binary format
 1. MatrixMarket format
 2. Textual CSX
-3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java, using semapher?
-4. A permanently-in-background (daemon) Java program may be required to answer all queries, but its memory usage and GC impacts should be considered
+3. Sleep time of communicating threads in webgraph.c and WebGraphRRServer.java, using semaphor?
 
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
@@ -78,4 +77,4 @@ law or agreed upon in writing, this Software is distributed on an "as is" basis,
 the implied warranty of merchantability or fitness for a particular purpose, neither express nor implied. 
 For details see terms of the License (see attached file: LICENSE). 
 
-#### Copyright 2024 The Queen's University of Belfast, Northern Ireland, UK
+#### Copyright 2024, Queen's University of Belfast, Northern Ireland, UK
