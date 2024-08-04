@@ -406,14 +406,14 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 			res[0] = 0;
 		}
 
-		char* cmd = calloc(4096 + PATH_MAX * 2 + get_nprocs() * 4, 1);
+		char* cmd = calloc(4096 + PATH_MAX * 2 + get_nprocs() / 4, 1);
 		assert(cmd != NULL);
 		char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 
-		char* ts = calloc(1024 + 2 * get_nprocs(), 1);
+		char* ts = calloc(1024 + get_nprocs() / 4, 1);
 		assert(ts != NULL);
-		for(int i = 0; i < get_nprocs() / 4 + 1; i++)
-			sprintf(ts + strlen(ts), "FF");
+		for(int i = 0; i < get_nprocs() / 4  + 1; i++)
+			sprintf(ts + strlen(ts), "F");
 		
 		if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
@@ -489,14 +489,14 @@ void* __wg_java_program_wrapper(void* in)
 	__wg_read_request* req = (__wg_read_request*) in;
 	__wg_graph* graph = (__wg_graph*)req->prr.graph;
 					
-	char* cmd = calloc(4096 + 2 * get_nprocs() + PATH_MAX, 1);
+	char* cmd = calloc(4096 + get_nprocs() / 4 + PATH_MAX, 1);
 	assert(cmd != NULL);
 	char* PLF=getenv("PARAGRAPHER_LIB_FOLDER");
 
-	char* ts = calloc(1024 + 2 * get_nprocs(), 1);
+	char* ts = calloc(1024 + get_nprocs() / 4, 1);
 	assert(ts != NULL);
-	for(int i = 0; i < get_nprocs()/4 + 1; i++)
-		sprintf(ts + strlen(ts), "FF");
+	for(int i = 0; i < get_nprocs() / 4 + 1; i++)
+		sprintf(ts + strlen(ts), "F");
 		
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
 		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
