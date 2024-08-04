@@ -412,8 +412,8 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 
 		char* ts = calloc(1024 + 2 * get_nprocs(), 1);
 		assert(ts != NULL);
-		for(int i = 0; i < get_nprocs() / 4; i++)
-		sprintf(ts + strlen(ts), "FF");
+		for(int i = 0; i < get_nprocs() / 4 + 1; i++)
+			sprintf(ts + strlen(ts), "FF");
 		
 		if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
