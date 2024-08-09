@@ -6,32 +6,14 @@
 
 #include <assert.h>
 #include <numa.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include <asm/unistd.h>
-#include <fcntl.h>
-#include <sys/syscall.h>
-#include <sys/mman.h>
-#include <sys/ioctl.h>
-#include <linux/hw_breakpoint.h>
-#include <errno.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <linux/futex.h>
-#include <emmintrin.h>
-#include <math.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/sysinfo.h>
-#include <locale.h>
 #include <omp.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <assert.h>
+#include <time.h>
+#include <fcntl.h>
 
-int run_command(char* in_command, char* input, unsigned int input_size);
+int __fc_run_command(char* in_command, char* input, unsigned int input_size);
 		
 int main(int argc, char *argv[])
 {
@@ -40,7 +22,7 @@ int main(int argc, char *argv[])
 	unsigned long mem = 0;
 	{
 		char input[64];
-		run_command("cat /proc/meminfo | grep MemAvailable | cut -f2 -d: | xargs | cut -f1 -d' '", input, 64);
+		__fc_run_command("cat /proc/meminfo | grep MemAvailable | cut -f2 -d: | xargs | cut -f1 -d' '", input, 64);
 		mem = atol(input) / 1024 / 1024;
 		printf("Available mem: %lu GB\n", mem);
 	}
@@ -63,7 +45,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int get_file_contents_no_print(char* file_name, char* buff, int buff_size)
+int __fc_get_file_contents_no_print(char* file_name, char* buff, int buff_size)
 {
 	int fd=open(file_name, O_RDONLY);
 	if(fd<0)
@@ -78,7 +60,7 @@ int get_file_contents_no_print(char* file_name, char* buff, int buff_size)
 	return count;
 }
 
-int run_command(char* in_command, char* input, unsigned int input_size)
+int __fc_run_command(char* in_command, char* input, unsigned int input_size)
 {
 	char* command = malloc(1024 + 64);
 	assert(command != NULL);
@@ -90,7 +72,7 @@ int run_command(char* in_command, char* input, unsigned int input_size)
 	if(ret == 0)
 	{
 		if(input != NULL && input_size != 0)
-			ret = get_file_contents_no_print(res_file, input, input_size);
+			ret = __fc_get_file_contents_no_print(res_file, input, input_size);
 	}
 	else
 		ret = -1;

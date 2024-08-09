@@ -326,6 +326,10 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 {
 	char cmd[1024 + PATH_MAX], offsets_file[1024 + PATH_MAX],res[PATH_MAX];
 
+	sprintf(offsets_file,"%.*s.offsets", PATH_MAX, graph->underlying_name);
+	if(access(offsets_file, F_OK) == 0)
+		return 0;
+
 	// Check if the folder is writable
 	{
 		sprintf(res, "%s.graph", graph->underlying_name);
@@ -337,11 +341,6 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 		}
 		res[0] = 0;
 	}
-
-
-	sprintf(offsets_file,"%.*s.offsets", PATH_MAX, graph->underlying_name);
-	if(access(offsets_file, F_OK) == 0)
-		return 0;
 
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
