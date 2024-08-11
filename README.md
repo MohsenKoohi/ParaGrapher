@@ -45,8 +45,9 @@ littel-endian format with 8-Bytes values for each of |V|+1 elements.
 In case of [MS-BioGraphs](https://blogs.qub.ac.uk/DIPSA/MS-BioGraphs/), the file with name `MS??_offsets.bin` can
 be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 
-- ParaGrapher creates some temporary files in `/dev/shm` with names starting by `paragrapher_`. The files are deleted at the end of a 
-successful exuection. Otherwise, they should be deleted by the user.
+- ParaGrapher creates shared memory objects (in `/dev/shm`) with names starting by `paragrapher_` for communication
+between C and Java sides. The files are deleted at the end of a successful exuection.
+Otherwise, they should be manually deleted using `make clean-shm-files`.
 
 - After calling ParaGrapher, OS cache of storage contents should be dropped using 
 [`echo 3 > /proc/sys/vm/drop_caches`](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
