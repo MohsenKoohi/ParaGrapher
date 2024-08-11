@@ -49,7 +49,7 @@ be downloaded and renamed as `MS??-underlying_offsets.bin` to prevent creating.
 between C and Java sides. The files are deleted at the end of a successful exuection.
 Otherwise, they should be manually deleted using `make clean-shm-files`.
 
-- After calling ParaGrapher, OS cache of storage contents should be dropped using 
+- After calling ParaGrapher, the cached contents of the storage should be dropped using 
 [`echo 3 > /proc/sys/vm/drop_caches`](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
 or by calling the [`flushcache`](test/flushcache.c) program that 
 has the same functionality but with a longer execution time.
