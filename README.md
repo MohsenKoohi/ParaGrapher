@@ -26,7 +26,7 @@ Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file u
 to download and store sample datasets into the `test/datasets` folder.
 
 ### Compiling and Executing Code
-- If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 10 of the `Makefile` and `test/Makefile`. 
+- If `gcc` is not in `PATH`, please set path to `gcc` compiler folder in Line 26 of the `Makefile` and `test/Makefile`. 
 
 - By commenting `-DNDEBUG` in Line 25 of the `Makefile`, ParaGrapher will output its logs.
 
@@ -35,8 +35,9 @@ to download and store sample datasets into the `test/datasets` folder.
 - All compiled and downloaded files are stored in the `lib64` folder and future calls to the library requires setting
 the `PARAGRAPHER_LIB_FOLDER` environemnt variable to the `lib64` folder.
 
-- The `test` folder contains sample codes for different types of graphs. Use `make test` for running the test. 
-You may pass argument `dataset` to specify the location of the test, e.g., `make test dataset=path/to/dataset`.
+- The `test` folder contains sample codes for different types of graphs.
+You may pass argument `dataset` to specify the location of the test, e.g., 
+`make test1_deg_dist_WG400 dataset=path/to/dataset`.
 
 - In the first access to the graphs in WebGraph format a delay may be experienced for creating two files by the library:
   1. A WebGraph `.offset` file is required which is created through a call to the WebGraph framework.

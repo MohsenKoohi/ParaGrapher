@@ -32,7 +32,6 @@ else
 	COMPILE_TYPE := -O3 # -DNDEBUG
 endif
 
-
 all:
 	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
 		$(GCC) -dumpversion; \
