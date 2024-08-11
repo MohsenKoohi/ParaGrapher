@@ -11,15 +11,15 @@ For futher information about the library please refer to https://blogs.qub.ac.uk
 Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file using [this link](../../raw/main/doc/api.pdf).
 
 ### Implemented Graph Types in ParaGrapher Library
-1. **PARAGRAPHER_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
-2. **PARAGRAPHER_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
-3. **PARAGRAPHER_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
+ - **PARAGRAPHER_CSX_WG_400_AP** : WebGraphs with 4 Bytes ID per vertex without weights on edges or vertices
+ - **PARAGRAPHER_CSX_WG_800_AP** : Big WebGraphs with 8 Bytes ID per vertex without weights on edges or vertices
+ - **PARAGRAPHER_CSX_WG_404_AP** : WebGraphs with 4 Bytes ID per vertex and 4 Bytes integer weight per edge and without weights on vertices
 
 ### Requirements
 
-1. `gcc` with a version greater than 9
-2. `JDK` with a version greater than 15
-3. `bc`, `wget`, and `unzip`
+- `gcc` with a version greater than 9
+- `JDK` with a version greater than 15
+- `bc`, `wget`, and `unzip`
 
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
