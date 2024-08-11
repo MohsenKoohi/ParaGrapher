@@ -74,11 +74,14 @@ test%: FORCE all
 download%: 
 	make -C test $@
 	
-clean:
-	rm -f $(PARAGRAPHER_LIB_FOLDER)/*.so $(PARAGRAPHER_LIB_FOLDER)/*.class /dev/shm/paragrapher_*
+clean: clean-shm-files
+	rm -f $(PARAGRAPHER_LIB_FOLDER)/*.so $(PARAGRAPHER_LIB_FOLDER)/*.class 
 	touch src/* include/*
 	make clean -C test
-	
+
+clean-shm-files: 
+	rm -f  /dev/shm/paragrapher_*
+
 touch:
 	touch src/* include/*
 
