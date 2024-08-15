@@ -26,7 +26,7 @@ Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file u
 to download and store sample datasets into the `test/datasets` folder.
 
 ### Compiling and Executing Code
-- By commenting `-DNDEBUG` in Line 25 of the `Makefile`, ParaGrapher will output its logs.
+- By commenting `-DNDEBUG` in Line 19 of the `Makefile`, ParaGrapher will output its logs.
 
 - With `make all` the C and Java source codes are compiled and the required WebGraph libraries are downloaded.
   
