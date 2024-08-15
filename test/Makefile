@@ -7,13 +7,6 @@ GXX := g++
 LIB := $(PARAGRAPHER_LIB_FOLDER):$(LD_LIBRARY_PATH)
 SHELL := /bin/bash
 
-UP_GCC_DIR := ~/gcc9.2
-ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
-	GCC := $(UP_GCC_DIR)/bin/gcc
-	GXX := $(UP_GCC_DIR)/bin/g++
-	LIB := $(UP_GCC_DIR)/lib64:$(LIB)
-endif
-
 OBJ := obj
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB))) 
@@ -50,17 +43,17 @@ $(OBJ)/%.o: %.c Makefile ../include/*.h
 	$(GCC) $< $(INCLUDE_LIBS) $(INCLUDE_HEADER) $(FLAGS) $(COMPILE_TYPE)  -o $(OBJ)/$*.o
 	@echo -e ""
 
-test%_WG400: $(OBJ)/test%_WG400.o
+test%_WG400: download_WG400 $(OBJ)/test%_WG400.o
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
 	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/cnr-2000"
 	@echo -e ""
 
-test%_WG404: $(OBJ)/test%_WG404.o
+test%_WG404: download_WG404 $(OBJ)/test%_WG404.o
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
 	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/MS1-weights"
 	@echo -e ""
 
-test%_WG800: $(OBJ)/test%_WG800.o 
+test%_WG800: download_WG800 $(OBJ)/test%_WG800.o 
 	@echo -e "Executing \033[1;33m"$@"\033[0;37m"	
 	PARAGRAPHER_LIB_FOLDER=$(PARAGRAPHER_LIB_FOLDER) LD_LIBRARY_PATH=$(LIB) $(OMP_VARS) $(OBJ)/$@.o $(dataset) "datasets/WDC-2012"
 	@echo -e ""

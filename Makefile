@@ -7,13 +7,6 @@ GXX := g++
 LIB := $(LD_LIBRARY_PATH)
 SHELL := /bin/bash
 
-UP_GCC_DIR := ~/Libs/gcc9.2
-ifneq ("$(wildcard $(UP_GCC_DIR)/bin/gcc)","")
-	GCC := $(UP_GCC_DIR)/bin/gcc
-	GXX := $(UP_GCC_DIR)/bin/g++
-	LIB := $(UP_GCC_DIR)/lib64:$(LIB)
-endif
-
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB)))
 FLAGS :=  -Wfatal-errors -lm -lpthread -lrt
