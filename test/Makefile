@@ -109,7 +109,7 @@ flushcache: flushcache.c Makefile
 	$(OBJ)/$@.o 
 	
 clean:
-	rm -r $(OBJ)
+	rm -r -f $(OBJ)
 	touch * 
 	
 touch:
