@@ -68,8 +68,7 @@ may  be used for changing parameters.
 0. Binary format
 1. MatrixMarket format
 2. Textual CSX
-3. Loading the transposed/symmetrized version of the graph
-
+   
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
 You must not use this Software except in compliance with the terms of the License. Unless required by applicable 
