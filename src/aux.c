@@ -45,12 +45,15 @@ long __run_command(char* in_cmd, char* output, unsigned int output_size)
 {
 	assert(in_cmd != NULL);
 
+	char hostname[256]={0};
+	gethostname(hostname, 256);
+
 	int in_cmd_size = strlen(in_cmd);
 	char* cmd = malloc(in_cmd_size + 2 * 64);
 	assert(cmd != NULL);
 	
 	char* res_file = cmd + in_cmd_size + 64;
-	sprintf(res_file, "_temp_res_%lu.txt", __get_nano_time());	
+	sprintf(res_file, "_temp_res_%s_%lu.txt", hostname, __get_nano_time());	
 	sprintf(cmd, "%s 1>%s 2>&1", in_cmd, res_file);
 
 	int ret = system(cmd);

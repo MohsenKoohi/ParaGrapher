@@ -62,10 +62,13 @@ int __fc_get_file_contents_no_print(char* file_name, char* buff, int buff_size)
 
 int __fc_run_command(char* in_command, char* input, unsigned int input_size)
 {
+	char hostname[256]={0};
+	gethostname(hostname, 256);
+
 	char* command = malloc(1024 + 64);
 	assert(command != NULL);
 	char* res_file = command + 1024;
-	sprintf(res_file, "_temp_res_%lu.txt",time(0));	
+	sprintf(res_file, "_temp_res_%s_%lu.txt", hostname, time(0));	
 	sprintf(command, "%s >%s", in_command, res_file);
 	
 	int ret = system(command);
