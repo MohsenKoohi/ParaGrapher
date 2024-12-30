@@ -153,10 +153,13 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	sprintf(graph->underlying_name, "%.*s", PATH_MAX, underlying_name);
 
 	graph->buffer_size = 1024UL * 1024 * 64;
-	graph->max_buffers_count = get_nprocs();
 	{
 		char res[1024];
-		int ret = (int)__run_command("lscpu | grep \"Thread(s) per core\" | head -n1 | cut -f2 -d:|xargs", res, 1023);
+		int ret = (int)__run_command("nproc", res, 1023);
+		assert(ret == 0);
+		graph->max_buffers_count = atoi(res);
+
+		ret = (int)__run_command("lscpu | grep \"Thread(s) per core\" | head -n1 | cut -f2 -d:|xargs", res, 1023);
 		assert(ret == 0);
 		unsigned int tpc = atoi(res);
 		if(tpc == 1)
