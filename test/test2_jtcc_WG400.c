@@ -103,7 +103,7 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 int main(int argc, char** args)
 {	
 	unsigned long t0 = - __get_nano_time();
-	printf("\n---------------------\ntest8\n");
+	printf("\n---------------------\ntest2_JT_CC\n");
 	for(int i=0; i< argc; i++)
 		printf("  args[%d]: %s\n",i, args[i]);
 
@@ -282,12 +282,10 @@ int main(int argc, char** args)
 			f=NULL;
 			free(wcc_dist);
 			wcc_dist = NULL;
-
 	}
 	
 	t0 += __get_nano_time();
 	printf("\nTotal time: %.2f seconds.\n\n", t0/1e9);	
-
 
 	return 0;
 }

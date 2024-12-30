@@ -61,7 +61,7 @@ test%_WG800: download_WG800 $(OBJ)/test%_WG800.o
 download_WG400:
 	@if [ ! -f datasets/cnr-2000.graph ]; then \
 		mkdir -p datasets; \
-		echo -e "--------------------\n\033[1;34mDownloading cnr-2000\033[0;37m"; \
+		echo -e "--------------------\n\033[1;34mDownloading CNR-2000\033[0;37m"; \
 		wget -P datasets "http://data.law.di.unimi.it/webdata/cnr-2000/cnr-2000.graph"; \
 		wget -P datasets "http://data.law.di.unimi.it/webdata/cnr-2000/cnr-2000.properties"; \
 		echo -e "--------------------\n";\
@@ -88,7 +88,7 @@ download_WG404:
 download_WG800:
 	@if [ ! -f datasets/WDC-2012.graph ]; then \
 		mkdir -p datasets; \
-		echo -e "--------------------\n\033[1;34mDownloading MS1\033[0;37m"; \
+		echo -e "--------------------\n\033[1;34mDownloading Hyperlink-2012\033[0;37m"; \
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.graph" -O datasets/WDC-2012.graph; \
 		wget "https://data.dws.informatik.uni-mannheim.de/hyperlinkgraph/2012-08/webgraph/network.properties" -O datasets/WDC-2012.properties ; \
 		echo -e "--------------------\n";\

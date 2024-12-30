@@ -1,7 +1,7 @@
 /*
-This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_400_AP) 
-and writes it in uncompressed binary format 
+JT-CC for WG400AP without symmetrizing the inut graph
 */
+
 
 #include "paragrapher.h"
 
@@ -17,59 +17,94 @@ and writes it in uncompressed binary format
 #include <locale.h>
 #include <math.h>
 
-char output_file[1024] = {0};
+unsigned long __get_nano_time()
+{
+	struct timespec ts;
+	timespec_get(&ts,TIME_UTC);
+	return ts.tv_sec*1e9+ts.tv_nsec;
+}
+
+unsigned int* cc = NULL;
 unsigned long vertices_count = 0UL;
 unsigned long completed_callbacks_count = 0UL;
-unsigned long processed_edges = 0UL;
 
 void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id, void* args)
 {
-	// unsigned long bi= (unsigned long)buffer_id;
-	// printf("Callback for bi: %lu,  eb: %lu.%lu - %lu.%lu\n", bi, eb->start_vertex, eb->start_edge, eb->end_vertex, eb->end_edge);
 
 	unsigned long* offsets = (unsigned long*)in_offsets;
-	unsigned char* buf = (unsigned char*)in_edges;
-	unsigned long ec = offsets[eb->end_vertex] + eb->end_edge - offsets[eb->start_vertex] - eb->start_edge;
-	
-	int fd = open(output_file, O_RDWR); 
-	assert(fd > 0);	
-	
-	unsigned long ei_offset = 
-		sizeof(unsigned long) * (2 + vertices_count + 1) + 
-		sizeof(unsigned int) * (offsets[eb->start_vertex] + eb->start_edge)
-	;
-	unsigned long new_offset = lseek(fd, ei_offset, SEEK_SET);
-	assert(new_offset == ei_offset);
+	unsigned int* edges = (unsigned int*)in_edges;
+	unsigned long buffer_ec = offsets[eb->end_vertex] + eb->end_edge - offsets[eb->start_vertex] - eb->start_edge;
+	// printf("buffer_ec: %lu\n", buffer_ec);
 
-	unsigned long written_bytes = 0;
-	unsigned long total_bytes = ec * sizeof(unsigned int);
-	while(written_bytes != total_bytes)
+	unsigned long ei_offset = offsets[eb->start_vertex] + eb->start_edge;
+
+	for(unsigned int v = eb->start_vertex; v <= eb->end_vertex; v++)
 	{
-		ssize_t wret = write(fd, buf + written_bytes, total_bytes - written_bytes);
-		assert(wret != -1);
-		written_bytes += wret;
+		// Identifying the start and the end edge of v that are in the current partition
+			unsigned int start_edge_index = 0;
+			if(v == eb->start_vertex)
+				start_edge_index = eb->start_edge;
+
+			unsigned int end_edge_index = 0;
+			if(v == eb->end_vertex)
+				end_edge_index = eb->end_edge;
+			else
+				end_edge_index = offsets[v + 1] - offsets[v];
+
+		// Processing the edges
+		for(unsigned int e = start_edge_index; e < end_edge_index; e++)
+		{
+			unsigned long edge_index = offsets[v] + e - ei_offset;
+			unsigned int dest = edges[edge_index];
+
+			// Jayanti-Tarjan Weekly Connected Components
+			// http://arxiv.org/abs/1612.01514
+			{
+				unsigned int x = v;
+				unsigned int y = dest;
+
+				while(1)
+				{
+					while(x != cc[x])
+						x = cc[x];
+
+					while(y != cc[y])
+						y = cc[y];
+
+					if(x == y)
+						break;
+
+					if(x < y)
+					{
+						if(__sync_bool_compare_and_swap(&cc[y], y, x))
+							break;
+					}
+					else
+					{
+						if(__sync_bool_compare_and_swap(&cc[x], x, y))
+							break;
+					}
+				}
+			}
+
+		}
 	}
-
-	close(fd);
-	fd = -1;
-
-	__atomic_add_fetch(&processed_edges, ec, __ATOMIC_RELAXED);
 
 	paragrapher_csx_release_read_buffers(req, eb, buffer_id);
 
-	__atomic_add_fetch(&completed_callbacks_count, 1UL, __ATOMIC_RELAXED);
+	// if(completed_callbacks_count > 10)
+	// 	sleep(5);
 
+	__atomic_add_fetch(&completed_callbacks_count, 1UL, __ATOMIC_RELAXED);
 	return;
 }
 
 int main(int argc, char** args)
 {	
-	printf("\n---------------------\ntest4_WG400\n");
+	unsigned long t0 = - __get_nano_time();
+	printf("\n---------------------\ntest7_JT_CC, using PG_FUSE\n");
 	for(int i=0; i< argc; i++)
 		printf("  args[%d]: %s\n",i, args[i]);
-
-	sprintf(output_file, "obj/test2.bin");
-	printf("  output_file: %s\n", output_file);
 
 	setlocale(LC_NUMERIC, "");
 	setbuf(stdout, NULL);
@@ -78,7 +113,9 @@ int main(int argc, char** args)
 	int ret = paragrapher_init();
 	assert(ret == 0);
 
-	paragrapher_graph* graph = paragrapher_open_graph(args[1], PARAGRAPHER_CSX_WG_400_AP, NULL, 0);
+	char* __arg0 = "USE_PG_FUSE";
+	void* open_args [] = {__arg0};
+	paragrapher_graph* graph = paragrapher_open_graph(args[1], PARAGRAPHER_CSX_WG_400_AP, open_args, 1);
 	assert(graph != NULL);
 
 	unsigned long edges_count = 0;
@@ -139,45 +176,11 @@ int main(int argc, char** args)
 		}
 	}
 
-	// Getting the offsets
-		unsigned long* offsets = (unsigned long*)paragrapher_csx_get_offsets(graph, NULL, 0, -1UL, NULL, 0);
-		assert(offsets != NULL);
-
-		printf("\n  First Degrees: ");
-		for(unsigned int v= 0; v < 30; v++)
-			printf("%u, ", (unsigned int)(offsets[v + 1] - offsets[v]));
-		printf("\n");
-
-	// Writing to the file
-	{
-		int fd = open(output_file, O_RDWR|O_CREAT|O_TRUNC, 0644); 
-		assert(fd > 0);
-
-		int ret = ftruncate(fd, sizeof(unsigned long) * (2 + vertices_count + 1) + edges_count * sizeof(unsigned int));
-		assert(ret == 0);
-
-		unsigned long temp[2] = {vertices_count, edges_count};
-		ssize_t wret = write(fd, temp, 16);
-		assert(wret == 16);
-
-		char* offsets_buf = (char*)offsets;
-		unsigned long written_bytes = 0;
-		unsigned long total_bytes = (vertices_count + 1) * sizeof(unsigned long);
-		while(written_bytes != total_bytes)
-		{
-			wret = write(fd, offsets_buf + written_bytes, total_bytes - written_bytes);
-			assert(wret != -1);
-			written_bytes += wret;
-		}
-
-		close(fd);
-		fd = -1;
-	}
-
-	// Releasing the offsets array
-		paragrapher_csx_release_offsets_weights_arrays(graph, offsets);
-		offsets = NULL;
-	
+	// Allocating memory for in_degrees array and for CC
+		cc = calloc(sizeof(unsigned int), vertices_count);
+		assert(cc != NULL);
+		for(unsigned int v = 0; v < vertices_count; v++)
+			cc[v] = v;
 
 	// Reading the graph
 	{
@@ -190,7 +193,7 @@ int main(int argc, char** args)
 		eb.end_edge= -1UL;
 
 
-		paragrapher_read_request* req= paragrapher_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, NULL, 0);
+		paragrapher_read_request* req= paragrapher_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL,NULL, 0);
 		assert(req != NULL);
 
 		struct timespec ts = {0, 200 * 1000 * 1000};
@@ -215,7 +218,7 @@ int main(int argc, char** args)
 				assert (ret == 0);
 			}
 
-			printf("  Reading ..., status: %'ld, read_edges: %'lu, completed callbacks: %'u/%'u .\n", status, read_edges, completed_callbacks_count, callbacks_count);
+			// printf("  Reading ..., status: %'ld, read_edges: %'lu, completed callbacks: %'u/%'u .\n", status, read_edges, completed_callbacks_count, callbacks_count);
 		}
 		while(status == 0);
 
@@ -226,7 +229,7 @@ int main(int argc, char** args)
 		while(completed_callbacks_count < callbacks_count)
 		{
 			nanosleep(&ts, NULL);
-			printf("  Waiting for callbacks ..., completed callbacks: %'u/%'u .\n", completed_callbacks_count, callbacks_count);
+			// printf("  Waiting for callbacks ..., completed callbacks: %'u/%'u .\n", completed_callbacks_count, callbacks_count);
 		}
 
 		// Releasing the req
@@ -234,17 +237,56 @@ int main(int argc, char** args)
 		req = NULL;
 	}
 
-	printf("  Processed edges: %'lu\n", processed_edges);
-	assert(processed_edges == edges_count);
-
 	// Releasing the graph
 		ret = paragrapher_release_graph(graph, NULL, 0);
 		assert(ret == 0);
 		graph = NULL;
 
-	printf("\n  Decompressing and saving in binary format finished successfully.\n");
+	{
+		// CC
+			unsigned int ccs = 0;
+			unsigned int* wcc_dist = calloc(sizeof(unsigned int), vertices_count);
+			assert(wcc_dist != NULL);
+
+			for(unsigned int v = 0; v < vertices_count; v++)
+			{	
+				while(cc[cc[v]] != cc[v])
+					cc[v] = cc[cc[v]];
+
+				if(cc[v] == v)
+					ccs++;
+
+				wcc_dist[cc[v]]++;
+			}
+			printf("  Number of WCC: %'u\n", ccs);
+
+			unsigned int max_wcc = 0;
+			printf("  Output file: obj/test7_wcc_distribution.txt\n");
+			FILE* f = fopen("obj/test7_wcc_distribution.txt","w+");
+			assert(f != NULL);
+			unsigned int total_v = 0;
+			for(unsigned int v = 0; v < vertices_count; v++)
+			{
+				if(wcc_dist[v] > wcc_dist[max_wcc])
+					max_wcc = v;
+
+				if(wcc_dist[v])
+					fprintf(f, "%u; %u;\n", v, wcc_dist[v]);
+
+				total_v += wcc_dist[v];
+			}
+
+			printf("  Largest WCC: %'u\n", wcc_dist[max_wcc]);
+			assert(total_v == vertices_count);
+
+			fclose(f);
+			f=NULL;
+			free(wcc_dist);
+			wcc_dist = NULL;
+	}
 	
-	printf("---------------------\n");
-	
+	t0 += __get_nano_time();
+	printf("\nTotal time: %.2f seconds.\n\n", t0/1e9);	
+
 	return 0;
 }

@@ -63,12 +63,12 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 
 int main(int argc, char** args)
 {	
-	printf("\n---------------------\ntest3_WG404\n");
+	printf("\n---------------------\ntest6_WG404\n");
 	for(int i=0; i< argc; i++)
 		printf("  args[%d]: %s\n",i, args[i]);
 
-	sprintf(output_file, "obj/test3_edges.bin");
-	// sprintf(output_file, "/dev/shm/test3_edges.bin");
+	// sprintf(output_file, "obj/test6_edges.bin");
+	sprintf(output_file, "/dev/shm/test6_edges.bin");
 	printf("  output_file: %s\n", output_file);
 
 	setlocale(LC_NUMERIC, "");
@@ -178,7 +178,7 @@ int main(int argc, char** args)
 		paragrapher_read_request* req= paragrapher_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, NULL, 0);
 		assert(req != NULL);
 
-		struct timespec ts = {0, 200 * 1000 * 1000};
+		struct timespec ts = {10, 000 * 1000 * 1000};
 		long status = 0;
 		unsigned long read_edges = 0;
 		unsigned long callbacks_count = 0;

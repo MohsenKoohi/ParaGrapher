@@ -71,7 +71,7 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 
 int main(int argc, char** args)
 {	
-	printf("\n---------------------\ntest4_WG800\n");
+	printf("\n---------------------\ntest5_WG800\n");
 	for(int i=0; i< argc; i++)
 		printf("  args[%d]: %s\n",i, args[i]);
 

@@ -53,7 +53,7 @@ Otherwise, they should be manually deleted using `make clean-shm-files`.
 or by calling the [`flushcache`](test/flushcache.c) program that 
 has the same functionality but with a longer execution time.
 
-### Bandwidht Measurement
+### Bandwidth Measurement
 
 - The file [test/read_bandwidth.c](test/read_bandwidth.c) contains a 
 benchmark implemented in C to measure the read bandwidth of storage for (i) different thread numbers, (ii) different block sizes, and

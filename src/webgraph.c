@@ -16,6 +16,11 @@ typedef struct
 	unsigned long edges_count;
 
 	unsigned long* offsets;
+
+	unsigned long pg_fuse_active;
+	char pg_fuse_underlying_graph_mountpoint[PATH_MAX];
+	char pg_fuse_graph_mount_point[PATH_MAX];
+	char pg_fuse_linked_folder[PATH_MAX];
 } __wg_graph;
 
 // Changing these values should be reflected also on WebGraphRRServer.java
@@ -142,15 +147,176 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			assert(0 && "Do not reach here.");
 			exit(-1);
 		}
-
 	}
 
 	__wg_graph* graph = calloc(1, sizeof(__wg_graph));
 	assert(graph != NULL);
 
+	// Iterating over args
+		for(int a = 0; a < argc; a++)
+		{
+			if(!strcmp((char*)args[a], "USE_PG_FUSE"))
+				graph->pg_fuse_active = 1;
+		}
+
+	// Mount files if pg_fuse is active 
+	if(graph->pg_fuse_active)
+	{
+		char* temp = malloc(4096 * 4 + PATH_MAX * 4);
+		assert(temp != NULL);
+		char res[4096];
+		char n1[2 * PATH_MAX + 2];
+		char n2[2 * PATH_MAX + 2];
+
+		char* PLF = strdup(getenv("PARAGRAPHER_LIB_FOLDER"));
+
+		// Basename and dirname of underlying graph
+			sprintf(temp, "%s.graph", underlying_name);
+			char* u_basename = strdup(basename(temp));
+			u_basename[strlen(u_basename) - 6] = '\0';
+			char* u_dirname = realpath(dirname(temp), NULL);
+			
+		// Creating temp folders
+			sprintf(graph->pg_fuse_underlying_graph_mountpoint, "/tmp/%s-graph-%lu", u_basename, __get_nano_time());
+			int ret = mkdir(graph->pg_fuse_underlying_graph_mountpoint, 0700);
+			assert(ret == 0);
+
+			sprintf(graph->pg_fuse_linked_folder, "/tmp/%s-all-%lu", u_basename, __get_nano_time());
+			ret = mkdir(graph->pg_fuse_linked_folder, 0700);
+			assert(ret == 0);
+
+			if(type == PARAGRAPHER_CSX_WG_404_AP)
+			{
+				sprintf(graph->pg_fuse_graph_mount_point, "/tmp/%s-labels-%lu", u_basename, __get_nano_time());
+				int ret = mkdir(graph->pg_fuse_graph_mount_point, 0700);
+				assert(ret == 0);
+			}
+		
+		// Mounting and linking the .graph file
+			sprintf(temp, "%s/pg_fuse.o %s --file_path=%s.graph -o auto_unmount", 
+				PLF, graph->pg_fuse_underlying_graph_mountpoint, underlying_name);
+			ret = __run_command(temp, res, 4096);
+			if(ret != 0)
+			{
+				printf("[ParaGrapher] Could not mount on %s, Output: %s\n", graph->pg_fuse_underlying_graph_mountpoint, res);
+				return NULL;
+			}
+			printf("[ParaGrapher] Mounting underlying graph on %s .\n", graph->pg_fuse_underlying_graph_mountpoint);
+			printf("[ParaGrapher] Linking graphs on %s .\n", graph->pg_fuse_linked_folder);
+
+			sprintf(n1, "%s/%s.graph",graph->pg_fuse_underlying_graph_mountpoint, u_basename);
+			sprintf(n2, "%s/%s.graph",graph->pg_fuse_linked_folder, u_basename);
+			ret = symlink(n1, n2);
+			if(ret != 0)
+			{
+				printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+				return NULL;
+			}
+
+		// Linking the .properties, .offsets, and _offsets.bin files
+			sprintf(n1, "%s/%s.properties",u_dirname, u_basename);
+			sprintf(n2, "%s/%s.properties",graph->pg_fuse_linked_folder, u_basename);
+			ret = symlink(n1, n2);
+			if(ret != 0)
+			{
+				printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+				return NULL;
+			}
+
+			sprintf(n1, "%s/%s.offsets", u_dirname, u_basename);
+			sprintf(n2, "%s/%s.offsets", graph->pg_fuse_linked_folder, u_basename);
+			if(access(n1, F_OK) == 0)
+			{
+				ret = symlink(n1, n2);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+					return NULL;
+				}
+			}
+
+			sprintf(n1, "%s/%s_offsets.bin", u_dirname, u_basename);
+			sprintf(n2, "%s/%s_offsets.bin", graph->pg_fuse_linked_folder, u_basename);
+			if(access(n1, F_OK) == 0)
+			{
+				ret = symlink(n1, n2);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+					return NULL;
+				}
+			}
+
+		// Updating the underlying_name
+			sprintf(underlying_name, "%s/%s", graph->pg_fuse_linked_folder, u_basename);
+
+		if(type != PARAGRAPHER_CSX_WG_404_AP)
+		{
+			sprintf(name, "%s", underlying_name);
+		}
+		else
+		{
+			// Mounting the .labels file
+				sprintf(temp, "%s/pg_fuse.o %s --file_path=%s.labels -o auto_unmount", 
+					PLF, graph->pg_fuse_graph_mount_point, name);
+				ret = __run_command(temp, res, 4096);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not mount on %s, Output: %s\n", graph->pg_fuse_graph_mount_point, res);
+					return NULL;
+				}
+				printf("[ParaGrapher] Mounting labelled graph on %s .\n", graph->pg_fuse_graph_mount_point);
+				
+				sprintf(temp, "%s.labels", name);
+				char* l_basename = strdup(basename(temp));
+				l_basename[strlen(l_basename) - 7] = '\0';
+			
+			// Linking the .labels file
+				sprintf(n1, "%s/%s.labels", graph->pg_fuse_graph_mount_point, l_basename);
+				sprintf(n2, "%s/%s.labels", graph->pg_fuse_linked_folder, l_basename);
+				ret = symlink(n1, n2);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+					return NULL;
+				}
+
+			// Linking the .properties file
+				sprintf(n1, "%s/%s.properties", u_dirname, l_basename);
+				sprintf(n2, "%s/%s.properties", graph->pg_fuse_linked_folder, l_basename);
+				ret = symlink(n1, n2);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+					return NULL;
+				}
+
+			// Linking the .labeloffsets file
+				sprintf(n1, "%s/%s.labeloffsets", u_dirname, l_basename);
+				sprintf(n2, "%s/%s.labeloffsets", graph->pg_fuse_linked_folder, l_basename);
+				ret = symlink(n1, n2);
+				if(ret != 0)
+				{
+					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+					return NULL;
+				}
+
+			sprintf(name, "%s/%s", graph->pg_fuse_linked_folder, l_basename);
+			free(l_basename);			
+		}
+		
+		free(temp);
+		free(u_basename);
+		free(u_dirname);
+		free(PLF);
+	}
+	
 	graph->graph_type = type;
 	sprintf(graph->name, "%.*s", PATH_MAX, name);
 	sprintf(graph->underlying_name, "%.*s", PATH_MAX, underlying_name);
+
+	// printf("Graph name: %s\n", name);
+	// printf("Graph underlying name: %s\n", underlying_name);
 
 	graph->buffer_size = 1024UL * 1024 * 64;
 	{
@@ -195,6 +361,27 @@ int __wg_release_graph(paragrapher_graph* in_graph, void** args, int argc)
 			munmap(graph->offsets, 8UL * (1 + graph->vertices_count));
 			graph->offsets = NULL;
 		}
+
+	if(graph->pg_fuse_active)
+	{
+		char temp[4096 + 3 * PATH_MAX];
+		char res[1024];
+		sprintf(temp, "fusermount -u %s", graph->pg_fuse_underlying_graph_mountpoint);
+		int ret = __run_command(temp, res, 1024);
+		assert(ret == 0);
+
+		if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
+		{
+			sprintf(temp, "fusermount -u %s", graph->pg_fuse_graph_mount_point);
+			ret = __run_command(temp, res, 1024);
+			assert(ret == 0);
+		}
+
+		sprintf(temp, "rm -r %s %s %s", 
+			graph->pg_fuse_linked_folder, graph->pg_fuse_underlying_graph_mountpoint, graph->pg_fuse_graph_mount_point);
+		ret = __run_command(temp, res, 1024);
+		assert(ret == 0);
+	}
 
 	// Releasing graph
 		memset(graph, 0, sizeof(__wg_graph));
@@ -634,7 +821,7 @@ void* __wg_thread(void* in)
 		req->shm_mem_size = shm_size;
 		
 	// Setting shm vars and initializing them
-		// First cacheline for info of C program
+		// First cacheline contains C side info
 		long* ds_mem = (long*)shm_mem;
 		long* C_timestamp = ds_mem;
 		long* C_completed = ds_mem + 1;

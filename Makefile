@@ -19,7 +19,7 @@ else
 	COMPILE_TYPE := -O3 -DNDEBUG
 endif
 
-all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES)
+all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES) $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
 
 $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so: src/* include/* Makefile
 	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
@@ -31,7 +31,7 @@ $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so: src/* include/* Makefile
 	@echo -e "\n\033[1;32mPARAGRAPHER_LIB_FOLDER: "$(PARAGRAPHER_LIB_FOLDER)"\033[0;37m"
 	@echo -e "\033[1;34mCompiling ParaGrapher\033[0;37m"
 	mkdir -p $(PARAGRAPHER_LIB_FOLDER)
-	$(GCC) $(INCLUDE_LIBS) $(FLAGS) $(COMPILE_TYPE) -fpic -shared src/paragrapher.c -o $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so
+	$(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) $(FLAGS) $(COMPILE_TYPE) -fpic -shared -std=gnu11 src/paragrapher.c -o $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so
 	@echo ""
 
 JLIBS: FORCE 
@@ -55,6 +55,10 @@ JLIBS: FORCE
 $(PARAGRAPHER_LIB_FOLDER)/%.class: src/%.java Makefile
 	@echo -e "\033[1;34mCompiling $<\033[0;37m"
 	javac -cp $(PARAGRAPHER_LIB_FOLDER)/jlibs/*:src: -d $(PARAGRAPHER_LIB_FOLDER) $<
+
+$(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o: src/pg_fuse.c Makefile
+	@echo -e "\n\033[1;34mCompiling ParaGrapher FUSE (pg_fuse)\033[0;37m"
+	$(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) -lnuma -lfuse3 $(FLAGS) $(COMPILE_TYPE) src/pg_fuse.c -o $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
 
 test: FORCE all
 	@echo -e "\n\033[1;32mPARAGRAPHER_LIB_FOLDER: "$(PARAGRAPHER_LIB_FOLDER)"\033[0;37m"

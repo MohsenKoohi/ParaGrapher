@@ -80,7 +80,7 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 int main(int argc, char** args)
 {	
 	// Initializing vars
-		printf("\n---------------------\ntest2_WG400\n");
+		printf("\n---------------------\ntest3_WG400\n");
 		for(int i=0; i< argc; i++)
 			printf("  args[%d]: %s\n",i, args[i]);
 		assert(argc > 1);

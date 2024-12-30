@@ -1,6 +1,8 @@
 /*
-This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_400_AP) 
-and writes it in uncompressed binary format 
+This program reads a WebGraph asynchronously (PARAGRAPHER_CSX_WG_404_AP) 
+and writes the edges in uncompressed binary format in memory.
+
+Each edge is written in 8 Bytes: 4 Bytes for the endpoint, and 4 Bytes for its weight in unsigned int format.
 */
 
 #include "paragrapher.h"
@@ -24,7 +26,7 @@ unsigned long processed_edges = 0UL;
 
 void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* in_offsets, void* in_edges, void* buffer_id, void* args)
 {
-	// unsigned long bi= (unsigned long)buffer_id;
+	// unsigned long bi = (unsigned long)buffer_id;
 	// printf("Callback for bi: %lu,  eb: %lu.%lu - %lu.%lu\n", bi, eb->start_vertex, eb->start_edge, eb->end_vertex, eb->end_edge);
 
 	unsigned long* offsets = (unsigned long*)in_offsets;
@@ -34,15 +36,12 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 	int fd = open(output_file, O_RDWR); 
 	assert(fd > 0);	
 	
-	unsigned long ei_offset = 
-		sizeof(unsigned long) * (2 + vertices_count + 1) + 
-		sizeof(unsigned int) * (offsets[eb->start_vertex] + eb->start_edge)
-	;
+	unsigned long ei_offset = 2 * sizeof(unsigned int) * (offsets[eb->start_vertex] + eb->start_edge);
 	unsigned long new_offset = lseek(fd, ei_offset, SEEK_SET);
 	assert(new_offset == ei_offset);
 
 	unsigned long written_bytes = 0;
-	unsigned long total_bytes = ec * sizeof(unsigned int);
+	unsigned long total_bytes = ec * 2 * sizeof(unsigned int);
 	while(written_bytes != total_bytes)
 	{
 		ssize_t wret = write(fd, buf + written_bytes, total_bytes - written_bytes);
@@ -64,11 +63,12 @@ void callback(paragrapher_read_request* req, paragrapher_edge_block* eb, void* i
 
 int main(int argc, char** args)
 {	
-	printf("\n---------------------\ntest4_WG400\n");
+	printf("\n---------------------\ntest8_WG404\n");
 	for(int i=0; i< argc; i++)
 		printf("  args[%d]: %s\n",i, args[i]);
 
-	sprintf(output_file, "obj/test2.bin");
+	// sprintf(output_file, "obj/test8_edges.bin");
+	sprintf(output_file, "/dev/shm/test8_edges.bin");
 	printf("  output_file: %s\n", output_file);
 
 	setlocale(LC_NUMERIC, "");
@@ -78,7 +78,9 @@ int main(int argc, char** args)
 	int ret = paragrapher_init();
 	assert(ret == 0);
 
-	paragrapher_graph* graph = paragrapher_open_graph(args[1], PARAGRAPHER_CSX_WG_400_AP, NULL, 0);
+	char* __arg0 = "USE_PG_FUSE";
+	void* open_args [] = {__arg0};
+	paragrapher_graph* graph = paragrapher_open_graph(args[1], PARAGRAPHER_CSX_WG_404_AP, open_args, 1);
 	assert(graph != NULL);
 
 	unsigned long edges_count = 0;
@@ -148,27 +150,13 @@ int main(int argc, char** args)
 			printf("%u, ", (unsigned int)(offsets[v + 1] - offsets[v]));
 		printf("\n");
 
-	// Writing to the file
+	// Creating the file
 	{
 		int fd = open(output_file, O_RDWR|O_CREAT|O_TRUNC, 0644); 
 		assert(fd > 0);
 
-		int ret = ftruncate(fd, sizeof(unsigned long) * (2 + vertices_count + 1) + edges_count * sizeof(unsigned int));
+		int ret = ftruncate(fd, 2 * sizeof(unsigned int) * edges_count);
 		assert(ret == 0);
-
-		unsigned long temp[2] = {vertices_count, edges_count};
-		ssize_t wret = write(fd, temp, 16);
-		assert(wret == 16);
-
-		char* offsets_buf = (char*)offsets;
-		unsigned long written_bytes = 0;
-		unsigned long total_bytes = (vertices_count + 1) * sizeof(unsigned long);
-		while(written_bytes != total_bytes)
-		{
-			wret = write(fd, offsets_buf + written_bytes, total_bytes - written_bytes);
-			assert(wret != -1);
-			written_bytes += wret;
-		}
 
 		close(fd);
 		fd = -1;
@@ -178,7 +166,6 @@ int main(int argc, char** args)
 		paragrapher_csx_release_offsets_weights_arrays(graph, offsets);
 		offsets = NULL;
 	
-
 	// Reading the graph
 	{
 		printf("\n  Reading graph ...\n");
@@ -193,7 +180,7 @@ int main(int argc, char** args)
 		paragrapher_read_request* req= paragrapher_csx_get_subgraph(graph, &eb, NULL, NULL, callback, NULL, NULL, 0);
 		assert(req != NULL);
 
-		struct timespec ts = {0, 200 * 1000 * 1000};
+		struct timespec ts = {10, 000 * 1000 * 1000};
 		long status = 0;
 		unsigned long read_edges = 0;
 		unsigned long callbacks_count = 0;

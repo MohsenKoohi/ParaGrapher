@@ -1,6 +1,31 @@
 #ifndef __PARAGRAPHER_AUX_C
 #define __PARAGRAPHER_AUX_C
 
+#define _GNU_SOURCE
+
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <sys/sysinfo.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <math.h>
+#include <pthread.h>
+#include <limits.h>
+#include <sched.h>
+
+#ifdef NDEBUG
+	#define __PD 0 
+#else
+	#define __PD 1
+#endif
+
 #define max(a,b)           \
 ({                         \
 	__typeof__ (a) _a = (a); \
@@ -37,6 +62,21 @@ int __get_file_contents(char* file_name, char* buff, int buff_size)
 			buff[c] = '|';
 
 	close(fd);
+
+	return count;
+}
+
+unsigned int get_available_cpus_count()
+{
+	cpu_set_t set;
+	unsigned int count = 0;
+	
+	int ret = pthread_getaffinity_np(pthread_self(), sizeof (set), &set);
+	assert(ret == 0);
+
+	for (int i = 0; i < CPU_SETSIZE; i++)
+		if (CPU_ISSET (i, &set))
+			count++;
 
 	return count;
 }
