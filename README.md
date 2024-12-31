@@ -20,6 +20,7 @@ Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file u
 - `gcc` with a version greater than 9
 - `JDK` with a version greater than 15
 - `bc`, `wget`, and `unzip`
+- `libfuse3` and `libnuma` for using `pg_fuse` (optional)
 
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
@@ -52,6 +53,16 @@ Otherwise, they should be manually deleted using `make clean-shm-files`.
 [`echo 3 > /proc/sys/vm/drop_caches`](https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
 or by calling the [`flushcache`](test/flushcache.c) program that 
 has the same functionality but with a longer execution time.
+
+### ParaGrapher FUSE File System (pg_fuse)
+
+To accelerate the loading WebGraphs, ParaGrapher introduces `pg_fuse`, a custom file system built on top of the
+FUSE framework.
+
+To enable `pg_fuse`, simply pass `USE_PG_FUSE` as an argument in the `args` parameter of
+the `paragrapher_open_graph()` function.
+
+For more detailed information, refer to [pg_fuse documentation](docs/pg_fuse.md).
 
 ### Bandwidth Measurement
 

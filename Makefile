@@ -71,13 +71,18 @@ test%: FORCE all
 download%: 
 	make -C test $@
 	
-clean: clean-shm-files
-	rm -f $(PARAGRAPHER_LIB_FOLDER)/*.so $(PARAGRAPHER_LIB_FOLDER)/*.class 
+clean: unmount clean-shm-files
+	rm -f $(PARAGRAPHER_LIB_FOLDER)/*.so $(PARAGRAPHER_LIB_FOLDER)/*.o $(PARAGRAPHER_LIB_FOLDER)/*.class 
 	touch src/* include/*
 	make clean -C test
 
 clean-shm-files: 
 	rm -f  /dev/shm/paragrapher_*
+
+unmount:
+	for f in `findmnt -l | grep pg_fuse | cut -f1 -d' '`; do echo -e "\nUnmounting $$f"; fusermount -uz $$f; done
+	findmnt -l | grep pg_fuse
+	ps -ef | grep pg_fuse
 
 touch:
 	touch src/* include/*

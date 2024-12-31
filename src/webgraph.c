@@ -155,8 +155,23 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	// Iterating over args
 		for(int a = 0; a < argc; a++)
 		{
+			// USE_PG_FUSE
 			if(!strcmp((char*)args[a], "USE_PG_FUSE"))
-				graph->pg_fuse_active = 1;
+			{
+				char temp [PATH_MAX];
+				sprintf(temp, "%s.offsets", underlying_name);
+				if(access(temp, F_OK) == 0)
+				{
+					sprintf(temp, "%s_offsets.bin", underlying_name);
+					if(access(temp, F_OK) == 0)
+						graph->pg_fuse_active = 1;
+				}
+
+				if (graph->pg_fuse_active)
+					printf("[ParaGrapher] Loading with pg_fuse\n");
+				else
+					printf("[ParaGrapher] Cannot load using pg_fuse as auxiliary files have not created yet.\n");
+			}
 		}
 
 	// Mount files if pg_fuse is active 
@@ -225,26 +240,20 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 
 			sprintf(n1, "%s/%s.offsets", u_dirname, u_basename);
 			sprintf(n2, "%s/%s.offsets", graph->pg_fuse_linked_folder, u_basename);
-			if(access(n1, F_OK) == 0)
+			ret = symlink(n1, n2);
+			if(ret != 0)
 			{
-				ret = symlink(n1, n2);
-				if(ret != 0)
-				{
-					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
-					return NULL;
-				}
+				printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+				return NULL;
 			}
 
 			sprintf(n1, "%s/%s_offsets.bin", u_dirname, u_basename);
 			sprintf(n2, "%s/%s_offsets.bin", graph->pg_fuse_linked_folder, u_basename);
-			if(access(n1, F_OK) == 0)
+			ret = symlink(n1, n2);
+			if(ret != 0)
 			{
-				ret = symlink(n1, n2);
-				if(ret != 0)
-				{
-					printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
-					return NULL;
-				}
+				printf("[ParaGrapher] Could not link %s on %s .\n",n1, n2);
+				return NULL;
 			}
 
 		// Updating the underlying_name
