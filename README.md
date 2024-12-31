@@ -54,7 +54,7 @@ Otherwise, they should be manually deleted using `make clean-shm-files`.
 or by calling the [`flushcache`](test/flushcache.c) program that 
 has the same functionality but with a longer execution time.
 
-### ParaGrapher FUSE File System (pg_fuse)
+### ParaGrapher FUSE File System (PG-FUSE)
 
 To accelerate the loading WebGraphs, ParaGrapher introduces `pg_fuse`, a custom file system built on top of the
 FUSE framework.
@@ -62,7 +62,7 @@ FUSE framework.
 To enable `pg_fuse`, simply pass `USE_PG_FUSE` as an argument in the `args` parameter of
 the `paragrapher_open_graph()` function.
 
-For more detailed information, refer to [pg_fuse documentation](doc/pg_fuse.md).
+For more detailed information, refer to [PG-FUSE documentation](doc/pg_fuse.md).
 
 ### Bandwidth Measurement
 

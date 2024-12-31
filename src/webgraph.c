@@ -192,17 +192,17 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			char* u_dirname = realpath(dirname(temp), NULL);
 			
 		// Creating temp folders
-			sprintf(graph->pg_fuse_underlying_graph_mountpoint, "/tmp/%s-graph-%lu", u_basename, __get_nano_time());
+			sprintf(graph->pg_fuse_underlying_graph_mountpoint, "/tmp/pg_fuse-%s-graph-%lu", u_basename, __get_nano_time());
 			int ret = mkdir(graph->pg_fuse_underlying_graph_mountpoint, 0700);
 			assert(ret == 0);
 
-			sprintf(graph->pg_fuse_linked_folder, "/tmp/%s-all-%lu", u_basename, __get_nano_time());
+			sprintf(graph->pg_fuse_linked_folder, "/tmp/pg_fuse-%s-all-%lu", u_basename, __get_nano_time());
 			ret = mkdir(graph->pg_fuse_linked_folder, 0700);
 			assert(ret == 0);
 
 			if(type == PARAGRAPHER_CSX_WG_404_AP)
 			{
-				sprintf(graph->pg_fuse_graph_mount_point, "/tmp/%s-labels-%lu", u_basename, __get_nano_time());
+				sprintf(graph->pg_fuse_graph_mount_point, "/tmp/pg_fuse-%s-labels-%lu", u_basename, __get_nano_time());
 				int ret = mkdir(graph->pg_fuse_graph_mount_point, 0700);
 				assert(ret == 0);
 			}
