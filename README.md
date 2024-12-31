@@ -75,6 +75,9 @@ benchmark implemented in Java to measure the read bandwidth of storage for (i) d
 (iii) different read methods (read(), mmap()). The script [test/java-read-bandwidth.sh](test/java-read-bandwidth.sh) 
 may  be used for changing parameters.
 
+- The [Storage Bandwidth Evaluation](doc/storage-eval.md) shows the execution results of the above programs for three storage types, SSD, HDD, and LustreFS.
+
+
 ### Remained Works
 0. Binary format
 1. MatrixMarket format
