@@ -38,5 +38,5 @@ In this way, `pg_fuse` minimizes its memory usage.
 However, some blocks may be accessed by multiple threads, such as those containing partition borders. 
 In these cases, the block expiration procedure can cause the block to be loaded multiple times.
 To prevent this, setting `__PGF_RUB` to `0` deactivates the expiration procedure, 
-but this increases memory usage of the `pg_fuse` and potentially prevent  
+but this increases memory usage of the `pg_fuse` and potentially prevent
 decompressed graphs from being stored in memory, particularly for large graphs.
