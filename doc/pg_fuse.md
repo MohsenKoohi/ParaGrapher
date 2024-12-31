@@ -1,4 +1,4 @@
-# ParaGrapher FUSE File System 
+# pg_fuse: ParaGrapher FUSE File System 
 
 The [`webgraph`](src/webgraph.c) module, which loads graph in WebGraph format, uses the Java implementaion of
 WebGraph. This may result in a large number of frequent accesses with small granularities (e.g., 128 kB per access)
