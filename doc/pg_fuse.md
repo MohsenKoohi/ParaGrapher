@@ -27,7 +27,7 @@ Additionally, a temporary folder is created to hold soft-linked graph files.
 All temporary folders/mount points are removed when the `paragrapher_release_graph()` function is called.
 
 When a `pg_fuse` file system is mounted, the input file is divided into blocks, with a 
-default block size of 32 MegaBytes (set by `block_size` variable). 
+default block size of 32 MegaBytes (specified by the `block_size` variable). 
 Upon the first access to a block, the block is loaded from the
 underlying file system and stored in main memory. 
 Since in loading graphs, consecutive blocks are sequentially accessed by threads, 
