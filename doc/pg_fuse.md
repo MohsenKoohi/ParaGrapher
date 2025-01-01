@@ -21,8 +21,8 @@ Hence, if multiple files are required to be mounted, multiple mounting and mount
 When using `pg_fuse`, temporary folders are created `/tmp` to serve as mount point(s).
 The specific files mounted by ParaGrapher depend on the graph being loaded:
 - For `PARAGRAPHER_CSX_WG_400_AP` and `PARAGRAPHER_CSX_WG_800_AP` graphs, 
-only the  `.graph` file is mounted
-- For `PARAGRAPHER_CSX_WG_404_AP` graphs, both the  `.graph` and `.labels` files are mounted.
+the  `.graph`  and `offsets.bin` files are mounted
+- For `PARAGRAPHER_CSX_WG_404_AP` graphs, the `.graph`, `offsets.bin`, and `.labels` files are mounted.
 Additionally, a temporary folder is created to hold soft-linked graph files.
 All temporary folders/mount points are removed when the `paragrapher_release_graph()` function is called.
 
