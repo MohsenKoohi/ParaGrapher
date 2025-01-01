@@ -542,9 +542,9 @@ int __wg_check_create_webgraph_offsets_file(__wg_graph* graph)
 	}
 
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
-		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
+		sprintf(cmd, "java -Xmx500G -cp %s/jlibs/*: it.unimi.dsi.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
 	else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
-		sprintf(cmd, "java -cp %s/jlibs/*: it.unimi.dsi.big.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
+		sprintf(cmd, "java -Xmx500G -cp %s/jlibs/*: it.unimi.dsi.big.webgraph.BVGraph -O %s", getenv("PARAGRAPHER_LIB_FOLDER"), graph->underlying_name);
 	else
 	{
 		assert(0 && "Do not reach here.");
@@ -614,9 +614,9 @@ void* __wg_csx_get_offsets(paragrapher_graph* in_graph, void* offsets, unsigned 
 			sprintf(ts + strlen(ts), "F");
 		
 		if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP || graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
-			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
+			sprintf(cmd, "taskset 0x%s java -Xmx500G -ea -cp %s:%s/jlibs/* WG400AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
 		else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
-			sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG800AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
+			sprintf(cmd, "taskset 0x%s java -Xmx500G -ea -cp %s:%s/jlibs/* WG800AP create_bin_offsets %s %s", ts, PLF, PLF, graph->underlying_name, bin_offsets_file);
 		else
 		{
 			assert(0 && "Do not reach here.");
@@ -697,13 +697,13 @@ void* __wg_java_program_wrapper(void* in)
 		sprintf(ts + strlen(ts), "F");
 		
 	if(graph->graph_type == PARAGRAPHER_CSX_WG_400_AP)
-		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
+		sprintf(cmd, "taskset 0x%s java -Xmx500G -ea -cp %s:%s/jlibs/* WG400AP read_edges %s %s", 
 		ts, PLF, PLF, graph->name, req->shm_name);
 	else if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
-		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG404AP read_edges %s %s", 
+		sprintf(cmd, "taskset 0x%s java -Xmx500G -ea -cp %s:%s/jlibs/* WG404AP read_edges %s %s", 
 		ts, PLF, PLF, graph->name, req->shm_name);
 	else if(graph->graph_type == PARAGRAPHER_CSX_WG_800_AP)
-		sprintf(cmd, "taskset 0x%s java -ea -cp %s:%s/jlibs/* WG800AP read_edges %s %s", 
+		sprintf(cmd, "taskset 0x%s java -Xmx500G -ea -cp %s:%s/jlibs/* WG800AP read_edges %s %s", 
 		ts, PLF, PLF, graph->name, req->shm_name);
 	else
 	{
