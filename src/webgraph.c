@@ -88,7 +88,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	assert(strlen(name) < PATH_MAX);
 	char underlying_name[PATH_MAX]={0};
 	char input_name[PATH_MAX]={0};
-	sprintf(input_name, "%s", name);
+	sprintf(input_name, "%.*s", PATH_MAX, name);
 
 	//Check if .properties and .graph file exist
 	{
