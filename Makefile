@@ -81,8 +81,8 @@ clean-shm-files:
 
 unmount:
 	for f in `findmnt -l | grep pg_fuse | cut -f1 -d' '`; do echo -e "\nUnmounting $$f"; fusermount -uz $$f; done
-	findmnt -l | grep pg_fuse
-	ps -ef | grep pg_fuse
+	findmnt -l | grep pg_fuse || echo
+	ps -ef | grep pg_fuse || echo
 
 touch:
 	touch src/* include/*

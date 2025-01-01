@@ -8,6 +8,7 @@ typedef struct
 	paragrapher_graph_type graph_type;
 
 	char name[PATH_MAX + 8];
+	char input_name[PATH_MAX + 8];
 	char underlying_name[PATH_MAX + 8];
 	unsigned long buffer_size;
 	unsigned long max_buffers_count;
@@ -20,6 +21,7 @@ typedef struct
 	unsigned long pg_fuse_active;
 	char pg_fuse_underlying_graph_mountpoint[PATH_MAX];
 	char pg_fuse_graph_mount_point[PATH_MAX];
+	char pg_fuse_offsets_bin_mount_point[PATH_MAX];
 	char pg_fuse_linked_folder[PATH_MAX];
 } __wg_graph;
 
@@ -85,6 +87,8 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	assert(type == PARAGRAPHER_CSX_WG_400_AP || type == PARAGRAPHER_CSX_WG_800_AP || type == PARAGRAPHER_CSX_WG_404_AP);
 	assert(strlen(name) < PATH_MAX);
 	char underlying_name[PATH_MAX]={0};
+	char input_name[PATH_MAX]={0};
+	sprintf(input_name, "%s", name);
 
 	//Check if .properties and .graph file exist
 	{
@@ -196,6 +200,10 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			int ret = mkdir(graph->pg_fuse_underlying_graph_mountpoint, 0700);
 			assert(ret == 0);
 
+			sprintf(graph->pg_fuse_offsets_bin_mount_point, "/tmp/pg_fuse-%s-offsets-bin-%lu", u_basename, __get_nano_time());
+			ret = mkdir(graph->pg_fuse_offsets_bin_mount_point, 0700);
+			assert(ret == 0);
+
 			sprintf(graph->pg_fuse_linked_folder, "/tmp/pg_fuse-%s-all-%lu", u_basename, __get_nano_time());
 			ret = mkdir(graph->pg_fuse_linked_folder, 0700);
 			assert(ret == 0);
@@ -213,11 +221,11 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			ret = __run_command(temp, res, 4096);
 			if(ret != 0)
 			{
-				printf("[ParaGrapher] Could not mount on %s, Output: %s\n", graph->pg_fuse_underlying_graph_mountpoint, res);
+				printf("[ParaGrapher] Could not mount .graph file on %s, Output: %s\n", graph->pg_fuse_underlying_graph_mountpoint, res);
 				return NULL;
 			}
 			printf("[ParaGrapher] Mounting underlying graph on %s .\n", graph->pg_fuse_underlying_graph_mountpoint);
-			printf("[ParaGrapher] Linking graphs on %s .\n", graph->pg_fuse_linked_folder);
+			printf("[ParaGrapher] Linking graph files on %s .\n", graph->pg_fuse_linked_folder);
 
 			sprintf(n1, "%s/%s.graph",graph->pg_fuse_underlying_graph_mountpoint, u_basename);
 			sprintf(n2, "%s/%s.graph",graph->pg_fuse_linked_folder, u_basename);
@@ -228,7 +236,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 				return NULL;
 			}
 
-		// Linking the .properties, .offsets, and _offsets.bin files
+		// Linking the .properties and .offsets files
 			sprintf(n1, "%s/%s.properties",u_dirname, u_basename);
 			sprintf(n2, "%s/%s.properties",graph->pg_fuse_linked_folder, u_basename);
 			ret = symlink(n1, n2);
@@ -247,7 +255,18 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 				return NULL;
 			}
 
-			sprintf(n1, "%s/%s_offsets.bin", u_dirname, u_basename);
+		// Mounting and linking the .offsets_bin file
+			sprintf(temp, "%s/pg_fuse.o %s --file_path=%s_offsets.bin -o auto_unmount", 
+				PLF, graph->pg_fuse_offsets_bin_mount_point, underlying_name);
+			ret = __run_command(temp, res, 4096);
+			if(ret != 0)
+			{
+				printf("[ParaGrapher] Could not mount offsets.bin on %s, Output: %s\n", graph->pg_fuse_offsets_bin_mount_point, res);
+				return NULL;
+			}
+			printf("[ParaGrapher] Mounting offsets.bin file on %s .\n", graph->pg_fuse_offsets_bin_mount_point);
+
+			sprintf(n1, "%s/%s_offsets.bin", graph->pg_fuse_offsets_bin_mount_point, u_basename);
 			sprintf(n2, "%s/%s_offsets.bin", graph->pg_fuse_linked_folder, u_basename);
 			ret = symlink(n1, n2);
 			if(ret != 0)
@@ -321,6 +340,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	}
 	
 	graph->graph_type = type;
+	sprintf(graph->input_name, "%.*s", PATH_MAX, input_name);
 	sprintf(graph->name, "%.*s", PATH_MAX, name);
 	sprintf(graph->underlying_name, "%.*s", PATH_MAX, underlying_name);
 
@@ -379,6 +399,10 @@ int __wg_release_graph(paragrapher_graph* in_graph, void** args, int argc)
 		int ret = __run_command(temp, res, 1024);
 		assert(ret == 0);
 
+		sprintf(temp, "fusermount -u %s", graph->pg_fuse_offsets_bin_mount_point);
+		ret = __run_command(temp, res, 1024);
+		assert(ret == 0);
+
 		if(graph->graph_type == PARAGRAPHER_CSX_WG_404_AP)
 		{
 			sprintf(temp, "fusermount -u %s", graph->pg_fuse_graph_mount_point);
@@ -415,7 +439,7 @@ int __wg_get_set_options(paragrapher_graph* in_graph, paragrapher_request_type r
 	switch(request_type)
 	{
 		case PARAGRAPHER_REQUEST_GET_GRAPH_PATH:
-			sprintf(args0_chp, "%.*s", PATH_MAX, graph->name);
+			sprintf(args0_chp, "%.*s", PATH_MAX, graph->input_name);
 			break;
 
 		case PARAGRAPHER_REQUEST_GET_VERTICES_COUNT:
