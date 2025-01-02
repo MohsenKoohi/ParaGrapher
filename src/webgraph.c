@@ -181,13 +181,18 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 	// Mount files if pg_fuse is active 
 	if(graph->pg_fuse_active)
 	{
-		char* temp = malloc(4096 * 4 + PATH_MAX * 4);
+		char* temp = malloc(4096 * 4 + PATH_MAX * 4 + get_nprocs()/4);
 		assert(temp != NULL);
 		char res[4096];
 		char n1[2 * PATH_MAX + 2];
 		char n2[2 * PATH_MAX + 2];
 
 		char* PLF = strdup(getenv("PARAGRAPHER_LIB_FOLDER"));
+
+		char* ts = calloc(1024 + get_nprocs() / 4, 1);
+		assert(ts != NULL);
+		for(int i = 0; i < get_nprocs() / 4  + 1; i++)
+			sprintf(ts + strlen(ts), "F");
 
 		// Basename and dirname of underlying graph
 			sprintf(temp, "%s.graph", underlying_name);
@@ -220,8 +225,8 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			printf("[ParaGrapher] Linking graph files on %s .\n", graph->pg_fuse_linked_folder);
 		
 		// Mounting and linking the .graph file
-			sprintf(temp, "%s/pg_fuse.o %s --file_path=%s.graph -o auto_unmount", 
-				PLF, graph->pg_fuse_underlying_graph_mp, underlying_name);
+			sprintf(temp, "taskset 0x%s %s/pg_fuse.o %s --file_path=%s.graph -o auto_unmount", 
+				ts, PLF, graph->pg_fuse_underlying_graph_mp, underlying_name);
 			ret = __run_command(temp, res, 4096);
 			if(ret != 0)
 			{
@@ -257,9 +262,9 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 				return NULL;
 			}
 
-		// Mounting and linking the .offsets_bin file
-			sprintf(temp, "%s/pg_fuse.o %s --file_path=%s_offsets.bin -o auto_unmount", 
-				PLF, graph->pg_fuse_offsets_bin_mp, underlying_name);
+		// Mounting and linking the .offsets_bin file				
+			sprintf(temp, "taskset 0x%s %s/pg_fuse.o %s --file_path=%s_offsets.bin -o auto_unmount", 
+				ts, PLF, graph->pg_fuse_offsets_bin_mp, underlying_name);
 			ret = __run_command(temp, res, 4096);
 			if(ret != 0)
 			{
@@ -286,8 +291,8 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 		else
 		{
 			// Mounting the .labels file
-				sprintf(temp, "%s/pg_fuse.o %s --file_path=%s.labels -o auto_unmount", 
-					PLF, graph->pg_fuse_graph_mp, name);
+				sprintf(temp, "taskset 0x%s %s/pg_fuse.o %s --file_path=%s.labels -o auto_unmount", 
+					ts, PLF, graph->pg_fuse_graph_mp, name);
 				ret = __run_command(temp, res, 4096);
 				if(ret != 0)
 				{
@@ -338,6 +343,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 		free(u_basename);
 		free(u_dirname);
 		free(PLF);
+		free(ts);
 	}
 	
 	graph->graph_type = type;
