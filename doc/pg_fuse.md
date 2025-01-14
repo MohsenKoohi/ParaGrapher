@@ -18,7 +18,7 @@ It is required to have `libfuse3` and `libnuma` libraries for compiling and load
 The current implementation of `pg_fuse` only supports mounting a single file at a time. 
 Hence, if multiple files are required to be mounted, multiple mounting and mount points are required.
 
-When using `pg_fuse`, temporary folders are created `/tmp` to serve as mount point(s).
+When using `pg_fuse`, temporary folders are created in `/tmp` to serve as mount point(s).
 The specific files mounted by ParaGrapher depend on the graph being loaded:
 - For `PARAGRAPHER_CSX_WG_400_AP` and `PARAGRAPHER_CSX_WG_800_AP` graphs, 
 the  `.graph`  and `offsets.bin` files are mounted
