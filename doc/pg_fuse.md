@@ -8,7 +8,7 @@ To address this issue, ParaGrapher introduces a custom file system, [`pg_fuse`](
 the [FUSE (Filesystem in User Space)](https://github.com/libfuse/libfuse/) framework. 
 By loading contents in larger granularity sizes (32 MB) 
 and temporarily caching them, `pg_fuse` accelerates the loading process. 
-Our measurements indicates a speedup of up to 8-10 times when using `pg_fuse` on top of LustreFS. 
+Our measurements indicates a speedup of up to 4 times when using `pg_fuse` on top of LustreFS. 
 However, for small graphs,  the impacts of `pg_fuse` may be less noticeable.
 
 To enable `pg_fuse`, it is required to pass `USE_PG_FUSE` in the `args` parameter of
