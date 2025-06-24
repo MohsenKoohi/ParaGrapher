@@ -85,4 +85,4 @@ law or agreed upon in writing, this Software is distributed on an "as is" basis,
 the implied warranty of merchantability or fitness for a particular purpose, neither express nor implied. 
 For details see terms of the License (see attached file: LICENSE). 
 
-#### Copyright 2024, Queen's University of Belfast, Northern Ireland, UK
+
