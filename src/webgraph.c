@@ -417,8 +417,8 @@ int __wg_release_graph(paragrapher_graph* in_graph, void** args, int argc)
 			assert(ret == 0);
 		}
 
-		sprintf(temp, "rm -r %s %s %s", 
-			graph->pg_fuse_linked_folder, graph->pg_fuse_underlying_graph_mp, graph->pg_fuse_graph_mp);
+		sprintf(temp, "rm -r %s %s %s %s", 
+			graph->pg_fuse_linked_folder, graph->pg_fuse_underlying_graph_mp, graph->pg_fuse_graph_mp, graph->pg_fuse_offsets_bin_mp);
 		ret = __run_command(temp, res, 1024);
 		assert(ret == 0);
 	}
