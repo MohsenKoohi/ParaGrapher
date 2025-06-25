@@ -8,7 +8,7 @@ To address this issue, ParaGrapher introduces a custom file system, [`pg_fuse`](
 the [FUSE (Filesystem in User Space)](https://github.com/libfuse/libfuse/) framework. 
 By loading contents in larger granularity sizes (32 MB) 
 and temporarily caching them, `pg_fuse` accelerates the loading process. 
-Our measurements indicates a speedup of up to 8-10 times when using `pg_fuse` on top of LustreFS. 
+Our measurements indicates a speedup of up to 4 times when using `pg_fuse` on top of LustreFS. 
 However, for small graphs,  the impacts of `pg_fuse` may be less noticeable.
 
 To enable `pg_fuse`, it is required to pass `USE_PG_FUSE` in the `args` parameter of
@@ -18,11 +18,12 @@ It is required to have `libfuse3` and `libnuma` libraries for compiling and load
 The current implementation of `pg_fuse` only supports mounting a single file at a time. 
 Hence, if multiple files are required to be mounted, multiple mounting and mount points are required.
 
-When using `pg_fuse`, temporary folders are created `/tmp` to serve as mount point(s).
+When using `pg_fuse`, temporary folders are created in `/tmp` to serve as mount point(s).
 The specific files mounted by ParaGrapher depend on the graph being loaded:
 - For `PARAGRAPHER_CSX_WG_400_AP` and `PARAGRAPHER_CSX_WG_800_AP` graphs, 
 the  `.graph`  and `offsets.bin` files are mounted
 - For `PARAGRAPHER_CSX_WG_404_AP` graphs, the `.graph`, `offsets.bin`, and `.labels` files are mounted.
+
 Additionally, a temporary folder is created to hold soft-linked graph files.
 All temporary folders/mount points are removed when the `paragrapher_release_graph()` function is called.
 

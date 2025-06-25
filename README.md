@@ -77,11 +77,6 @@ may  be used for changing parameters.
 
 - The [Storage Bandwidth Evaluation](doc/storage-eval.md) shows the execution results of the above programs for three storage types, SSD, HDD, and LustreFS.
 
-
-### Remained Works
-0. Binary format
-1. MatrixMarket format
-2. Textual CSX
    
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
@@ -90,4 +85,4 @@ law or agreed upon in writing, this Software is distributed on an "as is" basis,
 the implied warranty of merchantability or fitness for a particular purpose, neither express nor implied. 
 For details see terms of the License (see attached file: LICENSE). 
 
-#### Copyright 2024, Queen's University of Belfast, Northern Ireland, UK
+
