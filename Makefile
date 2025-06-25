@@ -73,6 +73,7 @@ download%:
 	
 clean: unmount clean-shm-files
 	rm -f $(PARAGRAPHER_LIB_FOLDER)/*.so $(PARAGRAPHER_LIB_FOLDER)/*.o $(PARAGRAPHER_LIB_FOLDER)/*.class 
+	rm -rf /tmp/pg_fuse*
 	touch src/* include/*
 	make clean -C test
 
