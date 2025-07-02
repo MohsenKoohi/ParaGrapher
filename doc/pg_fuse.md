@@ -1,5 +1,7 @@
 # PG-FUSE: ParaGrapher FUSE File System 
 
+Paper: [DOI: 10.48550/arXiv.2507.00716](https://doi.org/10.48550/arXiv.2507.00716)
+
 The [`webgraph`](../src/webgraph.c) module, which loads graph in WebGraph format, uses the Java implementaion of
 WebGraph. This may result in a large number of frequent accesses with small granularities (e.g., 128 kB per access)
 to the underlying file system, degrading both the loading performance and stoarge performance.
@@ -8,7 +10,7 @@ To address this issue, ParaGrapher introduces a custom file system, [`pg_fuse`](
 the [FUSE (Filesystem in User Space)](https://github.com/libfuse/libfuse/) framework. 
 By loading contents in larger granularity sizes (32 MB) 
 and temporarily caching them, `pg_fuse` accelerates the loading process. 
-Our measurements indicates a speedup of up to 4 times when using `pg_fuse` on top of LustreFS. 
+Our measurements indicates a speedup of up to 7.6 times when using `pg_fuse` on top of LustreFS. 
 However, for small graphs,  the impacts of `pg_fuse` may be less noticeable.
 
 To enable `pg_fuse`, it is required to pass `USE_PG_FUSE` in the `args` parameter of
@@ -41,3 +43,15 @@ In these cases, the block expiration procedure can cause the block to be loaded 
 To prevent this, setting `__PGF_RUB` to `0` deactivates the expiration procedure, 
 but this increases memory usage of the `pg_fuse` and potentially prevent
 decompressed graphs from being stored in memory, particularly for large graphs.
+
+```
+@misc{pg_fuse,
+      title={Accelerating Loading WebGraphs in ParaGrapher}, 
+      author={Mohsen {Koohi Esfahani}},
+      year={2025},
+      eprint={2507.00716},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC},
+      url={https://arxiv.org/abs/2507.00716}, 
+}
+```
