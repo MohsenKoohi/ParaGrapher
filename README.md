@@ -77,6 +77,35 @@ may  be used for changing parameters.
 
 - The [Storage Bandwidth Evaluation](doc/storage-eval.md) shows the execution results of the above programs for three storage types, SSD, HDD, and LustreFS.
 
+### Citation
+
+```
+@misc{pg_fuse,
+      title={Accelerating Loading WebGraphs in ParaGrapher}, 
+      author={Mohsen {Koohi Esfahani}},
+      year={2025},
+      eprint={2507.00716},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC},
+      url={https://arxiv.org/abs/2507.00716}, 
+}
+```
+
+```
+@misc{paragrapher-arxiv,
+  title = { Selective Parallel Loading of Large-Scale 
+            Compressed Graphs with {ParaGrapher}}, 
+  author = { {Mohsen} {Koohi Esfahani} and Marco D'Antonio and 
+             Syed Ibtisam Tauhidi and Thai Son Mai and 
+             Hans Vandierendonck},
+  year = {2024},
+  eprint = {2404.19735},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.AR},
+  doi = {10.48550/arXiv.2404.19735},
+  url={https://arxiv.org/abs/2404.19735}, 
+}
+```
    
 ### License
 Licensed under the GNU v3 General Public License, as published by the Free Software Foundation. 
