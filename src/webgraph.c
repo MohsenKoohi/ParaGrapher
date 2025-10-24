@@ -881,6 +881,8 @@ void* __wg_thread(void* in)
 		req->buffers_metadata = (__wg_buffer_metadata*)((char*)shm_mem + 2 * 64);
 		for(int b = 0; b < req->buffers_count; b++)
 			req->buffers_metadata[b].status = __BS_C_IDLE;
+
+		__sync_synchronize();
 		
 	// Running Java program
 		pthread_t j_tid = 0;
@@ -973,6 +975,7 @@ void* __wg_thread(void* in)
 						__sync_synchronize();
 						
 						req->buffers_metadata[b].status = __BS_C_REQUESTED;
+						__sync_synchronize();
 						
 						last_vertex = dest_vertex;
 						last_edge = dest_edge;
@@ -1006,7 +1009,9 @@ void* __wg_thread(void* in)
 					*C_timestamp = 1;
 				else
 					*C_timestamp = temp;
-			}		
+			}
+
+			__sync_synchronize();
 		}
 		assert(req->total_edges_requested == req->total_edges_read);
 
@@ -1014,6 +1019,7 @@ void* __wg_thread(void* in)
 
 	// Informing Java program to be finished
 		*C_completed = 1;
+		__sync_synchronize();
 		ret = pthread_join(j_tid, NULL);
 		assert(ret == 0);
 
