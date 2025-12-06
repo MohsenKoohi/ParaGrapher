@@ -359,16 +359,16 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 
 	graph->buffer_size = 1024UL * 1024 * 64;
 	{
-		char res[1024];
-		int ret = (int)__run_command("nproc", res, 1023);
-		assert(ret == 0);
-		graph->max_buffers_count = atoi(res);
+		
+		graph->max_buffers_count = sysconf(_SC_NPROCESSORS_ONLN);
 
-		ret = (int)__run_command("lscpu | grep \"Thread(s) per core\" | head -n1 | cut -f2 -d:|xargs", res, 1023);
+		char res[1024];
+		int ret = (int)__run_command("lscpu | grep \"Thread(s) per core\" | head -n1 | cut -f2 -d:|xargs", res, 1023);
 		assert(ret == 0);
 		unsigned int tpc = atoi(res);
 		if(tpc == 1)
 			graph->max_buffers_count *= 2; 
+		printf("[ParaGrapher] max_buffers_count: %u\n",graph->max_buffers_count );
 	}
 	graph->offsets = NULL;
 
@@ -1076,6 +1076,13 @@ paragrapher_read_request* __wg_csx_get_subgraph(paragrapher_graph* in_graph, par
 	
 	{
 		int ret = pthread_create(&req->thread, NULL,  __wg_thread, req);
+		assert(ret == 0);
+		cpu_set_t cpus;
+		CPU_ZERO(&cpus);
+		int n = sysconf(_SC_NPROCESSORS_ONLN);
+		for (int i = 0; i < n; ++i) 
+			CPU_SET(i, &cpus);
+		ret=pthread_setaffinity_np(req->thread, sizeof(cpu_set_t), &cpus);
 		assert(ret == 0);
 	}
 
