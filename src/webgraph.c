@@ -160,6 +160,9 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 		for(int a = 0; a < argc; a++)
 		{
 			// USE_PG_FUSE
+			if(CAN_USE_LIB_FUSE == 0)
+				continue;
+			
 			if(!strcmp((char*)args[a], "USE_PG_FUSE"))
 			{
 				char temp [PATH_MAX];
@@ -174,7 +177,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 				if (graph->pg_fuse_active)
 					printf("[ParaGrapher] Loading with pg_fuse\n");
 				else
-					printf("[ParaGrapher] Cannot load using pg_fuse as auxiliary files have not created yet.\n");
+					printf("[ParaGrapher] Cannot load using pg_fuse as auxiliary files have not been created yet.\n");
 			}
 		}
 

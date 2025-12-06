@@ -19,7 +19,20 @@ else
 	COMPILE_TYPE := -O3 -DNDEBUG
 endif
 
-all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES) $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
+all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES) 
+
+# Check if libfuse is accessible to enable PG_FUSE
+$(shell printf '%s\n' '#define FUSE_USE_VERSION 31' '#include <fuse.h>' 'int main(){ (void)fuse_version(); return 0; }' > /tmp/.fuse_check.c)
+CAN_USE_LIB_FUSE := $(shell if $(GCC) /tmp/1.fuse_check.c -lfuse3 -o /tmp/.fuse_check  2>/dev/null; then echo 1; else echo 0; fi )
+$(info CAN_USE_LIB_FUSE = $(CAN_USE_LIB_FUSE))
+ifeq ($(CAN_USE_LIB_FUSE),1)
+  $(info libfuse is accessible)
+  all: $(all) $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
+else
+  $(info libfuse is not accessible)
+endif
+$(shell rm /tmp/.fuse_check*)
+FLAGS := $(FLAGS) -DCAN_USE_LIB_FUSE=$(CAN_USE_LIB_FUSE)
 
 $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so: src/* include/* Makefile
 	@if [ `$(GCC) -dumpversion | cut -f1 -d.` -le 8 ]; then\
