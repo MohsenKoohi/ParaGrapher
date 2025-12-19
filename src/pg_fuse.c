@@ -8,7 +8,12 @@
 #define _GNU_SOURCE
 
 #define FUSE_USE_VERSION 31
-#include <fuse.h>
+#if __has_include(<fuse.h>)
+	#include <fuse.h>
+#else
+	#include <fuse3/fuse.h>
+#endif
+
 #include <libgen.h>
 #include <stddef.h>
 #include <numa.h>

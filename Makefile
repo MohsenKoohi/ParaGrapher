@@ -22,8 +22,8 @@ endif
 all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES) 
 
 # Check if libfuse is accessible to enable PG_FUSE
-$(shell printf '%s\n' '#define FUSE_USE_VERSION 31' '#include <fuse.h>' 'int main(){ (void)fuse_version(); return 0; }' > /tmp/.fuse_check.c)
-CAN_USE_LIB_FUSE := $(shell if $(GCC) /tmp/.fuse_check.c -lfuse3 -o /tmp/.fuse_check  2>/dev/null; then echo 1; else echo 0; fi )
+$(shell printf '%s\n' '#define FUSE_USE_VERSION 31' '#if __has_include(<fuse.h>)' '#include <fuse.h>' '#else' '#include <fuse3/fuse.h>' '#endif' 'int main(){ (void)fuse_version(); return 0; }' > /tmp/.fuse_check.c)
+CAN_USE_LIB_FUSE := $(shell if $(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) /tmp/.fuse_check.c -lfuse3 -o /tmp/.fuse_check  2>/dev/null; then echo 1; else echo 0; fi )
 $(info CAN_USE_LIB_FUSE = $(CAN_USE_LIB_FUSE))
 ifeq ($(CAN_USE_LIB_FUSE),1)
   $(info libfuse is accessible)

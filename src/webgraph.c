@@ -233,6 +233,7 @@ paragrapher_graph* __wg_open_graph(char* name, paragrapher_graph_type type, void
 			ret = __run_command(temp, res, 4096);
 			if(ret != 0)
 			{
+				printf("[ParaGrapher] Command: %s\n", temp);
 				printf("[ParaGrapher] Could not mount .graph file on %s, Output: %s\n", graph->pg_fuse_underlying_graph_mp, res);
 				return NULL;
 			}
