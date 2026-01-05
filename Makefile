@@ -9,7 +9,7 @@ SHELL := /bin/bash
 
 INCLUDE_LIBS := $(addprefix -L , $(subst :, ,$(LIB)))
 INCLUDE_HEADER := $(addprefix -I , $(subst :,/../include ,$(LIB)))
-FLAGS :=  -Wfatal-errors -lm -lpthread -lrt
+FLAGS :=  -Wfatal-errors -lm -lpthread -lrt -lnuma -lfuse3
 
 JAVA_CLASS_FILES  := $(addprefix $(PARAGRAPHER_LIB_FOLDER)/,$(subst src/,,$(subst .java,.class,$(shell ls src/*.java))))
 
@@ -23,7 +23,7 @@ all: $(PARAGRAPHER_LIB_FOLDER)/libparagrapher.so JLIBS $(JAVA_CLASS_FILES)
 
 # Check if libfuse is accessible to enable PG_FUSE
 $(shell printf '%s\n' '#define FUSE_USE_VERSION 31' '#if __has_include(<fuse.h>)' '#include <fuse.h>' '#else' '#include <fuse3/fuse.h>' '#endif' 'int main(){ (void)fuse_version(); return 0; }' > /tmp/.fuse_check.c)
-CAN_USE_LIB_FUSE := $(shell if $(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) /tmp/.fuse_check.c -lfuse3 -o /tmp/.fuse_check  2>/dev/null; then echo 1; else echo 0; fi )
+CAN_USE_LIB_FUSE := $(shell if $(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) /tmp/.fuse_check.c $(FLAGS) -o /tmp/.fuse_check  2>/dev/null; then echo 1; else echo 0; fi )
 $(info CAN_USE_LIB_FUSE = $(CAN_USE_LIB_FUSE))
 ifeq ($(CAN_USE_LIB_FUSE),1)
   $(info libfuse is accessible)
@@ -71,7 +71,7 @@ $(PARAGRAPHER_LIB_FOLDER)/%.class: src/%.java Makefile
 
 $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o: src/pg_fuse.c Makefile
 	@echo -e "\n\033[1;34mCompiling ParaGrapher FUSE (pg_fuse)\033[0;37m"
-	$(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) -lnuma -lfuse3 $(FLAGS) $(COMPILE_TYPE) src/pg_fuse.c -o $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
+	$(GCC) $(INCLUDE_HEADER) $(INCLUDE_LIBS) $(COMPILE_TYPE) src/pg_fuse.c $(FLAGS) -o $(PARAGRAPHER_LIB_FOLDER)/pg_fuse.o
 
 test: FORCE all
 	@echo -e "\n\033[1;32mPARAGRAPHER_LIB_FOLDER: "$(PARAGRAPHER_LIB_FOLDER)"\033[0;37m"
