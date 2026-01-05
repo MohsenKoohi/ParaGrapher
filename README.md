@@ -20,7 +20,7 @@ Please visit the [Wiki](../../wiki/API-Documentation) or download the PDF file u
 - `gcc` with a version greater than 9
 - `JDK` with a version greater than 15
 - `bc`, `wget`, and `unzip`
-- `libfuse3` and `libnuma` for using `pg_fuse` (optional)
+- `libfuse3-dev`, `libfuse3-3`, `fuse3` and `libnuma` for using `pg_fuse` (optional)
 
 ### Download Sample Datasets
 - Run `make download_WG400`, `make download_WG404`, or `make download_WG800`  
